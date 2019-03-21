@@ -1,0 +1,119 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/layout_overlay"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    tools:context=".ui.overlay.BubbleCamOverlay">
+
+    <androidx.cardview.widget.CardView
+        android:id="@+id/card_video"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        app:cardUseCompatPadding="true">
+        <RelativeLayout
+            android:layout_width="150dp"
+            android:layout_height="150dp"
+            android:padding="@dimen/card_padding">
+
+            <com.camerakit.CameraKitView
+                android:id="@+id/camera_kit"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:adjustViewBounds="true"
+                android:keepScreenOn="true"
+                app:camera_flash="auto"
+                app:camera_facing="back"
+                app:camera_focus="continuous"
+                app:camera_permissions="camera" />
+
+            <!--
+            <com.wonderkiln.camerakit.CameraView
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:adjustViewBounds="true"
+                android:keepScreenOn="true"
+                android:id="@+id/camera_kit"
+                app:ckFacing="back"
+                app:ckFlash="off"
+                app:ckFocus="continuous"
+                app:ckMethod="standard"
+                app:ckPermissions="strict"
+                app:ckCropOutput="true"
+                app:ckJpegQuality="100"
+                app:ckVideoQuality="highest"
+                />
+                -->
+
+            <TextView
+                android:id="@+id/text_state"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="10sp"
+                android:text="@string/state_ready"
+                android:background="@color/colorDisabled"
+                android:textColor="@android:color/white"
+                android:layout_alignStart="@id/camera_kit"
+                android:layout_alignTop="@id/camera_kit"
+                android:paddingTop="2dp"
+                android:paddingBottom="2dp"
+                android:paddingLeft="4dp"
+                android:paddingRight="4dp"
+                />
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerHorizontal="true"
+                android:layout_alignBottom="@id/camera_kit"
+                android:orientation="horizontal">
+
+                <com.google.android.material.floatingactionbutton.FloatingActionButton
+                    android:id="@+id/fab_control_photo"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:src="@drawable/ic_camera_black_24dp"
+                    android:tint="@android:color/white"
+                    app:backgroundTint="@color/colorPhoto"
+                    app:fabSize="mini"
+                    />
+
+                <com.google.android.material.floatingactionbutton.FloatingActionButton
+                    android:id="@+id/fab_control_video"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:src="@drawable/ic_fiber_manual_record_black_24dp"
+                    android:tint="@android:color/white"
+                    app:backgroundTint="@color/colorVideo"
+                    app:fabSize="mini"
+                    />
+
+                <com.google.android.material.floatingactionbutton.FloatingActionButton
+                    android:id="@+id/fab_control_hybrid"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:src="@drawable/ic_burst_mode_black_24dp"
+                    android:tint="@android:color/white"
+                    app:backgroundTint="@color/colorHybrid"
+                    app:fabSize="mini"
+                    />
+
+            </LinearLayout>
+
+            <ImageView
+                android:id="@+id/icon_close"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignTop="@id/camera_kit"
+                android:layout_alignEnd="@id/camera_kit"
+                android:src="@drawable/ic_close_black_24dp"
+                android:tint="@android:color/white"
+                android:background="@color/colorDisabled"
+                />
+
+        </RelativeLayout>
+    </androidx.cardview.widget.CardView>
+
+</RelativeLayout>

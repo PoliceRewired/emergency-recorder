@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="photo_name">emergency_photo_%s.jpg</string>
+    <string name="photo_title">emergency photo %s</string>
+    <string name="photo_description">Photo taken by the Emergency Recorder, %s.</string>
+
+</resources>

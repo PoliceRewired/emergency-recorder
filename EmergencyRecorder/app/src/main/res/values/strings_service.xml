@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="foreground_channel_name">Emergency Recorder notifications</string>
+    <string name="foreground_channel_description">Notifications from the emergency recorder.</string>
+
+    <string name="recording_service_notification_title">Emergency Recorder</string>
+    <string name="recording_service_notification_content">The Emergency Recorder will initiate recording during emergency calls.</string>
+    <string name="recording_service_notification_ticker">Emergency Recorder has started.</string>
+
+</resources>

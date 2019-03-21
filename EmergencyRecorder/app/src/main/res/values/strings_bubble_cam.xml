@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="state_ready">READY</string>
+    <string name="state_recording">RECORDING VIDEO...</string>
+    <string name="state_hybrid">BURST MODE...</string>
+
+</resources>

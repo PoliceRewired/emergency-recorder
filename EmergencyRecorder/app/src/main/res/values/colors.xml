@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="colorPrimary">#008577</color>
+    <color name="colorPrimaryDark">#00574B</color>
+    <color name="colorAccent">@color/colorVideo</color>
+
+    <color name="colorWarning">#FFC107</color>
+    <color name="colorAOK">#4CAF50</color>
+    <color name="colorVideo">#C43228</color>
+    <color name="colorHybrid">#673AB7</color>
+    <color name="colorPhoto">#2196F3</color>
+
+    <color name="colorDisabled">#4F4F4F</color>
+</resources>
