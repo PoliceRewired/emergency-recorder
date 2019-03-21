@@ -69,11 +69,8 @@ public class RecorderService extends AbstractBackgroundBindingService<IRecorderS
     @Override
     public void hybridsCaptured(HybridCollection collection) {
       // TODO: shift image size into configuration options
-      // See: http://jcodec.org/
       StitchHybridImagesTask.Params param = new StitchHybridImagesTask.Params(collection, 320, null);
       new StitchHybridImagesTask(RecorderService.this).execute(param);
-
-
     }
   };
 

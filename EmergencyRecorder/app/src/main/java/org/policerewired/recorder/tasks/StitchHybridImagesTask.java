@@ -29,9 +29,6 @@ public class StitchHybridImagesTask extends AsyncTask<StitchHybridImagesTask.Par
     this.context = context;
   }
 
-  // TODO: untested
-
-
   @Override
   protected void onPreExecute() {
     super.onPreExecute();
@@ -98,7 +95,6 @@ public class StitchHybridImagesTask extends AsyncTask<StitchHybridImagesTask.Par
 
     } catch (Exception e) {
       Log.e(TAG, "Failed to stitch hybrid images together.", e);
-      // TODO: fall back to saving the individual frames
       return new Result(false, null, param.collection.started, param.collection.blobs.size(), param.collection.ms_per_blob);
     }
   }
