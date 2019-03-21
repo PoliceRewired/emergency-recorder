@@ -1,5 +1,7 @@
 package org.policerewired.recorder.ui.overlay;
 
+import org.policerewired.recorder.DTO.HybridCollection;
+
 public interface IBubbleCamOverlay {
   void show();
   void showAndRecord();

@@ -11,10 +11,11 @@ import com.flt.servicelib.BackgroundServiceConfig;
 import org.policerewired.recorder.EmergencyRecorderApp;
 import org.policerewired.recorder.R;
 import org.policerewired.recorder.receivers.OutgoingCallReceiver;
+import org.policerewired.recorder.tasks.StitchHybridImagesTask;
 import org.policerewired.recorder.ui.ConfigActivity;
 import org.policerewired.recorder.ui.overlay.BubbleCamConfig;
 import org.policerewired.recorder.ui.overlay.BubbleCamOverlay;
-import org.policerewired.recorder.ui.overlay.HybridCollection;
+import org.policerewired.recorder.DTO.HybridCollection;
 import org.policerewired.recorder.ui.overlay.IBubbleCamOverlay;
 
 import androidx.core.app.NotificationCompat;
@@ -67,8 +68,11 @@ public class RecorderService extends AbstractBackgroundBindingService<IRecorderS
 
     @Override
     public void hybridsCaptured(HybridCollection collection) {
-      // TODO: process hybrids in an async task - using Jcodec to convert them into a video
+      // TODO: shift image size into configuration options
       // See: http://jcodec.org/
+      StitchHybridImagesTask.Params param = new StitchHybridImagesTask.Params(collection, 320, null);
+      new StitchHybridImagesTask(RecorderService.this).execute(param);
+
 
     }
   };

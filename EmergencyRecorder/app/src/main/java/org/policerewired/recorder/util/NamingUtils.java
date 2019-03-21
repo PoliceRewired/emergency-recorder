@@ -19,7 +19,7 @@ public class NamingUtils {
   }
 
   public String generate_photo_filename(Date date) {
-    return context.getString(R.string.photo_name, getConciseDate(date));
+    return context.getString(R.string.photo_filename, getConciseDate(date));
   }
 
   public String generate_photo_title(Date date) {
@@ -28,6 +28,15 @@ public class NamingUtils {
 
   public String generate_photo_description(Date date) {
     return context.getString(R.string.photo_description, getLongFormatDate(date));
+  }
+
+  public String generate_video_title(Date date) {
+    return context.getString(R.string.video_title, getConciseDate(date));
+  }
+
+  public String generate_video_description(Date date, int images, long ms_per_image) {
+    long duration = images * ms_per_image;
+    return context.getString(R.string.video_description, getLongFormatDate(date), images, duration);
   }
 
   public String getFilenameDate(Date date) {

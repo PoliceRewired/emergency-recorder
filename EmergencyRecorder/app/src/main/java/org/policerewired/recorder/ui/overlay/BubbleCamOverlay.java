@@ -17,6 +17,7 @@ import android.widget.TextView;
 import com.camerakit.CameraKitView;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
+import org.policerewired.recorder.DTO.HybridCollection;
 import org.policerewired.recorder.R;
 import org.policerewired.recorder.util.CapturePhotoUtils;
 import org.policerewired.recorder.util.NamingUtils;
@@ -160,7 +161,7 @@ public class BubbleCamOverlay implements IBubbleCamOverlay {
     }
 
     if (!state.hybriding && next.hybriding) {
-      hybridCollection = new HybridCollection();
+      hybridCollection = new HybridCollection(config.hybrid_delay_ms);
       takeHybridImage();
       scheduleNextHybridImage();
       // TODO: also init hybrid audio
