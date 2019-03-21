@@ -5,6 +5,11 @@ A personal toolkit for recording evidence during emergencies using a modern Andr
 
 The Emergency Recorder Toolkit is aimed at people encountering emergencies, who are on the phone to emergency services. Without any additional effort on their part, it detects the emergency call and initiates video recording.
 
+When capture begins, the app offers 3 modes:
+* Photography (allow the user to point and click to take photos). No audio.
+* Burst mode (takes a series of photos, and stitches them together afterwards into a video). Audio recorded separately.
+* Full video (not yet supported - see dependencies, below). Audio recorded with video.
+
 ## How far is the project developed?
 
 - [x] Requests appropriate permissions.
