@@ -1,7 +1,7 @@
 # Emergency Recorder Toolkit
 A personal toolkit for recording evidence during emergencies using a modern Android phone.
 
-![Follow PoliceRewired](https://img.shields.io/twitter/follow/policerewired.svg?style=social&label=Follow%20Police%20Rewired)
+[![Follow PoliceRewired](https://img.shields.io/twitter/follow/policerewired.svg?style=social&label=Follow%20Police%20Rewired)](https://twitter.com/policerewired)
 
 ## What does the toolkit do?
 
