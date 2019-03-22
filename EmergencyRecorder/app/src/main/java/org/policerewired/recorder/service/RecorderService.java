@@ -62,7 +62,6 @@ public class RecorderService extends AbstractBackgroundBindingService<IRecorderS
     super.onDestroy();
     unregisterReceiver(call_receiver);
 
-
     Log.w(TAG, "Service was stopped. Scheduling a restart...");
     // schedule an alarm to restart the service in 1 minute
     AlarmManager alarmManager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
