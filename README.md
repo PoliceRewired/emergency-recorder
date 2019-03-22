@@ -1,6 +1,8 @@
 # Emergency Recorder Toolkit
 A personal toolkit for recording evidence during emergencies using a modern Android phone.
 
+![Follow PoliceRewired](https://img.shields.io/twitter/follow/policerewired.svg?style=social&label=Follow%20Police%20Rewired)
+
 ## What does the toolkit do?
 
 The Emergency Recorder Toolkit is aimed at people encountering emergencies, who are on the phone to emergency services. Without any additional effort on their part, it detects the emergency call and initiates video recording.
