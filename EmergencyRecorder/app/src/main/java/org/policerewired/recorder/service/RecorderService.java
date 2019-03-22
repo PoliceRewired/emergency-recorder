@@ -1,8 +1,13 @@
 package org.policerewired.recorder.service;
 
+import android.app.AlarmManager;
+import android.app.PendingIntent;
+import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
+import android.os.SystemClock;
+import android.util.Log;
 import android.widget.Toast;
 
 import com.flt.servicelib.AbstractBackgroundBindingService;
@@ -22,8 +27,9 @@ import androidx.core.app.NotificationCompat;
 import androidx.core.app.NotificationManagerCompat;
 
 public class RecorderService extends AbstractBackgroundBindingService<IRecorderService> implements IRecorderService {
+  private static final String TAG = RecorderService.class.getSimpleName();
 
-  private OutgoingCallReceiver receiver;
+  private OutgoingCallReceiver call_receiver;
   private BubbleCamOverlay overlay;
 
   public RecorderService() { }
@@ -42,11 +48,11 @@ public class RecorderService extends AbstractBackgroundBindingService<IRecorderS
   public void onCreate() {
     super.onCreate();
 
-    receiver = new OutgoingCallReceiver(call_listener);
+    call_receiver = new OutgoingCallReceiver(call_listener);
     IntentFilter filter = new IntentFilter();
     filter.addAction(Intent.ACTION_NEW_OUTGOING_CALL);
     filter.addCategory(Intent.CATEGORY_DEFAULT);
-    registerReceiver(receiver,  filter);
+    registerReceiver(call_receiver,  filter);
 
     overlay = new BubbleCamOverlay(this, bubble_cam_listener, BubbleCamConfig.defaults());
   }
@@ -54,9 +60,18 @@ public class RecorderService extends AbstractBackgroundBindingService<IRecorderS
   @Override
   public void onDestroy() {
     super.onDestroy();
-    unregisterReceiver(receiver);
-    // TODO: schedule a restart with a Job, here
-    // TODO: also a BOOT listener
+    unregisterReceiver(call_receiver);
+
+
+    Log.w(TAG, "Service was stopped. Scheduling a restart...");
+    // schedule an alarm to restart the service in 1 minute
+    AlarmManager alarmManager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
+    Intent serviceIntent = new Intent(this, RecorderService.class);
+    PendingIntent alarmIntent = PendingIntent.getService(this, 1000, serviceIntent, 0);
+    alarmManager.setAndAllowWhileIdle(
+      AlarmManager.ELAPSED_REALTIME_WAKEUP,
+      SystemClock.elapsedRealtime() + (60*1000),
+      alarmIntent);
   }
 
   private IBubbleCamOverlay.Listener bubble_cam_listener = new IBubbleCamOverlay.Listener() {
