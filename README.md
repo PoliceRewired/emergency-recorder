@@ -30,12 +30,10 @@ When capture begins, the app offers 3 modes:
 
 ### Dependencies
 
-* CameraKit is superb, but the version 1.0.0 beta series does not yet support video recording. This is coming soon.
-* Keeping services and intent listeners alive on Android is an ongoing arms-race/battle with Google's definition of 'best practises'.
+* [CameraKit](https://camerakit.io/) is superb, but the version 1.0.0 beta series does not yet support video recording. This is coming soon.
+* Keeping services and intent listeners alive on Android is an ongoing arms-race/battle with Google's definition of 'best practises'. We are using [background-service-lib](https://github.com/front-line-tech/background-service-lib), an open source background service toolkit library from [Front-Line Tech Ltd](http://front-line-tech.com).
 * We will be using Google Maps for their geocoding facilities.
 * We use [jcodec](http://jcodec.org/) to stitch photos into video.
-
-We are using [background-service-lib](https://github.com/front-line-tech/background-service-lib), an open source background service toolkit library from [Front-Line Tech Ltd](http://front-line-tech.com), which will be updated regularly as practises develop.
 
 ## What is Police Rewired?
 
