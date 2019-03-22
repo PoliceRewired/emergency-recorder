@@ -24,6 +24,7 @@ When capture begins, the app offers 3 modes:
 - [x] The new photo appears in the user's phone gallery immediately.
 - [x] User can take a burst of photos using the overlay.
 - [x] After a burst, photos are stitched into a video, and appear in the user's phone gallery.
+- [ ] App displays a notification whilst photographs are being stitched into video.
 - [x] Audio recording accompanies the burst mode photography.
 - [x] The new audio appears in an album called 'Emergency Audio' in the user's music app immediately.
 - [ ] User can take a standard video using the overlay. (See dependencies, below.)
