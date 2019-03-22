@@ -5,6 +5,7 @@ import android.content.res.ColorStateList;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.PixelFormat;
+import android.media.MediaRecorder;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -21,7 +22,10 @@ import org.policerewired.recorder.DTO.HybridCollection;
 import org.policerewired.recorder.R;
 import org.policerewired.recorder.util.CapturePhotoUtils;
 import org.policerewired.recorder.util.NamingUtils;
+import org.policerewired.recorder.util.StorageUtils;
 
+import java.io.File;
+import java.io.IOException;
 import java.util.Date;
 
 import androidx.cardview.widget.CardView;
@@ -44,6 +48,9 @@ public class BubbleCamOverlay implements IBubbleCamOverlay {
   @BindView(R.id.camera_kit) CameraKitView camera_kit;
   @BindView(R.id.icon_close) ImageView icon_close;
 
+  private MediaRecorder audio_recorder;
+  private File audio_file;
+
   private View overlay;
   private WindowManager.LayoutParams overlay_params;
   private WindowManager windowManager;
@@ -51,6 +58,7 @@ public class BubbleCamOverlay implements IBubbleCamOverlay {
   private Listener listener;
 
   private NamingUtils naming;
+  private StorageUtils storage;
 
   private boolean created;
 
@@ -67,6 +75,7 @@ public class BubbleCamOverlay implements IBubbleCamOverlay {
     this.windowManager = (WindowManager) context.getSystemService(Context.WINDOW_SERVICE);
     context.setTheme(R.style.AppTheme);
     this.naming = new NamingUtils(context);
+    this.storage = new StorageUtils(context);
   }
 
   @OnClick(R.id.fab_control_video)
@@ -161,15 +170,11 @@ public class BubbleCamOverlay implements IBubbleCamOverlay {
     }
 
     if (!state.hybriding && next.hybriding) {
-      hybridCollection = new HybridCollection(config.hybrid_delay_ms);
-      takeHybridImage();
-      scheduleNextHybridImage();
-      // TODO: also init hybrid audio
+      startHybrid();
     }
 
     if (state.hybriding && !next.hybriding) {
-      // TODO: also stop hybrid audio
-      listener.hybridsCaptured(hybridCollection);
+      stopHybrid();
     }
 
     if (state.visible && !next.visible) {
@@ -179,6 +184,40 @@ public class BubbleCamOverlay implements IBubbleCamOverlay {
 
     state = next;
     updateUI();
+  }
+
+  private void startHybrid() {
+    try {
+      audio_recorder = new MediaRecorder();
+      audio_file = storage.tempAudioFile(context, ".3gpp");
+      audio_recorder.setAudioSource(MediaRecorder.AudioSource.DEFAULT); // should be ok?
+      audio_recorder.setOutputFormat(MediaRecorder.OutputFormat.THREE_GPP);
+      audio_recorder.setAudioEncoder(MediaRecorder.AudioEncoder.DEFAULT);
+      audio_recorder.setOutputFile(audio_file.getPath());
+      audio_recorder.prepare();
+      audio_recorder.start();
+
+    } catch (IOException e) {
+      Log.e(TAG, "Unable to initiate Media Recorder");
+    }
+
+    hybridCollection = new HybridCollection(config.hybrid_delay_ms);
+    takeHybridImage();
+    scheduleNextHybridImage();
+  }
+
+  private void stopHybrid() {
+    try {
+      audio_recorder.stop();
+      audio_recorder.release();
+    } catch (Exception e) {
+      Log.e(TAG, "Difficulties releasing audio.");
+    } finally {
+      audio_recorder = null;
+    }
+
+    hybridCollection.audio_file = audio_file;
+    listener.hybridsCaptured(hybridCollection);
   }
 
   private void scheduleNextHybridImage() {

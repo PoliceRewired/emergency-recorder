@@ -18,10 +18,6 @@ public class NamingUtils {
     this.locale = context.getResources().getConfiguration().locale;
   }
 
-  public String generate_photo_filename(Date date) {
-    return context.getString(R.string.photo_filename, getConciseDate(date));
-  }
-
   public String generate_photo_title(Date date) {
     return context.getString(R.string.photo_title, getConciseDate(date));
   }
@@ -34,9 +30,20 @@ public class NamingUtils {
     return context.getString(R.string.video_title, getConciseDate(date));
   }
 
-  public String generate_video_description(Date date, int images, long ms_per_image) {
-    long duration = images * ms_per_image;
-    return context.getString(R.string.video_description, getLongFormatDate(date), images, duration);
+  public String generate_video_description(Date date, int images, long duration_ms) {
+    return context.getString(R.string.video_description, getLongFormatDate(date), images, duration_ms);
+  }
+
+  public String generate_audio_album(Date date) {
+    return context.getString(R.string.audio_album);
+  }
+
+  public String generate_audio_title(Date date) {
+    return context.getString(R.string.audio_title, getConciseDate(date));
+  }
+
+  public String generate_audio_description(Date date, long duration_ms) {
+    return context.getString(R.string.audio_description, getLongFormatDate(date), duration_ms);
   }
 
   public String getFilenameDate(Date date) {

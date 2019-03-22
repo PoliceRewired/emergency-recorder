@@ -5,6 +5,7 @@ import android.graphics.BitmapFactory;
 
 import com.camerakit.CameraKitView;
 
+import java.io.File;
 import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
@@ -14,6 +15,7 @@ public class HybridCollection {
   public List<byte[]> blobs;
   public List<Bitmap> bitmaps;
   public Date started;
+  public File audio_file;
 
   public long ms_per_blob;
 

@@ -14,8 +14,10 @@ import org.jcodec.common.model.Picture;
 import org.jcodec.common.model.Rational;
 import org.jcodec.scale.BitmapUtil;
 import org.policerewired.recorder.DTO.HybridCollection;
+import org.policerewired.recorder.util.CaptureAudioUtils;
 import org.policerewired.recorder.util.CaptureVideoUtils;
 import org.policerewired.recorder.util.NamingUtils;
+import org.policerewired.recorder.util.StorageUtils;
 
 import java.io.File;
 import java.util.Date;
@@ -24,9 +26,13 @@ public class StitchHybridImagesTask extends AsyncTask<StitchHybridImagesTask.Par
   private static final String TAG = StitchHybridImagesTask.class.getSimpleName();
 
   private Context context;
+  private NamingUtils naming;
+  private StorageUtils storage;
 
   public StitchHybridImagesTask(Context context) {
     this.context = context;
+    this.naming = new NamingUtils(context);
+    this.storage = new StorageUtils(context);
   }
 
   @Override
@@ -39,16 +45,31 @@ public class StitchHybridImagesTask extends AsyncTask<StitchHybridImagesTask.Par
   protected void onPostExecute(Result result) {
     super.onPostExecute(result);
 
-    NamingUtils naming = new NamingUtils(context);
-
-    if (result.success) {
-      CaptureVideoUtils.insertVideo(
-        context.getContentResolver(),
-        result.video,
-        naming.generate_video_title(result.started),
-        naming.generate_video_description(result.started, result.images, result.ms_per_frame));
+    if (result.success_video) {
+      try {
+        CaptureVideoUtils.insertVideo(
+          context.getContentResolver(),
+          result.video,
+          naming.generate_video_title(result.started),
+          naming.generate_video_description(result.started, result.images, result.duration_ms()),
+          result.duration_ms());
+      } catch (Exception e) {
+        Log.e(TAG, "Unable to store video.", e);
+      }
     }
 
+    try {
+      CaptureAudioUtils.insertAudio(
+        context.getContentResolver(),
+        result.audio,
+        storage.externalAudioFile(context, result.started, ".3gpp"),
+        naming.generate_audio_title(result.started),
+        naming.generate_audio_description(result.started, result.duration_ms()),
+        naming.generate_audio_album(result.started),
+        result.duration_ms());
+    } catch (Exception e) {
+      Log.e(TAG, "Unable to store audio.", e);
+    }
   }
 
   @Override
@@ -57,10 +78,9 @@ public class StitchHybridImagesTask extends AsyncTask<StitchHybridImagesTask.Par
 
     try {
 
-      File outputDir = context.getCacheDir(); // context being the Activity pointer
-      File file = File.createTempFile("video_processing", "mp4", outputDir);
+      File video_file = storage.tempVideoFile(context, ".mp4");
 
-      SeekableByteChannel channel = NIOUtils.writableChannel(file);
+      SeekableByteChannel channel = NIOUtils.writableChannel(video_file);
 
       Rational fps = new Rational(1000, (int)param.collection.ms_per_blob);
       SequenceEncoder encoder = new AndroidSequenceEncoder(channel, fps);
@@ -91,11 +111,11 @@ public class StitchHybridImagesTask extends AsyncTask<StitchHybridImagesTask.Par
       encoder.finish();
       channel.close();
 
-      return new Result(true, file, param.collection.started, param.collection.blobs.size(), param.collection.ms_per_blob);
+      return new Result(true, video_file, param.collection.audio_file, param.collection.started, param.collection.blobs.size(), param.collection.ms_per_blob);
 
     } catch (Exception e) {
       Log.e(TAG, "Failed to stitch hybrid images together.", e);
-      return new Result(false, null, param.collection.started, param.collection.blobs.size(), param.collection.ms_per_blob);
+      return new Result(false, null, param.collection.audio_file, param.collection.started, param.collection.blobs.size(), param.collection.ms_per_blob);
     }
   }
 
@@ -122,15 +142,21 @@ public class StitchHybridImagesTask extends AsyncTask<StitchHybridImagesTask.Par
   }
 
   public static class Result {
-    public final boolean success;
+    public final boolean success_video;
     public final File video;
     public final Date started;
     public final int images;
     public final long ms_per_frame;
+    public final File audio;
 
-    private Result(boolean success, File video, Date started, int images, long ms_per_frame) {
-      this.success = success;
+    public long duration_ms() {
+      return images * ms_per_frame;
+    }
+
+    private Result(boolean success, File video, File audio, Date started, int images, long ms_per_frame) {
+      this.success_video = success;
       this.video = video;
+      this.audio = audio;
       this.started = started;
       this.images = images;
       this.ms_per_frame = ms_per_frame;

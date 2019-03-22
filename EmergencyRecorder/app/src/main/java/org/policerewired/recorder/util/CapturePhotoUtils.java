@@ -12,16 +12,16 @@ import android.graphics.Matrix;
 import android.net.Uri;
 import android.provider.MediaStore;
 import android.provider.MediaStore.Images;
+import android.util.Log;
 
 /**
- * Android internals have been modified to store images in the media folder with
- * the correct date meta data
- * @author samuelkirton
+ * Derived from work by Samuel Kirton.
  */
 public class CapturePhotoUtils {
+  private static final String TAG = CapturePhotoUtils.class.getSimpleName();
 
   /**
-   * A copy of the Android internals  insertImage method, this method populates the
+   * A copy of the Android internals insertImage method, this method populates the
    * meta data with DATE_ADDED and DATE_TAKEN. This fixes a common problem where media
    * that is inserted manually gets saved at the end of the gallery (because date is not populated).
    * @see android.provider.MediaStore.Images.Media#insertImage(ContentResolver, Bitmap, String, String)
@@ -64,6 +64,7 @@ public class CapturePhotoUtils {
         url = null;
       }
     } catch (Exception e) {
+      Log.e(TAG, "Unable to store photo.", e);
       if (url != null) {
         cr.delete(url, null, null);
         url = null;

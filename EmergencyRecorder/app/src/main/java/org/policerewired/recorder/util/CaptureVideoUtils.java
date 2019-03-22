@@ -30,7 +30,8 @@ public class CaptureVideoUtils {
   public static final String insertVideo(ContentResolver cr,
                                          File source,
                                          String title,
-                                         String description) {
+                                         String description,
+                                         long duration_ms) {
 
     ContentValues values = new ContentValues();
     values.put(MediaStore.Video.Media.TITLE, title);
@@ -40,6 +41,7 @@ public class CaptureVideoUtils {
     // Add the date meta data to ensure the image is added at the front of the gallery
     values.put(MediaStore.Video.Media.DATE_ADDED, System.currentTimeMillis() / 1000);
     values.put(MediaStore.Video.Media.DATE_TAKEN, System.currentTimeMillis());
+    values.put(MediaStore.Video.Media.DURATION, duration_ms);
 
     Uri url = null;
     String stringUrl = null;
@@ -68,6 +70,7 @@ public class CaptureVideoUtils {
         url = null;
       }
     } catch (Exception e) {
+      Log.e(TAG, "Unable to store video.", e);
       if (url != null) {
         cr.delete(url, null, null);
         url = null;
@@ -128,6 +131,5 @@ public class CaptureVideoUtils {
       return null;
     }
   }
-
 
 }
