@@ -17,8 +17,8 @@ When capture begins, the app offers 3 modes:
 - [x] Requests appropriate permissions.
 - [x] Displays a persistent notification to assure the user that the service will respond to outgoing calls.
 - [x] App registers with Android to receive information about outgoing calls.
-- [ ] App launches automatically when the device starts up.
-- [ ] App is resilient against shutdowns initiated by the OS (for whatever reason).
+- [x] App launches automatically when the device starts up.
+- [x] App is resilient against shutdowns initiated by the OS (for whatever reason).
 - [x] App can launch the camera preview in an overlay, in response to a phone call.
 - [x] User can take photos using the overlay.
 - [x] The new photo appears in the user's phone gallery immediately.
