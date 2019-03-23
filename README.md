@@ -32,6 +32,9 @@ When capture begins, the app offers 3 modes:
 - [ ] User can specify which telephone numbers will trigger the camera overlay.
 - [ ] User can specify behaviour (launch camera | start video | start burst | nothing) per number.
 - [ ] App also geocodes the user's current location, and displays the closest address(es) to the user.
+- [ ] Users can view an About page detailing information about the app, and find out more about Police Rewired.
+- [ ] App features a HOWTO video, showing how it works and how it can be helpful.
+- [ ] App links to a website with info about how to be helpful and safe. (eg. What makes a good witness? What makes good evidence?)
 
 ### Dependencies
 
