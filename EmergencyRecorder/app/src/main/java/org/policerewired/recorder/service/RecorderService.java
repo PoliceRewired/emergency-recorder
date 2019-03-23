@@ -84,7 +84,7 @@ public class RecorderService extends AbstractBackgroundBindingService<IRecorderS
     public void hybridsCaptured(HybridCollection collection) {
       // TODO: shift image size into configuration options
       StitchHybridImagesTask.Params param = new StitchHybridImagesTask.Params(collection, 320, null);
-      new StitchHybridImagesTask(RecorderService.this).execute(param);
+      new StitchHybridImagesTask(RecorderService.this, foreground_channel).execute(param);
     }
   };
 

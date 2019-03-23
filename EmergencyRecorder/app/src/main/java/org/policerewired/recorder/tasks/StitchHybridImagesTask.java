@@ -1,5 +1,6 @@
 package org.policerewired.recorder.tasks;
 
+import android.app.NotificationChannel;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -14,6 +15,7 @@ import org.jcodec.common.model.Picture;
 import org.jcodec.common.model.Rational;
 import org.jcodec.scale.BitmapUtil;
 import org.policerewired.recorder.DTO.HybridCollection;
+import org.policerewired.recorder.R;
 import org.policerewired.recorder.util.CaptureAudioUtils;
 import org.policerewired.recorder.util.CaptureVideoUtils;
 import org.policerewired.recorder.util.NamingUtils;
@@ -22,29 +24,62 @@ import org.policerewired.recorder.util.StorageUtils;
 import java.io.File;
 import java.util.Date;
 
-public class StitchHybridImagesTask extends AsyncTask<StitchHybridImagesTask.Params, StitchHybridImagesTask.Progress, StitchHybridImagesTask.Result> {
+import androidx.core.app.NotificationCompat;
+
+public class StitchHybridImagesTask extends AbstractNotifyingAsyncTask<StitchHybridImagesTask.Params, StitchHybridImagesTask.Progress, StitchHybridImagesTask.Result> {
   private static final String TAG = StitchHybridImagesTask.class.getSimpleName();
 
-  private Context context;
   private NamingUtils naming;
   private StorageUtils storage;
 
-  public StitchHybridImagesTask(Context context) {
-    this.context = context;
+  public StitchHybridImagesTask(Context context, NotificationChannel channel) {
+    super(context, channel);
     this.naming = new NamingUtils(context);
     this.storage = new StorageUtils(context);
   }
 
   @Override
-  protected void onPreExecute() {
-    super.onPreExecute();
+  protected String getNotificationTitle() {
+    return context.getString(R.string.task_title_stitching_photos);
+  }
 
+  @Override
+  protected String getNotificationContent() {
+    return context.getString(R.string.task_content_stitching_photos);
+  }
+
+  @Override
+  protected String getNotificationTicker() {
+    return context.getString(R.string.task_ticker_stitching_photos);
+  }
+
+  @Override
+  protected int getNotificationIcon() {
+    return R.drawable.ic_launcher_foreground;
+  }
+
+  @Override
+  protected int getNotificationPriority() {
+    return NotificationCompat.PRIORITY_MAX;
+  }
+
+  @Override
+  protected String getCompletionToast() {
+    return context.getString(R.string.task_toast_complete_stitching);
+  }
+
+  @Override
+  protected String getFailureToast() {
+    return context.getString(R.string.task_toast_failed_stitching);
+  }
+
+  @Override
+  protected boolean wasSuccess(Result result) {
+    return result.success_video;
   }
 
   @Override
   protected void onPostExecute(Result result) {
-    super.onPostExecute(result);
-
     if (result.success_video) {
       try {
         CaptureVideoUtils.insertVideo(
@@ -70,6 +105,8 @@ public class StitchHybridImagesTask extends AsyncTask<StitchHybridImagesTask.Par
     } catch (Exception e) {
       Log.e(TAG, "Unable to store audio.", e);
     }
+
+    super.onPostExecute(result);
   }
 
   @Override
