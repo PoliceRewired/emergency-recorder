@@ -14,12 +14,17 @@ When capture begins, the app offers 3 modes:
 
 ## How far is the project developed?
 
+Persistence
 - [x] Requests appropriate permissions.
 - [x] Displays a persistent notification to assure the user that the service will respond to outgoing calls.
-- [x] App registers with Android to receive information about outgoing calls.
-- [x] App launches automatically when the device starts up.
 - [x] App is resilient against shutdowns initiated by the OS (for whatever reason).
-- [x] App can launch the camera preview in an overlay, in response to a phone call.
+- [x] App launches automatically when the device starts up.
+
+Receive outgoing calls
+- [x] App registers with Android to receive information about outgoing calls.
+
+Bubble camera
+- [x] App can launch the camera preview in an overlay ("camera bubble"), in response to a phone call.
 - [x] User can take photos using the overlay.
 - [x] The new photo appears in the user's phone gallery immediately.
 - [x] User can take a burst of photos using the overlay.
@@ -29,9 +34,18 @@ When capture begins, the app offers 3 modes:
 - [x] The new audio appears in an album called 'Emergency Audio' in the user's music app immediately.
 - [ ] User can take a standard video using the overlay. (See dependencies, below.)
 - [ ] The new video appears in the user's phone gallery immediately.
+
+Rules
 - [ ] User can specify which telephone numbers will trigger the camera overlay.
 - [ ] User can specify behaviour (launch camera | start video | start burst | nothing) per number.
-- [ ] App also geocodes the user's current location, and displays the closest address(es) to the user.
+- [ ] Rules (telephone number -> behaviour) and configuration are stored in the app's internal database.
+- [ ] Recordings made are also stored in the app's internal database.
+
+Location
+- [ ] App geocodes the user's current location, and displays the closest address(es) to the user.
+- [ ] App also utilises the What3Words API to make visible the closest What3Words location.
+
+User information
 - [ ] Users can view an About page detailing information about the app, and find out more about Police Rewired.
 - [ ] App features a HOWTO video, showing how it works and how it can be helpful.
 - [ ] App links to a website with info about how to be helpful and safe. (eg. What makes a good witness? What makes good evidence?)
