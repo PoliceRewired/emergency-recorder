@@ -45,6 +45,7 @@ Rules
 Location
 - [ ] App geocodes the user's current location, and displays the closest address(es) to the user.
 - [ ] App also utilises the What3Words API to make visible the closest What3Words location.
+- [ ] App stores taken time and location information in metadata for each stored photo.
 
 User information
 - [ ] Users can view an About page detailing information about the app, and find out more about Police Rewired.
