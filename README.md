@@ -12,6 +12,8 @@ When capture begins, the app offers 3 modes:
 * Burst mode (takes a series of photos, and stitches them together afterwards into a video). Audio recorded separately.
 * Full video (not yet supported - see dependencies, below). Audio recorded with video.
 
+![Crimes against code?](https://github.com/PoliceRewired/emergency-recorder/raw/master/Screenshots/001_2019-03-24_bubblecam.jpg)
+
 ## How far is the project developed?
 
 Persistence
@@ -57,7 +59,8 @@ User information
 
 * [CameraKit](https://camerakit.io/) is superb, but the version 1.0.0 beta series does not yet support video recording. This is coming soon.
 * Keeping services and intent listeners alive on Android is an ongoing arms-race/battle with Google's definition of 'best practises'. We are using [background-service-lib](https://github.com/front-line-tech/background-service-lib), an open source background service toolkit library from [Front-Line Tech Ltd](http://front-line-tech.com).
-* We will be using Google Maps for their geocoding facilities.
+* Google Play Services provide location facilities, Android provides geocoding facilities.
+* We are looking at integration of [What3Words](https://docs.what3words.com/wrapper/android/).
 * We use [jcodec](http://jcodec.org/) to stitch photos into video.
 
 ## What is Police Rewired?
