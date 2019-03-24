@@ -12,6 +12,8 @@ When capture begins, the app offers 3 modes:
 * Burst mode (takes a series of photos, and stitches them together afterwards into a video). Audio recorded separately.
 * Full video (not yet supported - see dependencies, below). Audio recorded with video.
 
+![Crimes against code?](https://github.com/PoliceRewired/emergency-recorder/raw/master/Screenshots/001_2019-03-24_bubblecam.jpg)
+
 ## How far is the project developed?
 
 Persistence
