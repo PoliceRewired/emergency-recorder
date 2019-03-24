@@ -43,7 +43,8 @@ Rules
 - [ ] Rules (telephone number -> behaviour) and configuration are stored in the app's internal database.
 
 Location
-- [ ] App geocodes the user's current location, and displays the closest address(es) to the user.
+- [x] App fetches the user's current location.
+- [x] App geocodes that location, and displays the closest address to the user.
 - [ ] App also utilises the What3Words API to make visible the closest What3Words location.
 - [ ] App stores taken time and location information in metadata for each stored photo.
 
