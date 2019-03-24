@@ -31,6 +31,7 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import org.jcodec.common.StringUtils;
 import org.policerewired.recorder.tasks.AbstractGeocodingTask;
+import org.policerewired.recorder.tasks.AbstractWhat3WordsTask;
 import org.policerewired.recorder.tasks.HybridCollection;
 import org.policerewired.recorder.R;
 import org.policerewired.recorder.util.CapturePhotoUtils;
@@ -85,6 +86,7 @@ public class BubbleCamOverlay implements IBubbleCamOverlay {
   private Location lastLocation;
   private Date locationUpdated;
   private AbstractGeocodingTask geocoder;
+  private AbstractWhat3WordsTask what3wordser;
 
   private BubbleCamConfig config;
 
@@ -367,6 +369,7 @@ public class BubbleCamOverlay implements IBubbleCamOverlay {
         }
         if (isShowing()) {
           geocodeAndDisplay();
+          w3wAndDisplay();
         }
       }
     };
@@ -405,6 +408,23 @@ public class BubbleCamOverlay implements IBubbleCamOverlay {
     };
 
     geocoder.execute(param);
+  }
+
+  @SuppressLint("StaticFieldLeak")
+  private void w3wAndDisplay() {
+    AbstractWhat3WordsTask.Params param = new AbstractWhat3WordsTask.Params(lastLocation);
+
+    what3wordser = new AbstractWhat3WordsTask(context) {
+      @Override
+      protected void onPostExecute(Result result) {
+        super.onPostExecute(result);
+        if (result.attempted && result.words.isSuccessful()) {
+          text_w3w.setText(result.words.getWords());
+        }
+      }
+    };
+
+    what3wordser.execute(param);
   }
 
   private void stopLocationUpdates() {

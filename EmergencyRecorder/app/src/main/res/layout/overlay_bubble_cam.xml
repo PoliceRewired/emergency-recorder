@@ -121,6 +121,7 @@
                 android:id="@+id/text_location"
                 android:text="@string/text_blank_location"
                 android:textSize="10sp"
+                android:textStyle="bold"
                 android:layout_below="@id/camera_kit"
                 android:layout_alignStart="@id/camera_kit"
                 android:layout_alignEnd="@id/camera_kit"
@@ -133,10 +134,11 @@
                 android:id="@+id/text_w3w"
                 android:text="@string/text_blank_w3w"
                 android:textSize="10sp"
+                android:textStyle="bold"
                 android:layout_below="@id/text_location"
                 android:layout_alignStart="@id/camera_kit"
                 android:layout_alignEnd="@id/camera_kit"
-                android:textColor="#FF6F00"
+                android:textColor="#1A237E"
                 />
 
         </RelativeLayout>

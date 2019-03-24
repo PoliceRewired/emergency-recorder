@@ -88,6 +88,7 @@ public class EmergencyRecorderApp extends Application {
     Manifest.permission.READ_CALL_LOG,
     Manifest.permission.READ_PHONE_STATE,
     Manifest.permission.PROCESS_OUTGOING_CALLS,
-    Manifest.permission.ACCESS_FINE_LOCATION
+    Manifest.permission.ACCESS_FINE_LOCATION,
+    Manifest.permission.INTERNET
   };
 }

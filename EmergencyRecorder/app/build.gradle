@@ -48,8 +48,8 @@ dependencies {
     annotationProcessor 'com.jakewharton:butterknife-compiler:10.1.0'
 
     /* camerakit */
-    implementation 'com.camerakit:camerakit:1.0.0-beta3.11' /* video support not included (yet) */
-    /* implementation 'com.wonderkiln:camerakit:0.13.4' */ /* last version to support video */
+    implementation 'com.camerakit:camerakit:1.0.0-beta3.11' // video support not included (yet)
+    /* implementation 'com.wonderkiln:camerakit:0.13.4' */ // last version to support video
     implementation 'com.camerakit:jpegkit:0.1.0'
     implementation 'org.jetbrains.kotlin:kotlin-stdlib-jdk7:1.3.21'
     implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-android:1.1.1'
@@ -59,10 +59,12 @@ dependencies {
     implementation 'org.jcodec:jcodec-android:0.2.3'
 
     /* room db */
+    // alpha04 is the last version that doesn't throw WEIRD kotlin errors
     implementation "androidx.room:room-runtime:2.1.0-alpha04"
     annotationProcessor "androidx.room:room-compiler:2.1.0-alpha04"
     testImplementation "androidx.room:room-testing:2.1.0-alpha04"
 
     /* location */
     implementation "com.google.android.gms:play-services-location:16.0.0"
+    implementation "com.what3words:w3w-java-wrapper:3.0.1"
 }
