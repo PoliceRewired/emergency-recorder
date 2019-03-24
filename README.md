@@ -22,6 +22,7 @@ Persistence
 
 Receive outgoing calls
 - [x] App registers with Android to receive information about outgoing calls.
+- [x] Outgoing calls that initiate an action in the app are recorded in the app's internal database.
 
 Bubble camera
 - [x] App can launch the camera preview in an overlay ("camera bubble"), in response to a phone call.
@@ -34,12 +35,12 @@ Bubble camera
 - [x] The new audio appears in an album called 'Emergency Audio' in the user's music app immediately.
 - [ ] User can take a standard video using the overlay. (See dependencies, below.)
 - [ ] The new video appears in the user's phone gallery immediately.
+- [x] All recordings made are also stored in the app's internal database.
 
 Rules
 - [ ] User can specify which telephone numbers will trigger the camera overlay.
 - [ ] User can specify behaviour (launch camera | start video | start burst | nothing) per number.
 - [ ] Rules (telephone number -> behaviour) and configuration are stored in the app's internal database.
-- [ ] Recordings made are also stored in the app's internal database.
 
 Location
 - [ ] App geocodes the user's current location, and displays the closest address(es) to the user.
