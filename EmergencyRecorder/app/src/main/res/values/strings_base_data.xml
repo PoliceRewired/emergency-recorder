@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string-array name="call_matches">
+        <item>UK emergency services,999</item>
+        <item>UK non-emergency police,101</item>
+        <item>USA emergency services,911</item>
+    </string-array>
+
+    <integer name="default_hybrid_video_max_width">480</integer>
+
+</resources>

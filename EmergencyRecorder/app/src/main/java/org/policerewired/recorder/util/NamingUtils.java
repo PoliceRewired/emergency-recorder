@@ -26,6 +26,14 @@ public class NamingUtils {
     return context.getString(R.string.photo_description, getLongFormatDate(date));
   }
 
+  public String generate_hybrid_photo_title(Date date) {
+    return context.getString(R.string.hybrid_photo_title, getConciseDate(date));
+  }
+
+  public String generate_hybrid_photo_description(Date taken, Date started) {
+    return context.getString(R.string.hybrid_photo_description, getLongFormatDate(taken), getLongFormatDate(started));
+  }
+
   public String generate_video_title(Date date) {
     return context.getString(R.string.video_title, getConciseDate(date));
   }

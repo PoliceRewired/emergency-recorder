@@ -8,6 +8,9 @@
     <string name="video_title">emergency video %s</string>
     <string name="video_description">Video taken by the Emergency Recorder, %s. Contains %d frames. Duration: %d ms.</string>
 
+    <string name="hybrid_photo_title">emergency burst photo %s</string>
+    <string name="hybrid_photo_description">Photo taken by the Emergency Recorder at %s, as part of a burst started at %s.</string>
+
     <string name="audio_filename">emergency_audio_%s.jpg</string>
     <string name="audio_album">Emergency Toolkit Recorder</string>
     <string name="audio_title">emergency audio %s</string>

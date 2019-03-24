@@ -4,8 +4,9 @@ import android.app.NotificationChannel;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.os.AsyncTask;
+import android.net.Uri;
 import android.util.Log;
+import android.util.Pair;
 
 import org.jcodec.api.SequenceEncoder;
 import org.jcodec.api.android.AndroidSequenceEncoder;
@@ -14,9 +15,11 @@ import org.jcodec.common.io.SeekableByteChannel;
 import org.jcodec.common.model.Picture;
 import org.jcodec.common.model.Rational;
 import org.jcodec.scale.BitmapUtil;
-import org.policerewired.recorder.DTO.HybridCollection;
 import org.policerewired.recorder.R;
+import org.policerewired.recorder.service.IRecorderService;
+import org.policerewired.recorder.service.RecorderService;
 import org.policerewired.recorder.util.CaptureAudioUtils;
+import org.policerewired.recorder.util.CapturePhotoUtils;
 import org.policerewired.recorder.util.CaptureVideoUtils;
 import org.policerewired.recorder.util.NamingUtils;
 import org.policerewired.recorder.util.StorageUtils;
@@ -31,9 +34,11 @@ public class StitchHybridImagesTask extends AbstractNotifyingAsyncTask<StitchHyb
 
   private NamingUtils naming;
   private StorageUtils storage;
+  private IRecorderService service;
 
-  public StitchHybridImagesTask(Context context, NotificationChannel channel) {
-    super(context, channel);
+  public StitchHybridImagesTask(RecorderService service, NotificationChannel channel) {
+    super(service, channel);
+    this.service = service;
     this.naming = new NamingUtils(context);
     this.storage = new StorageUtils(context);
   }
@@ -82,31 +87,53 @@ public class StitchHybridImagesTask extends AbstractNotifyingAsyncTask<StitchHyb
   protected void onPostExecute(Result result) {
     if (result.success_video) {
       try {
-        CaptureVideoUtils.insertVideo(
+        Uri uri = CaptureVideoUtils.insertVideo(
           context.getContentResolver(),
           result.video,
           naming.generate_video_title(result.started),
           naming.generate_video_description(result.started, result.images, result.duration_ms()),
+          result.started,
           result.duration_ms());
+
+        service.recordHybridVideo(result.started, uri);
+
       } catch (Exception e) {
         Log.e(TAG, "Unable to store video.", e);
       }
     }
 
     try {
-      CaptureAudioUtils.insertAudio(
+      Uri uri = CaptureAudioUtils.insertAudio(
         context.getContentResolver(),
         result.audio,
         storage.externalAudioFile(context, result.started, ".3gpp"),
         naming.generate_audio_title(result.started),
         naming.generate_audio_description(result.started, result.duration_ms()),
         naming.generate_audio_album(result.started),
+        result.started,
         result.duration_ms());
+
+      service.recordAudio(result.started, uri);
+
     } catch (Exception e) {
       Log.e(TAG, "Unable to store audio.", e);
     }
 
     super.onPostExecute(result);
+  }
+
+  @Override
+  protected void onProgressUpdate(Progress... values) {
+    super.onProgressUpdate(values);
+
+    Progress value = values[0];
+    String content = context.getString(
+      R.string.task_update_stitching_photos,
+      context.getString(R.string.task_content_stitching_photos),
+      value.parsed+1,
+      value.of);
+
+    updateNotificationText(content);
   }
 
   @Override
@@ -124,7 +151,7 @@ public class StitchHybridImagesTask extends AbstractNotifyingAsyncTask<StitchHyb
 
       BitmapFactory.Options opts = new BitmapFactory.Options();
       opts.inJustDecodeBounds = true;
-      BitmapFactory.decodeByteArray(param.collection.blobs.get(0), 0, param.collection.blobs.get(0).length, opts);
+      BitmapFactory.decodeByteArray(param.collection.blobs.get(0).second, 0, param.collection.blobs.get(0).second.length, opts);
       int sourceWidth = opts.outWidth;
       int sourceHeight = opts.outHeight;
 
@@ -138,7 +165,26 @@ public class StitchHybridImagesTask extends AbstractNotifyingAsyncTask<StitchHyb
       BitmapFactory.Options rescale = new BitmapFactory.Options();
       rescale.inSampleSize = sampleSize;
 
-      for (byte[] blob : param.collection.blobs) {
+      int parsed = 0;
+      int of = param.collection.blobs.size();
+
+      for (Pair<Date, byte[]> pair : param.collection.blobs) {
+        publishProgress(new Progress(parsed, of));
+
+        // ensure the photo itself enters into the media store
+        Date taken = pair.first;
+        byte[] blob = pair.second;
+        Bitmap standard = BitmapFactory.decodeByteArray(blob, 0, blob.length);
+        Uri uri = CapturePhotoUtils.insertImage(
+          context.getContentResolver(),
+          standard,
+          naming.generate_hybrid_photo_title(taken),
+          naming.generate_hybrid_photo_description(taken, param.collection.started),
+          taken);
+
+        service.recordHybridPhoto(pair.first, uri);
+
+        // now encode the photo to be a part of the video
         Bitmap bmp = BitmapFactory.decodeByteArray(blob, 0, blob.length, rescale);
         Picture pic = BitmapUtil.fromBitmap(bmp);
         bmp.recycle();

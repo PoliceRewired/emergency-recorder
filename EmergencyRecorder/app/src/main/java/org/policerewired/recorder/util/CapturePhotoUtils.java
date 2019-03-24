@@ -3,6 +3,7 @@ package org.policerewired.recorder.util;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.OutputStream;
+import java.util.Date;
 
 import android.content.ContentResolver;
 import android.content.ContentUris;
@@ -26,10 +27,11 @@ public class CapturePhotoUtils {
    * that is inserted manually gets saved at the end of the gallery (because date is not populated).
    * @see android.provider.MediaStore.Images.Media#insertImage(ContentResolver, Bitmap, String, String)
    */
-  public static final String insertImage(ContentResolver cr,
+  public static final Uri insertImage(ContentResolver cr,
                                          Bitmap source,
                                          String title,
-                                         String description) {
+                                         String description,
+                                         Date taken) {
 
     ContentValues values = new ContentValues();
     values.put(Images.Media.TITLE, title);
@@ -38,10 +40,9 @@ public class CapturePhotoUtils {
     values.put(Images.Media.MIME_TYPE, "image/jpeg");
     // Add the date meta data to ensure the image is added at the front of the gallery
     values.put(Images.Media.DATE_ADDED, System.currentTimeMillis() / 1000);
-    values.put(Images.Media.DATE_TAKEN, System.currentTimeMillis());
+    values.put(Images.Media.DATE_TAKEN, taken.getTime());
 
     Uri url = null;
-    String stringUrl = null;    /* value to be returned */
 
     try {
       url = cr.insert(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, values);
@@ -71,11 +72,7 @@ public class CapturePhotoUtils {
       }
     }
 
-    if (url != null) {
-      stringUrl = url.toString();
-    }
-
-    return stringUrl;
+    return url;
   }
 
   /**

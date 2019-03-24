@@ -5,6 +5,10 @@
     <string name="task_content_stitching_photos">Emergency Recorder is combining your photos into a video, and storing the audio recording of your session.</string>
     <string name="task_ticker_stitching_photos">Preparing your burst mode video…</string>
 
+    <string name="task_update_stitching_photos">
+        %s\n\nProcessing photo: %d of %d
+    </string>
+
     <string name="task_toast_complete_stitching">Your video is ready.</string>
     <string name="task_toast_failed_stitching">An error occurred preparing your video.</string>
 

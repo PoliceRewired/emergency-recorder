@@ -6,6 +6,7 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.PixelFormat;
 import android.media.MediaRecorder;
+import android.net.Uri;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -18,7 +19,7 @@ import android.widget.TextView;
 import com.camerakit.CameraKitView;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
-import org.policerewired.recorder.DTO.HybridCollection;
+import org.policerewired.recorder.tasks.HybridCollection;
 import org.policerewired.recorder.R;
 import org.policerewired.recorder.util.CapturePhotoUtils;
 import org.policerewired.recorder.util.NamingUtils;
@@ -236,9 +237,9 @@ public class BubbleCamOverlay implements IBubbleCamOverlay {
       Date now = new Date();
       String title = naming.generate_photo_title(now);
       String description = naming.generate_photo_description(now);
-      CapturePhotoUtils.insertImage(context.getContentResolver(), bmp, title, description);
+      Uri uri = CapturePhotoUtils.insertImage(context.getContentResolver(), bmp, title, description, now);
       resetFrameEdge();
-      listener.photoCaptured();
+      listener.photoCaptured(now, uri);
     }
   };
 
@@ -255,7 +256,8 @@ public class BubbleCamOverlay implements IBubbleCamOverlay {
     @Override
     public void onVideo(CameraKitView cameraKitView, Object o) {
       Log.w(TAG, "CameraKit does not support video recording, as of v1.0.0 beta 3.11 - this method will not be called.");
-      listener.videoCaptured(); // this won't be called until camerakit supports video
+      // TODO: when CameraKit supports video, return and update this method to store the video
+      listener.videoCaptured(null, null); // this won't be called until camerakit supports video
     }
   };
 

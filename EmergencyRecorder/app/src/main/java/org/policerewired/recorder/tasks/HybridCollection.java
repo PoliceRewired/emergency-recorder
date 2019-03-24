@@ -1,7 +1,8 @@
-package org.policerewired.recorder.DTO;
+package org.policerewired.recorder.tasks;
 
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.util.Pair;
 
 import com.camerakit.CameraKitView;
 
@@ -12,7 +13,7 @@ import java.util.List;
 
 public class HybridCollection {
 
-  public List<byte[]> blobs;
+  public List<Pair<Date, byte[]>> blobs;
   public List<Bitmap> bitmaps;
   public Date started;
   public File audio_file;
@@ -37,7 +38,8 @@ public class HybridCollection {
   public CameraKitView.ImageCallback image_callback = new CameraKitView.ImageCallback() {
     @Override
     public void onImage(CameraKitView cameraKitView, byte[] bytes) {
-      blobs.add(bytes);
+      Date now = new Date();
+      blobs.add(new Pair<>(now, bytes));
     }
   };
 

@@ -14,6 +14,7 @@ public abstract class AbstractNotifyingAsyncTask<Params,Progress,Result> extends
 
   protected Context context;
   protected NotificationChannel channel;
+  protected Notification.Builder builder;
   protected Notification notification;
   protected int notificationId;
 
@@ -27,8 +28,16 @@ public abstract class AbstractNotifyingAsyncTask<Params,Progress,Result> extends
     super.onPreExecute();
 
     NotificationManager mgr = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
-    notification = buildNotification();
+    builder = buildNotification();
+    notification = builder.build();
     notificationId = AllNotifications.getNextNotificationId();
+    mgr.notify(notificationId, notification);
+  }
+
+  protected void updateNotificationText(String content) {
+    NotificationManager mgr = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
+    builder.setContentText(content);
+    notification = builder.build();
     mgr.notify(notificationId, notification);
   }
 
@@ -54,7 +63,7 @@ public abstract class AbstractNotifyingAsyncTask<Params,Progress,Result> extends
     }
   }
 
-  protected Notification buildNotification() {
+  protected Notification.Builder buildNotification() {
       Notification.Builder builder = new Notification.Builder(context);
 
       builder.setContentTitle(getNotificationTitle());
@@ -69,7 +78,7 @@ public abstract class AbstractNotifyingAsyncTask<Params,Progress,Result> extends
         builder.setChannelId(channel.getId());
       }
 
-      return builder.build();
+      return builder;
   }
 
   protected abstract boolean wasSuccess(Result result);

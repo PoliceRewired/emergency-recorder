@@ -6,6 +6,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
+import android.net.Uri;
 import android.os.SystemClock;
 import android.util.Log;
 import android.widget.Toast;
@@ -15,13 +16,19 @@ import com.flt.servicelib.BackgroundServiceConfig;
 
 import org.policerewired.recorder.EmergencyRecorderApp;
 import org.policerewired.recorder.R;
+import org.policerewired.recorder.constants.RecordType;
+import org.policerewired.recorder.db.entity.Recording;
 import org.policerewired.recorder.receivers.OutgoingCallReceiver;
 import org.policerewired.recorder.tasks.StitchHybridImagesTask;
 import org.policerewired.recorder.ui.ConfigActivity;
 import org.policerewired.recorder.ui.overlay.BubbleCamConfig;
 import org.policerewired.recorder.ui.overlay.BubbleCamOverlay;
-import org.policerewired.recorder.DTO.HybridCollection;
+import org.policerewired.recorder.tasks.HybridCollection;
 import org.policerewired.recorder.ui.overlay.IBubbleCamOverlay;
+
+import java.util.Date;
+import java.util.concurrent.Executor;
+import java.util.concurrent.Executors;
 
 import androidx.core.app.NotificationCompat;
 import androidx.core.app.NotificationManagerCompat;
@@ -74,16 +81,22 @@ public class RecorderService extends AbstractBackgroundBindingService<IRecorderS
   }
 
   private IBubbleCamOverlay.Listener bubble_cam_listener = new IBubbleCamOverlay.Listener() {
-    @Override
-    public void photoCaptured() { }
 
     @Override
-    public void videoCaptured() { }
+    public void photoCaptured(Date taken, Uri photo) {
+      recordPhoto(taken, photo);
+    }
+
+    @Override
+    public void videoCaptured(Date started, Uri video) {
+      recordVideo(started, video);
+    }
 
     @Override
     public void hybridsCaptured(HybridCollection collection) {
-      // TODO: shift image size into configuration options
-      StitchHybridImagesTask.Params param = new StitchHybridImagesTask.Params(collection, 320, null);
+      // TODO: shift video rescale params into configuration options
+      int default_hybrid_video_max_width = getResources().getInteger(R.integer.default_hybrid_video_max_width);
+      StitchHybridImagesTask.Params param = new StitchHybridImagesTask.Params(collection, default_hybrid_video_max_width, null);
       new StitchHybridImagesTask(RecorderService.this, foreground_channel).execute(param);
     }
   };
@@ -91,7 +104,8 @@ public class RecorderService extends AbstractBackgroundBindingService<IRecorderS
   private OutgoingCallReceiver.Listener call_listener = new OutgoingCallReceiver.Listener() {
     @Override
     public void onCall(String number) {
-      Toast.makeText(RecorderService.this, "I saw that: " + number, Toast.LENGTH_SHORT).show();
+      Toast.makeText(RecorderService.this, "Call detected: " + number, Toast.LENGTH_SHORT).show();
+      // TODO: determine best way to open BubbleCam based on called number and rules
       overlay.show();
     }
   };
@@ -134,5 +148,69 @@ public class RecorderService extends AbstractBackgroundBindingService<IRecorderS
   @Override
   public void hideOverlay() {
     overlay.hide();
+  }
+
+  @Override
+  public void recordCall(Date initiated, String number) {
+    Recording item = new Recording();
+    item.started = initiated;
+    item.type = RecordType.OutgoingCall;
+    item.data = number;
+    saveRecord(item);
+  }
+
+  @Override
+  public void recordPhoto(Date taken, Uri uri) {
+    Recording item = new Recording();
+    item.started = taken;
+    item.type = RecordType.Photo;
+    item.data = uri.toString();
+    saveRecord(item);
+  }
+
+  @Override
+  public void recordHybridPhoto(Date taken, Uri uri) {
+    Recording item = new Recording();
+    item.started = taken;
+    item.type = RecordType.BurstModePhoto;
+    item.data = uri.toString();
+    saveRecord(item);
+  }
+
+  @Override
+  public void recordHybridVideo(Date started, Uri uri) {
+    Recording item = new Recording();
+    item.started = started;
+    item.type = RecordType.BurstModeVideo;
+    item.data = uri.toString();
+    saveRecord(item);
+  }
+
+  @Override
+  public void recordAudio(Date started, Uri uri) {
+    Recording item = new Recording();
+    item.started = started;
+    item.type = RecordType.AudioRecording;
+    item.data = uri.toString();
+    saveRecord(item);
+  }
+
+  @Override
+  public void recordVideo(Date started, Uri uri) {
+    Recording item = new Recording();
+    item.started = started;
+    item.type = RecordType.VideoRecording;
+    item.data = uri.toString();
+    saveRecord(item);
+  }
+
+  private void saveRecord(Recording item) {
+    Executors.newSingleThreadScheduledExecutor().execute(() -> {
+      try {
+        EmergencyRecorderApp.db.getRecordingDao().insert(item);
+      } catch (Exception e) {
+        Log.e(TAG, "Unable to record new record of type: " + item.type.name(), e);
+      }
+    });
   }
 }

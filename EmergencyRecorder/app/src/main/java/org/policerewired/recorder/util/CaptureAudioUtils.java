@@ -16,6 +16,7 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.util.Date;
 
 public class CaptureAudioUtils {
   private static final String TAG = CaptureAudioUtils.class.getSimpleName();
@@ -25,16 +26,16 @@ public class CaptureAudioUtils {
    * meta data with DATE_ADDED and DATE_TAKEN. This fixes a common problem where media
    * that is inserted manually gets saved at the end of the gallery (because date is not populated).
    */
-  public static final String insertAudio(ContentResolver cr,
+  public static final Uri insertAudio(ContentResolver cr,
                                          File source,
                                          File target,
                                          String title,
                                          String description,
                                          String album,
+                                         Date started,
                                          long duration_ms) {
 
     Uri url = null;
-    String stringUrl = null;
 
     try {
 
@@ -59,6 +60,7 @@ public class CaptureAudioUtils {
       values.put(MediaStore.Audio.Media.IS_NOTIFICATION, false);
       values.put(MediaStore.Audio.Media.IS_RINGTONE, false);
       // Add the date meta data to ensure the image is added at the front of the gallery
+      values.put(MediaStore.Audio.Media.DATE_MODIFIED, started.getTime());
       values.put(MediaStore.Audio.Media.DATE_ADDED, System.currentTimeMillis() / 1000);
       values.put(MediaStore.Audio.Media.DURATION, duration_ms);
       values.put(MediaStore.Audio.Media.DATA, target.getAbsolutePath());
@@ -67,7 +69,6 @@ public class CaptureAudioUtils {
       if (source != null) {
         url = cr.insert(MediaStore.Audio.Media.EXTERNAL_CONTENT_URI, values);
       }
-
     } catch (Exception e) {
       Log.e(TAG, "Unable to store audio.", e);
       if (url != null) {
@@ -76,11 +77,7 @@ public class CaptureAudioUtils {
       }
     }
 
-    if (url != null) {
-      stringUrl = url.toString();
-    }
-
-    return stringUrl;
+    return url;
   }
 
 

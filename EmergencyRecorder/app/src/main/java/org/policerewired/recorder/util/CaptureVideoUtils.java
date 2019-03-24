@@ -18,6 +18,7 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.util.Date;
 
 public class CaptureVideoUtils {
   private static final String TAG = CaptureVideoUtils.class.getSimpleName();
@@ -27,10 +28,11 @@ public class CaptureVideoUtils {
    * meta data with DATE_ADDED and DATE_TAKEN. This fixes a common problem where media
    * that is inserted manually gets saved at the end of the gallery (because date is not populated).
    */
-  public static final String insertVideo(ContentResolver cr,
+  public static final Uri insertVideo(ContentResolver cr,
                                          File source,
                                          String title,
                                          String description,
+                                         Date started,
                                          long duration_ms) {
 
     ContentValues values = new ContentValues();
@@ -40,11 +42,10 @@ public class CaptureVideoUtils {
     values.put(MediaStore.Video.Media.MIME_TYPE, "video/mp4");
     // Add the date meta data to ensure the image is added at the front of the gallery
     values.put(MediaStore.Video.Media.DATE_ADDED, System.currentTimeMillis() / 1000);
-    values.put(MediaStore.Video.Media.DATE_TAKEN, System.currentTimeMillis());
+    values.put(MediaStore.Video.Media.DATE_TAKEN, started.getTime());
     values.put(MediaStore.Video.Media.DURATION, duration_ms);
 
     Uri url = null;
-    String stringUrl = null;
 
     try {
       url = cr.insert(MediaStore.Video.Media.EXTERNAL_CONTENT_URI, values);
@@ -77,11 +78,7 @@ public class CaptureVideoUtils {
       }
     }
 
-    if (url != null) {
-      stringUrl = url.toString();
-    }
-
-    return stringUrl;
+    return url;
   }
 
   /**
