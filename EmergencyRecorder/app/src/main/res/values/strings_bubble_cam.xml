@@ -2,7 +2,10 @@
 <resources>
 
     <string name="state_ready">READY</string>
-    <string name="state_recording">RECORDING VIDEO...</string>
-    <string name="state_hybrid">BURST MODE...</string>
+    <string name="state_recording">RECORDING VIDEO…</string>
+    <string name="state_hybrid">BURST MODE…</string>
+
+    <string name="text_blank_location">Location pending…</string>
+    <string name="text_blank_w3w">What3Words pending…</string>
 
 </resources>

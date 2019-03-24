@@ -14,14 +14,14 @@
         android:layout_centerHorizontal="true"
         app:cardUseCompatPadding="true">
         <RelativeLayout
-            android:layout_width="150dp"
-            android:layout_height="150dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
             android:padding="@dimen/card_padding">
 
             <com.camerakit.CameraKitView
                 android:id="@+id/camera_kit"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
+                android:layout_width="150dp"
+                android:layout_height="150dp"
                 android:adjustViewBounds="true"
                 android:keepScreenOn="true"
                 app:camera_flash="auto"
@@ -66,7 +66,9 @@
             <LinearLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_centerHorizontal="true"
+                android:gravity="center_horizontal"
+                android:layout_alignStart="@id/camera_kit"
+                android:layout_alignEnd="@id/camera_kit"
                 android:layout_alignBottom="@id/camera_kit"
                 android:orientation="horizontal">
 
@@ -111,6 +113,30 @@
                 android:src="@drawable/ic_close_black_24dp"
                 android:tint="@android:color/white"
                 android:background="@color/colorDisabled"
+                />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/text_location"
+                android:text="@string/text_blank_location"
+                android:textSize="10sp"
+                android:layout_below="@id/camera_kit"
+                android:layout_alignStart="@id/camera_kit"
+                android:layout_alignEnd="@id/camera_kit"
+                android:textColor="#B71C1C"
+                />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/text_w3w"
+                android:text="@string/text_blank_w3w"
+                android:textSize="10sp"
+                android:layout_below="@id/text_location"
+                android:layout_alignStart="@id/camera_kit"
+                android:layout_alignEnd="@id/camera_kit"
+                android:textColor="#FF6F00"
                 />
 
         </RelativeLayout>

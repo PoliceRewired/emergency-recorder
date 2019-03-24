@@ -63,8 +63,6 @@ dependencies {
     annotationProcessor "androidx.room:room-compiler:2.1.0-alpha04"
     testImplementation "androidx.room:room-testing:2.1.0-alpha04"
 
-    // optional - Kotlin Extensions and coroutines support for Room
-    /*
-    implementation "androidx.room:room-ktx:2.1.0-alpha06"
-    */
+    /* location */
+    implementation "com.google.android.gms:play-services-location:16.0.0"
 }

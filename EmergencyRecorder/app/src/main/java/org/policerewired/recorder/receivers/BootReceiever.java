@@ -5,26 +5,21 @@ import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
 import android.os.SystemClock;
+import android.util.Log;
 
 import com.flt.servicelib.AbstractBootReceiver;
 
+import org.policerewired.recorder.EmergencyRecorderApp;
 import org.policerewired.recorder.service.RecorderService;
 
 public class BootReceiever extends AbstractBootReceiver<RecorderService> {
+private static final String TAG = BootReceiever.class.getSimpleName();
 
   @Override
   public void onReceive(Context context, Intent intent) {
     super.onReceive(context, intent);
-
-    // schedule a repeating alarm to restart the service periodically
-    AlarmManager alarmManager = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
-    Intent serviceIntent = new Intent(context, RecorderService.class);
-    PendingIntent alarmIntent = PendingIntent.getService(context, 1000, serviceIntent, 0);
-    alarmManager.setInexactRepeating(
-      AlarmManager.ELAPSED_REALTIME_WAKEUP,
-      SystemClock.elapsedRealtime() + AlarmManager.INTERVAL_HALF_HOUR,
-      AlarmManager.INTERVAL_HALF_HOUR,
-      alarmIntent);
+    Log.i(TAG, "Received boot intent, scheduling alarm.");
+    EmergencyRecorderApp.scheduleAlarm(context);
   }
 
   @Override

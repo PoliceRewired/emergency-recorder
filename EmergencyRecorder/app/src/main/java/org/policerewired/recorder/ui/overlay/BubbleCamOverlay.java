@@ -1,10 +1,15 @@
 package org.policerewired.recorder.ui.overlay;
 
+import android.Manifest;
+import android.annotation.SuppressLint;
 import android.content.Context;
+import android.content.pm.PackageManager;
 import android.content.res.ColorStateList;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.PixelFormat;
+import android.location.Address;
+import android.location.Location;
 import android.media.MediaRecorder;
 import android.net.Uri;
 import android.util.Log;
@@ -17,8 +22,15 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.camerakit.CameraKitView;
+import com.google.android.gms.location.FusedLocationProviderClient;
+import com.google.android.gms.location.LocationCallback;
+import com.google.android.gms.location.LocationRequest;
+import com.google.android.gms.location.LocationResult;
+import com.google.android.gms.location.LocationServices;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
+import org.jcodec.common.StringUtils;
+import org.policerewired.recorder.tasks.AbstractGeocodingTask;
 import org.policerewired.recorder.tasks.HybridCollection;
 import org.policerewired.recorder.R;
 import org.policerewired.recorder.util.CapturePhotoUtils;
@@ -28,6 +40,8 @@ import org.policerewired.recorder.util.StorageUtils;
 import java.io.File;
 import java.io.IOException;
 import java.util.Date;
+import java.util.LinkedList;
+import java.util.List;
 
 import androidx.cardview.widget.CardView;
 import butterknife.BindView;
@@ -36,6 +50,7 @@ import butterknife.OnClick;
 
 import static android.view.View.GONE;
 import static android.view.View.VISIBLE;
+import static com.google.android.gms.location.LocationRequest.PRIORITY_HIGH_ACCURACY;
 
 public class BubbleCamOverlay implements IBubbleCamOverlay {
   private static final String TAG = BubbleCamOverlay.class.getSimpleName();
@@ -48,6 +63,8 @@ public class BubbleCamOverlay implements IBubbleCamOverlay {
   @BindView(R.id.fab_control_hybrid) FloatingActionButton fab_control_hybrid;
   @BindView(R.id.camera_kit) CameraKitView camera_kit;
   @BindView(R.id.icon_close) ImageView icon_close;
+  @BindView(R.id.text_location) TextView text_location;
+  @BindView(R.id.text_w3w) TextView text_w3w;
 
   private MediaRecorder audio_recorder;
   private File audio_file;
@@ -63,6 +80,12 @@ public class BubbleCamOverlay implements IBubbleCamOverlay {
 
   private boolean created;
 
+  private FusedLocationProviderClient fusedLocationClient;
+  private LocationCallback locationCallback;
+  private Location lastLocation;
+  private Date locationUpdated;
+  private AbstractGeocodingTask geocoder;
+
   private BubbleCamConfig config;
 
   private HybridCollection hybridCollection;
@@ -77,6 +100,7 @@ public class BubbleCamOverlay implements IBubbleCamOverlay {
     context.setTheme(R.style.AppTheme);
     this.naming = new NamingUtils(context);
     this.storage = new StorageUtils(context);
+    this.fusedLocationClient = LocationServices.getFusedLocationProviderClient(context);
   }
 
   @OnClick(R.id.fab_control_video)
@@ -114,13 +138,17 @@ public class BubbleCamOverlay implements IBubbleCamOverlay {
   }
 
   @Override
-  public boolean isShowing() { return state.visible; }
+  public boolean isShowing() {
+    return state.visible;
+  }
 
   @Override
-  public boolean isRecording() { return state.recording; }
+  public boolean isRecording() {
+    return state.recording;
+  }
 
   public void onCreate() {
-    LayoutInflater inflater = (LayoutInflater)context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+    LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
     overlay = inflater.inflate(R.layout.overlay_bubble_cam, null);
     ButterKnife.bind(this, overlay);
 
@@ -155,11 +183,14 @@ public class BubbleCamOverlay implements IBubbleCamOverlay {
   }
 
   public void setState(State next) {
-    if (state == next) { return; }
+    if (state == next) {
+      return;
+    }
 
     if (!state.visible && next.visible) {
       windowManager.addView(overlay, overlay_params);
       camera_kit.onStart();
+      startLocationUpdates();
     }
 
     if (!state.recording && next.recording) {
@@ -181,6 +212,7 @@ public class BubbleCamOverlay implements IBubbleCamOverlay {
     if (state.visible && !next.visible) {
       camera_kit.onStop();
       windowManager.removeView(overlay);
+      stopLocationUpdates();
     }
 
     state = next;
@@ -262,7 +294,9 @@ public class BubbleCamOverlay implements IBubbleCamOverlay {
   };
 
   private void updateUI() {
-    if (!created || !isShowing()) { return; }
+    if (!created || !isShowing()) {
+      return;
+    }
 
     if (state.visible) {
       fab_control_photo.setVisibility(config.mayShowPhoto ? VISIBLE : GONE);
@@ -293,7 +327,9 @@ public class BubbleCamOverlay implements IBubbleCamOverlay {
 
   @Override
   public void show() {
-    if (!created) { onCreate(); }
+    if (!created) {
+      onCreate();
+    }
     resetFrameEdge();
     if (!isShowing()) {
       setState(State.Ready);
@@ -314,6 +350,67 @@ public class BubbleCamOverlay implements IBubbleCamOverlay {
   public void showAndHybrid() {
     show();
     setState(State.Hybrid);
+  }
+
+  private void startLocationUpdates() {
+    locationCallback = new LocationCallback() {
+      @Override
+      public void onLocationResult(LocationResult locationResult) {
+        super.onLocationResult(locationResult);
+        if (locationResult == null) {
+          return;
+        }
+        if (locationResult.getLastLocation() != null) {
+          Log.d(TAG, "Location update received.");
+          lastLocation = locationResult.getLastLocation();
+          locationUpdated = new Date();
+        }
+        if (isShowing()) {
+          geocodeAndDisplay();
+        }
+      }
+    };
+
+    LocationRequest request = new LocationRequest();
+    request.setPriority(PRIORITY_HIGH_ACCURACY);
+    request.setInterval(5 * 1000);
+
+    if (context.checkSelfPermission(Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
+      fusedLocationClient.requestLocationUpdates(request, locationCallback, null /* Looper */);
+    } else {
+      Log.w(TAG, "Location permission was not granted.");
+    }
+  }
+
+  @SuppressLint("StaticFieldLeak")
+  private void geocodeAndDisplay() {
+    AbstractGeocodingTask.Params param = new AbstractGeocodingTask.Params(lastLocation);
+
+    geocoder = new AbstractGeocodingTask(context) {
+      @Override
+      protected void onPostExecute(Result result) {
+        super.onPostExecute(result);
+        if (result.attempted && result.addresses != null && result.addresses.size() > 0) {
+
+          Address address = result.addresses.get(0);
+          String[] addressLines = new String[address.getMaxAddressLineIndex()+1];
+          for(int line = 0; line <= address.getMaxAddressLineIndex(); line++) {
+            addressLines[line] = address.getAddressLine(line);
+          }
+          text_location.setText(StringUtils.join2(addressLines, '\n'));
+        } else {
+          Log.w(TAG, "No address to display from geocoder.");
+        }
+      }
+    };
+
+    geocoder.execute(param);
+  }
+
+  private void stopLocationUpdates() {
+    if (locationCallback != null) {
+      fusedLocationClient.removeLocationUpdates(locationCallback);
+    }
   }
 
   private enum State {
