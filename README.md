@@ -1,3 +1,5 @@
+<img align="right" src="https://github.com/PoliceRewired/emergency-recorder/raw/master/Screenshots/001_2019-03-24_bubblecam.jpg" width="320px" />
+
 # Emergency Recorder Toolkit
 A personal toolkit for recording evidence during emergencies using a modern Android phone.
 
@@ -12,7 +14,8 @@ When capture begins, the app offers 3 modes:
 * Burst mode (takes a series of photos, and stitches them together afterwards into a video). Audio recorded separately.
 * Full video (not yet supported - see dependencies, below). Audio recorded with video.
 
-![Crimes against code?](https://github.com/PoliceRewired/emergency-recorder/raw/master/Screenshots/001_2019-03-24_bubblecam.jpg)
+<br clear="right" />
+<img align="right" src="https://github.com/PoliceRewired/emergency-recorder/raw/master/Screenshots/002_2019-03-24-calling.png" width="320px" />
 
 ## How far is the project developed?
 
@@ -31,18 +34,19 @@ Bubble camera
 - [x] User can take photos using the overlay.
 - [x] The new photo appears in the user's phone gallery immediately.
 - [x] User can take a burst of photos using the overlay.
+- [ ] During the burst, each photo taken is added to the phone gallery immediately.
 - [x] After a burst, photos are stitched into a video, and appear in the user's phone gallery.
-- [x] App displays a notification whilst photographs are being stitched into video. _(untested)_
+- [x] App displays a notification whilst photographs are being stitched into video.
 - [x] Audio recording accompanies the burst mode photography.
 - [x] The new audio appears in an album called 'Emergency Audio' in the user's music app immediately.
 - [ ] User can take a standard video using the overlay. (See dependencies, below.)
 - [ ] The new video appears in the user's phone gallery immediately.
-- [x] All recordings made are also stored in the app's internal database.
+- [x] A record of each recording made is stored in the app's internal database.
 
-Rules
+Behaviours
 - [ ] User can specify which telephone numbers will trigger the camera overlay.
-- [ ] User can specify behaviour (launch camera | start video | start burst | nothing) per number.
-- [ ] Rules (telephone number -> behaviour) and configuration are stored in the app's internal database.
+- [ ] User can specify a behaviour (launch camera | start video | start burst | nothing) per number.
+- [ ] Rules (telephone number -> behaviour) are stored in the app's internal database.
 
 Location
 - [x] App fetches the user's current location.
@@ -51,6 +55,7 @@ Location
 - [ ] App stores taken time and location information in metadata for each stored photo.
 
 User information
+- [ ] Users can view a log showing a record of each recording made by the app.
 - [ ] Users can view an About page detailing information about the app, and find out more about Police Rewired.
 - [ ] App features a HOWTO video, showing how it works and how it can be helpful.
 - [ ] App links to a website with info about how to be helpful and safe. (eg. What makes a good witness? What makes good evidence?)
