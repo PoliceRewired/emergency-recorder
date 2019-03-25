@@ -1,4 +1,4 @@
-<img align="right" src="https://github.com/PoliceRewired/emergency-recorder/raw/master/Screenshots/001_2019-03-24_bubblecam.jpg" width="320px" />
+<img align="right" src="https://github.com/PoliceRewired/emergency-recorder/raw/master/Screenshots/005_2019-03-25-bubblecam_street.png" width="320px" />
 
 # Emergency Recorder Toolkit
 A personal toolkit for recording evidence during emergencies using a modern Android phone.
@@ -15,7 +15,7 @@ When capture begins, the app offers 3 modes:
 * Full video (not yet supported - see dependencies, below). Audio recorded with video.
 
 <br clear="right" />
-<img align="right" src="https://github.com/PoliceRewired/emergency-recorder/raw/master/Screenshots/002_2019-03-24-calling.png" width="320px" />
+<img align="right" src="https://github.com/PoliceRewired/emergency-recorder/raw/master/Screenshots/004_2019-03-25-call-in-progress_street.png" width="320px" />
 
 ## How far is the project developed?
 
