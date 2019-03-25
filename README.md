@@ -17,19 +17,46 @@ When capture begins, the app offers 3 modes:
 <br clear="right" />
 <img align="right" src="https://github.com/PoliceRewired/emergency-recorder/raw/master/Screenshots/004_2019-03-25-call-in-progress_street.png" width="320px" />
 
+## Can you really do that?
+
+We have working code, and the app in its current state illustrates solutions to the following challenges:
+
+- [x] Create a camera preview, constrained to be small enough not to obstruct an emergency call.
+- [x] Create an overlay ('bubble') containing the camera, drawn over the top of any other app.
+- [x] Make the overlay draggable, without obstructing taps for the apps behind.
+- [x] Detect calls made through the standard Android dialler.
+- [x] Examine the number used for the outgoing call, and make a decision based on its content.
+- [x] Take photos from the overlay.
+- [x] Take a series ('burst') of photos from the overlay, and stitch them into a video afterwards.
+- [x] Record audio from the overlay, whilst the photos are being taken.
+- [x] Insert photos, videos, and audio into appropriate places in the Android media gallery.
+- [x] Retrieve the user's current location whilst they have the bubble open.
+- [x] Geocode that location to display a nearby street address for the user.
+- [x] Parse that location into What3Words to display a short 3-word location to the user.
+
+## Does this violate privacy?
+
+_"In the United Kingdom there are no laws forbidding photography of private property from a public place."_
+* See: [Photography and the law](https://en.wikipedia.org/wiki/Photography_and_the_law#United_Kingdom), Wikipedia
+
+The app itself simply records to your phone. It is designed to make it possible to improve the quality of evidence you can give to police. _You_ choose what is shared, how, and to whom.
+
 ## How far is the project developed?
 
 Persistence
+
 - [x] Requests appropriate permissions.
 - [x] Displays a persistent notification to assure the user that the service will respond to outgoing calls.
 - [x] App is resilient against shutdowns initiated by the OS (for whatever reason).
 - [x] App launches automatically when the device starts up.
 
 Receive outgoing calls
+
 - [x] App registers with Android to receive information about outgoing calls.
 - [x] Outgoing calls that initiate an action in the app are recorded in the app's internal database.
 
 Bubble camera
+
 - [x] App can launch the camera preview in an overlay ("camera bubble"), in response to a phone call.
 - [x] User can take photos using the overlay.
 - [x] The new photo appears in the user's phone gallery immediately.
@@ -44,11 +71,13 @@ Bubble camera
 - [x] A record of each recording made is stored in the app's internal database.
 
 Behaviours
+
 - [ ] User can specify which telephone numbers will trigger the camera overlay.
 - [ ] User can specify a behaviour (launch camera | start video | start burst | nothing) per number.
 - [ ] Rules (telephone number -> behaviour) are stored in the app's internal database.
 
 Location
+
 - [x] App fetches the user's current location.
 - [x] App geocodes that location, and displays the closest address to the user.
 - [x] App also utilises the What3Words API to make visible the closest What3Words location.
@@ -56,6 +85,7 @@ Location
 - [ ] App superimposes coordinates and time onto visible portion of each stored photo.
 
 User information
+
 - [ ] Users can view a log showing a record of each recording made by the app.
 - [ ] Users can view an About page detailing information about the app, and find out more about Police Rewired.
 - [ ] App features a HOWTO video, showing how it works and how it can be helpful.
