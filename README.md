@@ -51,8 +51,9 @@ Behaviours
 Location
 - [x] App fetches the user's current location.
 - [x] App geocodes that location, and displays the closest address to the user.
-- [ ] App also utilises the What3Words API to make visible the closest What3Words location.
+- [x] App also utilises the What3Words API to make visible the closest What3Words location.
 - [ ] App stores taken time and location information in metadata for each stored photo.
+- [ ] App superimposes coordinates and time onto visible portion of each stored photo.
 
 User information
 - [ ] Users can view a log showing a record of each recording made by the app.
