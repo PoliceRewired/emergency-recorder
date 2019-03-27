@@ -18,6 +18,7 @@ import org.policerewired.recorder.EmergencyRecorderApp;
 import org.policerewired.recorder.R;
 import org.policerewired.recorder.constants.RecordType;
 import org.policerewired.recorder.db.entity.Recording;
+import org.policerewired.recorder.db.entity.Rule;
 import org.policerewired.recorder.receivers.OutgoingCallReceiver;
 import org.policerewired.recorder.tasks.StitchHybridImagesTask;
 import org.policerewired.recorder.ui.ConfigActivity;
@@ -27,11 +28,13 @@ import org.policerewired.recorder.tasks.HybridCollection;
 import org.policerewired.recorder.ui.overlay.IBubbleCamOverlay;
 
 import java.util.Date;
+import java.util.List;
 import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
 
 import androidx.core.app.NotificationCompat;
 import androidx.core.app.NotificationManagerCompat;
+import androidx.lifecycle.LiveData;
 
 public class RecorderService extends AbstractBackgroundBindingService<IRecorderService> implements IRecorderService {
   private static final String TAG = RecorderService.class.getSimpleName();
@@ -106,6 +109,7 @@ public class RecorderService extends AbstractBackgroundBindingService<IRecorderS
     public void onCall(String number) {
       Toast.makeText(RecorderService.this, "Call detected: " + number, Toast.LENGTH_SHORT).show();
       // TODO: determine best way to open BubbleCam based on called number and rules
+      recordCall(new Date(), number);
       overlay.show();
     }
   };
@@ -212,5 +216,10 @@ public class RecorderService extends AbstractBackgroundBindingService<IRecorderS
         Log.e(TAG, "Unable to record new record of type: " + item.type.name(), e);
       }
     });
+  }
+
+  @Override
+  public LiveData<List<Rule>> getRules() {
+    return EmergencyRecorderApp.db.getRuleDao().getAll();
   }
 }

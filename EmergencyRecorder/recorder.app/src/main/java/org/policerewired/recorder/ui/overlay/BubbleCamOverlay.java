@@ -348,6 +348,8 @@ public class BubbleCamOverlay implements IBubbleCamOverlay {
     setState(State.Recording);
   }
 
+  // hello lewis
+
   @Override
   public void showAndHybrid() {
     show();

@@ -2,6 +2,8 @@ package org.policerewired.recorder.ui;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.widget.Button;
 import android.widget.ImageView;
 
@@ -11,37 +13,39 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import org.policerewired.recorder.EmergencyRecorderApp;
 import org.policerewired.recorder.R;
+import org.policerewired.recorder.db.entity.Rule;
 import org.policerewired.recorder.service.IRecorderService;
 import org.policerewired.recorder.service.RecorderService;
+import org.policerewired.recorder.ui.adapters.CrudAdapter;
+import org.policerewired.recorder.ui.adapters.RulesAdapter;
 
+import java.util.List;
+
+import androidx.lifecycle.LiveData;
+import androidx.lifecycle.Observer;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 
-public class ConfigActivity extends AbstractServiceBoundAppCompatActivity<RecorderService, IRecorderService> {
+public class ConfigActivity extends AbstractRecorderActivity {
 
   @BindView(R.id.icon_warn_permissions) ImageView icon_permissions;
   @BindView(R.id.icon_warn_overlay) ImageView icon_overlay;
-
   @BindView(R.id.btn_permissions) Button btn_permissions;
   @BindView(R.id.btn_overlay) Button btn_overlay;
-
   @BindView(R.id.fab_record) FloatingActionButton fab_record;
 
   @Override
-  protected void onCreate(Bundle savedInstanceState) {
-    super.onCreate(savedInstanceState);
-    setContentView(R.layout.activity_config);
-    ButterKnife.bind(this);
+  protected int getLayoutId() {
+    return R.layout.activity_config;
   }
 
   @Override
-  protected void onResume() {
-    super.onResume();
-    updateUI();
-  }
+  protected void updateUI() {
+    setTitleBarToVersionWith(getString(R.string.app_name));
 
-  private void updateUI() {
     boolean may_request_permissions = anyOutstandingPermissions();
     boolean may_request_overlay = !hasOverlayPermission();
     boolean may_record = !anyOutstandingPermissions() && hasOverlayPermission();
@@ -57,8 +61,6 @@ public class ConfigActivity extends AbstractServiceBoundAppCompatActivity<Record
 
     fab_record.setBackgroundColor(getColor(may_record ? R.color.colorVideo : R.color.colorDisabled));
     fab_record.setEnabled(may_record);
-
-    // TODO
   }
 
   @OnClick(R.id.btn_permissions)
@@ -73,28 +75,29 @@ public class ConfigActivity extends AbstractServiceBoundAppCompatActivity<Record
 
   @OnClick(R.id.fab_record)
   public void record_click() {
-    informUser("recording button tapped");
-    //startActivity(new Intent(this, BubbleCamActivity.class));
     service.showOverlay();
   }
 
   @Override
-  protected String[] getRequiredPermissions() {
-    return EmergencyRecorderApp.permissions;
-  }
-
-  @Override protected void onPermissionsGranted() {
-    updateUI();
+  public boolean onCreateOptionsMenu(Menu menu) {
+    menu.add(Menu.NONE, R.string.menu_view_rules, 0, R.string.menu_view_rules);
+    menu.add(Menu.NONE, R.string.menu_view_about, 0, R.string.menu_view_about);
+    return super.onCreateOptionsMenu(menu);
   }
 
   @Override
-  protected void onNotAllPermissionsGranted() {
-    updateUI();
+  public boolean onOptionsItemSelected(MenuItem item) {
+    switch (item.getItemId()) {
+
+      case R.string.menu_view_rules:
+        startActivity(new Intent(this, RulesActivity.class));
+        return true;
+
+        // TODO: implement about box
+
+      default:
+        return super.onOptionsItemSelected(item);
+    }
+
   }
-
-  @Override protected void onGrantedOverlayPermission() { updateUI(); }
-  @Override protected void onRefusedOverlayPermission() { updateUI(); }
-  @Override protected void onUnecessaryCallToRequestOverlayPermission() { updateUI(); }
-
-  @Override protected void onBoundChanged(boolean isBound) { updateUI(); }
 }

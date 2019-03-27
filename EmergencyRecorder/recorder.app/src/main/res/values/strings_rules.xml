@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="activity_rules">Rules</string>
+
+    <string name="behaviour_Nothing">Do nothing</string>
+    <string name="behaviour_OpenBubbleCam">Open camera</string>
+    <string name="behaviour_OpenBubbleCam_StartBurstMode">Start burst mode</string>
+    <string name="behaviour_OpenBubbleCam_StartVideo">Start video recording</string>
+
+</resources>
