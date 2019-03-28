@@ -8,4 +8,12 @@
     <string name="recording_service_notification_content">The Emergency Recorder will initiate recording during emergency calls.</string>
     <string name="recording_service_notification_ticker">Emergency Recorder has started.</string>
 
+    <string name="toast_info_call_detected">Call detected: %s</string>
+
+    <string name="toast_warning_unable_to_create_record">Unable to create a new log entry.</string>
+    <string name="toast_warning_unable_to_insert_rule">Unable to add new rule to your set.</string>
+    <string name="toast_warning_unable_to_delete_rule">Unable to delete this rule.</string>
+    <string name="toast_warning_unable_to_update_rule">Unable to update this rule.</string>
+    <string name="toast_warning_rule_locked_cannot_delete">Cannot delete this rule, it is protected.</string>
+
 </resources>

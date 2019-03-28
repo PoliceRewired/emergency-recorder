@@ -24,9 +24,13 @@ public class BaseData {
     List<Rule> rules = new LinkedList<>();
     for (String item : items) {
       String[] parts = StringUtils.splitS(item, ",");
-      rules.add(new Rule(parts[0], parts[1], baseBehaviour));
+      rules.add(new Rule(parts[0], parts[1], baseBehaviour, true));
     }
     return rules.toArray(new Rule[rules.size()]);
+  }
+
+  public static Rule createBaseRule() {
+    return new Rule(null, null, baseBehaviour, true);
   }
 
 }

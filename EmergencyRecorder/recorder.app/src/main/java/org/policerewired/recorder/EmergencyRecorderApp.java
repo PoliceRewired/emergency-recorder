@@ -49,6 +49,7 @@ public class EmergencyRecorderApp extends Application {
 
   private RecordingDb createDb() {
     return Room.databaseBuilder(getApplicationContext(), RecordingDb.class, db_name)
+      .allowMainThreadQueries()
       .addCallback(new RoomDatabase.Callback() {
         @Override
         public void onCreate(@NonNull SupportSQLiteDatabase db) {

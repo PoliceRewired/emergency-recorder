@@ -17,6 +17,9 @@ public interface RuleDao {
   @Query("SELECT * FROM rule")
   LiveData<List<Rule>> getAll();
 
+  @Query("SELECT * FROM rule WHERE `match` LIKE :number")
+  List<Rule> getMatchingRules(String number);
+
   @Update
   void update(Rule... rules);
 

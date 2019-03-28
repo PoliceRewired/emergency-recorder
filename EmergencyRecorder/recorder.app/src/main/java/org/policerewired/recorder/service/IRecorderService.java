@@ -18,6 +18,9 @@ public interface IRecorderService {
   void hideOverlay();
 
   LiveData<List<Rule>> getRules();
+  void delete(Rule rule);
+  void insert(Rule rule);
+  void update(Rule rule);
 
   void recordCall(Date initiated, String number);
   void recordPhoto(Date taken, Uri uri);

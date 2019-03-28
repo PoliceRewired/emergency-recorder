@@ -16,20 +16,20 @@ import com.flt.servicelib.BackgroundServiceConfig;
 
 import org.policerewired.recorder.EmergencyRecorderApp;
 import org.policerewired.recorder.R;
+import org.policerewired.recorder.constants.Behaviour;
 import org.policerewired.recorder.constants.RecordType;
 import org.policerewired.recorder.db.entity.Recording;
 import org.policerewired.recorder.db.entity.Rule;
 import org.policerewired.recorder.receivers.OutgoingCallReceiver;
+import org.policerewired.recorder.tasks.HybridCollection;
 import org.policerewired.recorder.tasks.StitchHybridImagesTask;
 import org.policerewired.recorder.ui.ConfigActivity;
 import org.policerewired.recorder.ui.overlay.BubbleCamConfig;
 import org.policerewired.recorder.ui.overlay.BubbleCamOverlay;
-import org.policerewired.recorder.tasks.HybridCollection;
 import org.policerewired.recorder.ui.overlay.IBubbleCamOverlay;
 
 import java.util.Date;
 import java.util.List;
-import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
 
 import androidx.core.app.NotificationCompat;
@@ -40,7 +40,7 @@ public class RecorderService extends AbstractBackgroundBindingService<IRecorderS
   private static final String TAG = RecorderService.class.getSimpleName();
 
   private OutgoingCallReceiver call_receiver;
-  private BubbleCamOverlay overlay;
+  private BubbleCamOverlay bubblecam;
 
   public RecorderService() { }
 
@@ -64,7 +64,7 @@ public class RecorderService extends AbstractBackgroundBindingService<IRecorderS
     filter.addCategory(Intent.CATEGORY_DEFAULT);
     registerReceiver(call_receiver,  filter);
 
-    overlay = new BubbleCamOverlay(this, bubble_cam_listener, BubbleCamConfig.defaults());
+    bubblecam = new BubbleCamOverlay(this, bubble_cam_listener, BubbleCamConfig.defaults());
   }
 
   @Override
@@ -72,7 +72,7 @@ public class RecorderService extends AbstractBackgroundBindingService<IRecorderS
     super.onDestroy();
     unregisterReceiver(call_receiver);
 
-    Log.w(TAG, "Service was stopped. Scheduling a restart...");
+    Log.w(TAG, "Service was stopped naturally. Scheduling a restart...");
     // schedule an alarm to restart the service in 1 minute
     AlarmManager alarmManager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
     Intent serviceIntent = new Intent(this, RecorderService.class);
@@ -97,7 +97,7 @@ public class RecorderService extends AbstractBackgroundBindingService<IRecorderS
 
     @Override
     public void hybridsCaptured(HybridCollection collection) {
-      // TODO: shift video rescale params into configuration options
+      // TODO(v2): move the video rescale parameters into configuration options that the user can edit
       int default_hybrid_video_max_width = getResources().getInteger(R.integer.default_hybrid_video_max_width);
       StitchHybridImagesTask.Params param = new StitchHybridImagesTask.Params(collection, default_hybrid_video_max_width, null);
       new StitchHybridImagesTask(RecorderService.this, foreground_channel).execute(param);
@@ -107,11 +107,36 @@ public class RecorderService extends AbstractBackgroundBindingService<IRecorderS
   private OutgoingCallReceiver.Listener call_listener = new OutgoingCallReceiver.Listener() {
     @Override
     public void onCall(String number) {
-      Toast.makeText(RecorderService.this, "Call detected: " + number, Toast.LENGTH_SHORT).show();
-      // TODO: determine best way to open BubbleCam based on called number and rules
-      recordCall(new Date(), number);
-      overlay.show();
-    }
+      // NB. this has to be quick - if the receiver takes too long, Android will kill it.
+      // TODO(testing) - confirm that the bubblecam appears across a wide range of devices.
+      // If not, this could be the issue. We should schedule the bubblecam.show() with a Handler.
+
+      List<Rule> rules = getRulesFor(number);
+      for (Rule rule : rules) {
+        if (rule.matches(number)) {
+          Toast.makeText(RecorderService.this, getString(R.string.toast_info_call_detected, number), Toast.LENGTH_SHORT).show();
+          recordCall(new Date(), number);
+
+            switch (rule.behaviour) {
+              case OpenBubbleCam:
+                bubblecam.show();
+                break;
+
+              case OpenBubbleCamStartBurstMode:
+                bubblecam.showAndHybrid();
+                break;
+
+              case OpenBubbleCamStartVideoMode:
+                bubblecam.showAndRecord();
+                break;
+            }
+
+            if (rule.behaviour != Behaviour.Nothing) {
+              break; // exit loop -- we have taken an action now
+            }
+          } // matches the number
+        } // each rule
+      }
   };
 
   @Override
@@ -136,22 +161,22 @@ public class RecorderService extends AbstractBackgroundBindingService<IRecorderS
 
   @Override
   public void setConfig() {
-    // TODO: called from the config activity
+    // TODO(v2): called from the config activity to update configuration parameters
   }
 
   @Override
   public void getConfig() {
-    // TODO: called from the config activity
+    // TODO(v2): called from the config activity to retrieve configuration parameters
   }
 
   @Override
   public void showOverlay() {
-    overlay.show();
+    bubblecam.show();
   }
 
   @Override
   public void hideOverlay() {
-    overlay.hide();
+    bubblecam.hide();
   }
 
   @Override
@@ -214,6 +239,48 @@ public class RecorderService extends AbstractBackgroundBindingService<IRecorderS
         EmergencyRecorderApp.db.getRecordingDao().insert(item);
       } catch (Exception e) {
         Log.e(TAG, "Unable to record new record of type: " + item.type.name(), e);
+        informUser(R.string.toast_warning_unable_to_create_record);
+      }
+    });
+  }
+
+  @Override
+  public void delete(final Rule rule) {
+    if (rule.locked) {
+      informUser(R.string.toast_warning_rule_locked_cannot_delete);
+      return;
+    }
+
+    Executors.newSingleThreadScheduledExecutor().execute(() -> {
+      try {
+        EmergencyRecorderApp.db.getRuleDao().delete(rule);
+      } catch (Exception e) {
+        Log.e(TAG, "Unable to delete rule: " + rule.name, e);
+        informUser(R.string.toast_warning_unable_to_insert_rule);
+      }
+    });
+  }
+
+  @Override
+  public void insert(final Rule rule) {
+    Executors.newSingleThreadScheduledExecutor().execute(() -> {
+      try {
+        EmergencyRecorderApp.db.getRuleDao().insert(rule);
+      } catch (Exception e) {
+        Log.e(TAG, "Unable to insert rule: " + rule.name, e);
+        informUser(R.string.toast_warning_unable_to_insert_rule);
+      }
+    });
+  }
+
+  @Override
+  public void update(final Rule rule) {
+    Executors.newSingleThreadScheduledExecutor().execute(() -> {
+      try {
+        EmergencyRecorderApp.db.getRuleDao().update(rule);
+      } catch (Exception e) {
+        Log.e(TAG, "Unable to update rule: " + rule.name, e);
+        informUser(R.string.toast_warning_unable_to_insert_rule);
       }
     });
   }
@@ -221,5 +288,9 @@ public class RecorderService extends AbstractBackgroundBindingService<IRecorderS
   @Override
   public LiveData<List<Rule>> getRules() {
     return EmergencyRecorderApp.db.getRuleDao().getAll();
+  }
+
+  public List<Rule> getRulesFor(String number) {
+    return EmergencyRecorderApp.db.getRuleDao().getMatchingRules(number);
   }
 }

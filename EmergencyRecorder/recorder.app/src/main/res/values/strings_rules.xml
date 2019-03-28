@@ -3,9 +3,23 @@
 
     <string name="activity_rules">Rules</string>
 
+    <string name="menu_edit_rule">Edit rule…</string>
+    <string name="menu_delete_rule">Delete rule…</string>
+
+    <string name="alert_title_confirm_delete_rule">Confirm deletion</string>
+    <string name="alert_message_confirm_delete_rule_for">Are you sure you want to delete the rule for calls matching this number?\n\n%s\n\n%s</string>
+
     <string name="behaviour_Nothing">Do nothing</string>
     <string name="behaviour_OpenBubbleCam">Open camera</string>
     <string name="behaviour_OpenBubbleCam_StartBurstMode">Start burst mode</string>
     <string name="behaviour_OpenBubbleCam_StartVideo">Start video recording</string>
+
+    <string name="dialog_title_edit_rule">Edit rule</string>
+
+    <string name="hint_input_number">Telephone number to match.</string>
+    <string name="hint_input_name">Name of this rule.</string>
+
+    <string name="validation_rule_number_empty">Please enter a number for this rule to match.</string>
+    <string name="validation_rule_name_empty">Please provide a short descriptive name for this rule.</string>
 
 </resources>

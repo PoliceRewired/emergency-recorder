@@ -2,7 +2,11 @@ package org.policerewired.recorder.ui.adapters;
 
 
 import android.content.Context;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
+import android.widget.ImageView;
+import android.widget.PopupMenu;
 import android.widget.TextView;
 
 import org.policerewired.recorder.R;
@@ -63,6 +67,9 @@ public class RulesAdapter extends CrudAdapter<Rule, RulesAdapter.ViewHolder> {
     @BindView(R.id.text_number) TextView number;
     @BindView(R.id.text_name) TextView name;
     @BindView(R.id.text_behaviour) TextView behaviour;
+    @BindView(R.id.icon_menu) ImageView icon_menu;
+
+    PopupMenu popup;
 
     public ViewHolder(@NonNull View itemView) {
       super(itemView);
@@ -70,14 +77,34 @@ public class RulesAdapter extends CrudAdapter<Rule, RulesAdapter.ViewHolder> {
 
     @Override
     protected void populateView() {
-      Rule rule = (Rule)item;
+      Rule rule = (Rule) item;
       number.setText(rule.match);
       name.setText(rule.name);
       behaviour.setText(rule.behaviour.descriptionId);
+
+      popup = new PopupMenu(icon_menu.getContext(), icon_menu);
+      popup.getMenu().add(Menu.NONE, R.string.menu_edit_rule, 10, R.string.menu_edit_rule);
+      popup.getMenu().add(Menu.NONE, R.string.menu_delete_rule, 20, R.string.menu_delete_rule);
+
+      popup.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
+        @Override
+        public boolean onMenuItemClick(MenuItem item) {
+          switch (item.getItemId()) {
+            case R.string.menu_edit_rule:
+              onClickEdit();
+              return true;
+            case R.string.menu_delete_rule:
+              onClickDelete();
+              return true;
+            default:
+              return false;
+          }
+        }
+      });
     }
 
-    @OnClick(R.id.btn_edit) public void btn_edit_click() { onClickEdit(); }
-    @OnClick(R.id.btn_delete) public void btn_delete_click() { onClickDelete(); }
-  }
+    @OnClick(R.id.icon_menu)
+    public void menu_click() { popup.show(); }
 
+  }
 }

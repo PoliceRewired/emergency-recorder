@@ -16,19 +16,35 @@ public class Rule {
   @NonNull
   public UUID ruleId;
 
+  @NonNull
   public String name;
+
+  @NonNull
   public String match;
+
+  @NonNull
   public Behaviour behaviour;
+
+  public boolean locked;
 
   public Rule() {
     ruleId = UUID.randomUUID();
   }
 
   @Ignore
-  public Rule(String name, String match, Behaviour behaviour) {
+  public Rule(@NonNull String name, @NonNull String match, @NonNull Behaviour behaviour, boolean locked) {
     ruleId = UUID.randomUUID();
     this.name = name;
     this.match = match;
     this.behaviour = behaviour;
+    this.locked = locked;
+  }
+
+  public boolean matches(String number) {
+    return match.equals(number);
+  }
+
+  public Rule copy() {
+    return new Rule(name, match, behaviour, locked);
   }
 }
