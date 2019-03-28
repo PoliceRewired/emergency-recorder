@@ -49,15 +49,11 @@ Persistence
 - [x] Displays a persistent notification to assure the user that the service will respond to outgoing calls.
 - [x] App is resilient against shutdowns initiated by the OS (for whatever reason).
 - [x] App launches automatically when the device starts up.
-
-Receive outgoing calls
-
-- [x] App registers with Android to receive information about outgoing calls.
-- [x] Outgoing calls that initiate an action in the app are recorded in the app's internal database.
+- [ ] Displays an unobtrusive floating button which the user can use to open the camera bubble.
 
 Bubble camera
 
-- [x] App can launch the camera preview in an overlay ("camera bubble"), in response to a phone call.
+- [x] App can launch the camera preview in an overlay ("camera bubble").
 - [x] User can take photos using the overlay.
 - [x] The new photo appears in the user's phone gallery immediately.
 - [x] User can take a burst of photos using the overlay.
@@ -70,11 +66,17 @@ Bubble camera
 - [ ] The new video appears in the user's phone gallery immediately.
 - [x] A record of each recording made is stored in the app's internal database.
 
+Receive outgoing calls
+
+- [x] App registers with Android to receive information about outgoing calls.
+- [x] Outgoing calls that initiate an action in the app are recorded in the app's internal database.
+- [x] The user's rules are applied to each outgoing call to determine the action to take.
+
 Behaviours
 
-- [ ] User can specify which telephone numbers will trigger the camera overlay.
-- [ ] User can specify a behaviour (launch camera | start video | start burst | nothing) per number.
-- [ ] Rules (telephone number -> behaviour) are stored in the app's internal database.
+- [x] User can specify which telephone numbers will trigger the camera overlay.
+- [x] User can specify a behaviour (launch camera | start video | start burst | nothing) per number.
+- [x] Rules (telephone number -> behaviour) are stored in the app's internal database.
 
 Location
 
