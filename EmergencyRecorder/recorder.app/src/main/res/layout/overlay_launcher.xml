@@ -6,18 +6,18 @@
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
     tools:context=".ui.overlay.LauncherOverlay"
-    android:padding="5dp">
+    android:background="@drawable/background_launcher_left"
+    android:layout_gravity="left|center_vertical"
+    android:padding="5dp"
+    tools:ignore="RtlHardcoded"
+    android:alpha="0.5">
 
-    <com.google.android.material.floatingactionbutton.FloatingActionButton
-        android:id="@+id/fab_launcher"
+    <ImageView
+        android:id="@+id/icon_launch"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:src="@drawable/ic_videocam_black_24dp"
         android:tint="@android:color/white"
-        app:backgroundTint="@color/colorVideo"
-        app:useCompatPadding="true"
-        app:fabSize="mini"
-        android:alpha="0.5"
         />
 
 </FrameLayout>

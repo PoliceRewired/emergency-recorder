@@ -19,11 +19,14 @@ public class OverlayDragListener implements View.OnTouchListener {
     this.windowManager = windowManager;
   }
 
-  float dX;
-  float dY;
+  boolean permitDragX = true;
+  boolean permitDragY = true;
 
   float penDownX;
   float penDownY;
+
+  float dX; // adjustment
+  float dY; // adjustment
 
   int lastAction;
 
@@ -31,49 +34,56 @@ public class OverlayDragListener implements View.OnTouchListener {
   public boolean onTouch(View v, MotionEvent event) {
 
     int[] overlayPosition = new int[2];
-    overlay.getLocationOnScreen(overlayPosition);
-    int overlayX = overlayPosition[0];
-    int overlayY = overlayPosition[1];
+    //overlay.getLocationOnScreen(overlayPosition);
+    //int overlayX = overlayPosition[0];
+    //int overlayY = overlayPosition[1];
+    WindowManager.LayoutParams params = (WindowManager.LayoutParams) overlay.getLayoutParams();
+    int overlayX = params.x;
+    int overlayY = params.y;
 
     switch (event.getActionMasked()) {
       case MotionEvent.ACTION_DOWN:
-        //dX = overlayX - event.getRawX();
-        //dY = overlayY - event.getRawY();
         penDownX = event.getRawX() - overlayX;
         penDownY = event.getRawY() - overlayY;
 
         lastAction = MotionEvent.ACTION_DOWN;
-        break;
+        return true;
 
       case MotionEvent.ACTION_MOVE:
+        if (permitDragX) {
+          float newDownX = event.getRawX() - overlayX;
+          float newX = overlayX + newDownX - penDownX;
+          params.x = (int) newX;
+        }
 
-        //float newX = event.getRawX() + dX;
-        //float newY = event.getRawY() + dY;
-        float motionDownX = event.getRawX() - overlayX;
-        float motionDownY = event.getRawY() - overlayY;
+        if (permitDragY) {
+          float newDownY = event.getRawY() - overlayY;
+          float newY = overlayY + newDownY - penDownY;
+          params.y = (int) newY;
+        }
 
-        float newX = overlayX + motionDownX - penDownX;
-        float newY = overlayY + motionDownY - penDownY;
-
-        WindowManager.LayoutParams params = (WindowManager.LayoutParams) overlay.getLayoutParams();
-        params.x = (int)newX;
-        params.y = (int)newY;
-
-        windowManager.updateViewLayout(overlay, params);
+        if (permitDragX || permitDragY) {
+          windowManager.updateViewLayout(overlay, params);
+        }
         lastAction = MotionEvent.ACTION_MOVE;
-        break;
+        return true;
 
       case MotionEvent.ACTION_UP:
         if (lastAction == MotionEvent.ACTION_DOWN) {
           v.performClick(); // click detected
         }
-        break;
+        lastAction = MotionEvent.ACTION_UP;
+        return true;
 
       default:
         return false;
     }
-    return true;
   }
 
+  public boolean getPermitDragX() { return permitDragX; }
+  public boolean getPermitDragY() { return permitDragY; }
+
+  public void setPermitDragX(boolean permit) { permitDragX = permit; }
+  public void setPermitDragY(boolean permit) { permitDragY = permit; }
 
 }

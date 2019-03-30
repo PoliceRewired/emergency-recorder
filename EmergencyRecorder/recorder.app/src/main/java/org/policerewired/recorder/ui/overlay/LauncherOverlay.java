@@ -1,5 +1,6 @@
 package org.policerewired.recorder.ui.overlay;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.graphics.PixelFormat;
 import android.view.Gravity;
@@ -7,6 +8,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.FrameLayout;
+import android.widget.ImageView;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
@@ -23,7 +25,7 @@ public class LauncherOverlay implements ILauncherOverlay {
   private static final String TAG = LauncherOverlay.class.getSimpleName();
 
   @BindView(R.id.layout_overlay) FrameLayout layout;
-  @BindView(R.id.fab_launcher) FloatingActionButton fab_launcher;
+  @BindView(R.id.icon_launch) ImageView icon_launch;
 
   private View overlay;
   private WindowManager.LayoutParams overlay_params;
@@ -62,7 +64,7 @@ public class LauncherOverlay implements ILauncherOverlay {
     }
   }
 
-  @OnClick(R.id.fab_launcher)
+  @OnClick(R.id.icon_launch)
   public void launcher_click() {
     listener.launchSelected();
   }
@@ -80,13 +82,16 @@ public class LauncherOverlay implements ILauncherOverlay {
   /**
    * Inflates the layout for this overlay, sets the drag listeners, and default window behaviours.
    */
+  @SuppressLint("RtlHardcoded")
   public void onCreate() {
     LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
     overlay = inflater.inflate(R.layout.overlay_launcher, null);
     ButterKnife.bind(this, overlay);
 
     OverlayDragListener drag = new OverlayDragListener(layout, windowManager);
-    fab_launcher.setOnTouchListener(drag);
+    drag.setPermitDragX(false);
+    layout.setOnTouchListener(drag);
+    icon_launch.setOnTouchListener(drag);
 
     int window_type;
     if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
@@ -106,9 +111,7 @@ public class LauncherOverlay implements ILauncherOverlay {
         | WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON
       , PixelFormat.TRANSLUCENT);
 
-    overlay_params.gravity = Gravity.START | Gravity.TOP;
-    overlay_params.x = 0;
-    overlay_params.y = 0;
+    overlay_params.gravity = Gravity.LEFT | Gravity.CENTER_VERTICAL;
 
     created = true;
   }
