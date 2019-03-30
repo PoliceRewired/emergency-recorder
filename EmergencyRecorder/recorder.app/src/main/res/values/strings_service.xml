@@ -16,4 +16,6 @@
     <string name="toast_warning_unable_to_update_rule">Unable to update this rule.</string>
     <string name="toast_warning_rule_locked_cannot_delete">Cannot delete this rule, it is protected.</string>
 
+    <string name="toast_warning_need_permissions_to_launch_bubblecam">Please grant all the permissions this app requires before launching the bubble camera.</string>
+
 </resources>

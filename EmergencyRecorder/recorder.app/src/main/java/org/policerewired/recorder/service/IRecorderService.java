@@ -23,6 +23,11 @@ public interface IRecorderService {
   void showOverlay();
 
   /**
+   * Reevaluate behaviour/visible overlays based on permissions.
+   */
+  void onPermissionsUpdated();
+
+  /**
    * Hides the overlay from the user.
    */
   void hideOverlay();

@@ -27,6 +27,9 @@ import org.policerewired.recorder.ui.ConfigActivity;
 import org.policerewired.recorder.ui.overlay.BubbleCamConfig;
 import org.policerewired.recorder.ui.overlay.BubbleCamOverlay;
 import org.policerewired.recorder.ui.overlay.IBubbleCamOverlay;
+import org.policerewired.recorder.ui.overlay.ILauncherOverlay;
+import org.policerewired.recorder.ui.overlay.LauncherConfig;
+import org.policerewired.recorder.ui.overlay.LauncherOverlay;
 
 import java.util.Date;
 import java.util.List;
@@ -44,6 +47,7 @@ public class RecorderService extends AbstractBackgroundBindingService<IRecorderS
 
   private OutgoingCallReceiver call_receiver;
   private BubbleCamOverlay bubblecam;
+  private LauncherOverlay launcher;
 
   public RecorderService() { }
 
@@ -68,6 +72,9 @@ public class RecorderService extends AbstractBackgroundBindingService<IRecorderS
     registerReceiver(call_receiver,  filter);
 
     bubblecam = new BubbleCamOverlay(this, bubble_cam_listener, BubbleCamConfig.defaults(this));
+    launcher = new LauncherOverlay(this, launcher_listener, LauncherConfig.defaults(this));
+
+    onPermissionsUpdated();
   }
 
   @Override
@@ -86,7 +93,19 @@ public class RecorderService extends AbstractBackgroundBindingService<IRecorderS
       alarmIntent);
   }
 
+  @Override
+  public void onPermissionsUpdated() {
+    if (hasOverlayPermission() && !bubblecam.isShowing() && !launcher.isShowing()) {
+      showLauncher();
+    }
+  }
+
   private IBubbleCamOverlay.Listener bubble_cam_listener = new IBubbleCamOverlay.Listener() {
+
+    @Override
+    public void closed() {
+      showLauncher();
+    }
 
     @Override
     public void photoCaptured(Date taken, Uri photo) {
@@ -110,6 +129,47 @@ public class RecorderService extends AbstractBackgroundBindingService<IRecorderS
     }
   };
 
+  private ILauncherOverlay.Listener launcher_listener = new ILauncherOverlay.Listener() {
+    @Override
+    public void launchSelected() {
+      showBubbleCam();
+    }
+  };
+
+  private void showBubbleCam() {
+    if (!anyOutstandingPermissions() && hasOverlayPermission()) {
+      bubblecam.show();
+      launcher.hide();
+    } else {
+      informUser(R.string.toast_warning_need_permissions_to_launch_bubblecam);
+    }
+  }
+
+  private void showAndHybridBubbleCam() {
+    if (!anyOutstandingPermissions() && hasOverlayPermission()) {
+      bubblecam.showAndHybrid();
+      launcher.hide();
+    } else {
+      informUser(R.string.toast_warning_need_permissions_to_launch_bubblecam);
+    }
+  }
+
+  private void showAndRecordBubbleCam() {
+    if (!anyOutstandingPermissions() && hasOverlayPermission()) {
+      bubblecam.showAndRecord();
+      launcher.hide();
+    } else {
+      informUser(R.string.toast_warning_need_permissions_to_launch_bubblecam);
+    }
+  }
+
+  private void showLauncher() {
+    if (hasOverlayPermission()) {
+      launcher.show();
+    }
+  }
+
+  @SuppressWarnings("Convert2Lambda")
   private OutgoingCallReceiver.Listener call_listener = new OutgoingCallReceiver.Listener() {
     @Override
     public void onCall(String number) {
@@ -125,15 +185,15 @@ public class RecorderService extends AbstractBackgroundBindingService<IRecorderS
 
             switch (rule.behaviour) {
               case OpenBubbleCam:
-                bubblecam.show();
+                showBubbleCam();
                 break;
 
               case OpenBubbleCamStartBurstMode:
-                bubblecam.showAndHybrid();
+                showAndHybridBubbleCam();
                 break;
 
               case OpenBubbleCamStartVideoMode:
-                bubblecam.showAndRecord();
+                showAndRecordBubbleCam();
                 break;
             }
 
@@ -144,6 +204,16 @@ public class RecorderService extends AbstractBackgroundBindingService<IRecorderS
         } // each rule
       }
   };
+
+  @Override
+  public void showOverlay() {
+    showBubbleCam();
+  }
+
+  @Override
+  public void hideOverlay() {
+    bubblecam.hide();
+  }
 
   @Override
   protected BackgroundServiceConfig configure(BackgroundServiceConfig defaults) {
@@ -173,16 +243,6 @@ public class RecorderService extends AbstractBackgroundBindingService<IRecorderS
   @Override
   public void getConfig() {
     // TODO(v2): called from the config activity to retrieve configuration parameters
-  }
-
-  @Override
-  public void showOverlay() {
-    bubblecam.show();
-  }
-
-  @Override
-  public void hideOverlay() {
-    bubblecam.hide();
   }
 
   @Override

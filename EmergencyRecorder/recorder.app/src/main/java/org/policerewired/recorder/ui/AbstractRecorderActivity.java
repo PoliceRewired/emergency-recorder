@@ -47,17 +47,33 @@ public abstract class AbstractRecorderActivity extends AbstractServiceBoundAppCo
 
   @Override protected void onPermissionsGranted() {
     updateUI();
+    service.onPermissionsUpdated();
   }
 
   @Override
   protected void onNotAllPermissionsGranted() {
     updateUI();
+    service.onPermissionsUpdated();
   }
 
-  @Override protected void onGrantedOverlayPermission() { updateUI(); }
-  @Override protected void onRefusedOverlayPermission() { updateUI(); }
-  @Override protected void onUnecessaryCallToRequestOverlayPermission() { updateUI(); }
+  @Override protected void onGrantedOverlayPermission() {
+    updateUI();
+    service.onPermissionsUpdated();
+  }
 
-  @Override protected void onBoundChanged(boolean isBound) { updateUI(); }
+  @Override protected void onRefusedOverlayPermission() {
+    updateUI();
+    service.onPermissionsUpdated();
+  }
+
+  @Override protected void onUnecessaryCallToRequestOverlayPermission() {
+    updateUI();
+    service.onPermissionsUpdated();
+  }
+
+  @Override protected void onBoundChanged(boolean isBound) {
+    updateUI();
+    if (isBound) { service.onPermissionsUpdated(); }
+  }
 
 }

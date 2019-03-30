@@ -234,6 +234,7 @@ public class BubbleCamOverlay implements IBubbleCamOverlay {
       camera_kit.onStop();
       windowManager.removeView(overlay);
       stopLocationUpdates();
+      listener.closed();
     }
 
     state = next;

@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/layout_overlay"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    tools:context=".ui.overlay.LauncherOverlay"
+    android:padding="5dp">
+
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/fab_launcher"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@drawable/ic_videocam_black_24dp"
+        android:tint="@android:color/white"
+        app:backgroundTint="@color/colorVideo"
+        app:useCompatPadding="true"
+        app:fabSize="mini"
+        android:alpha="0.5"
+        />
+
+</FrameLayout>

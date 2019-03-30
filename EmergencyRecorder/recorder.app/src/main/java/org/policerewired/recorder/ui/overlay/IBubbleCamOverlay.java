@@ -46,5 +46,6 @@ public interface IBubbleCamOverlay {
     void videoCaptured(Date started, Uri video);
     void hybridPhotoCaptured(Date taken, Uri photo);
     void hybridsCaptured(HybridCollection collection);
+    void closed();
   }
 }
