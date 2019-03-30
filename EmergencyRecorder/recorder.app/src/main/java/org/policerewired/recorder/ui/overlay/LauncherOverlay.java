@@ -10,8 +10,6 @@ import android.view.WindowManager;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 
-import com.google.android.material.floatingactionbutton.FloatingActionButton;
-
 import org.policerewired.recorder.R;
 
 import butterknife.BindView;
