@@ -10,7 +10,7 @@ import android.view.WindowManager;
  * themselves.
  */
 public class OverlayDragListener implements View.OnTouchListener {
-  private static final String TAG = "ODL";
+  private static final String TAG = OverlayDragListener.class.getSimpleName();
 
   private View overlay;
   private WindowManager windowManager;
