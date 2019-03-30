@@ -33,7 +33,7 @@ public class LauncherOverlay implements ILauncherOverlay {
 
   private boolean created;
 
-  private LauncherConfig config;
+  private LauncherConfig config; // future planning
 
   private State state = State.Hidden;
 
@@ -112,7 +112,6 @@ public class LauncherOverlay implements ILauncherOverlay {
 
     created = true;
   }
-
 
   @Override
   public boolean isShowing() {
