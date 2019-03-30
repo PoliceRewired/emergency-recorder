@@ -49,7 +49,7 @@ Persistence
 - [x] Displays a persistent notification to assure the user that the service will respond to outgoing calls.
 - [x] App is resilient against shutdowns initiated by the OS (for whatever reason).
 - [x] App launches automatically when the device starts up.
-- [ ] Displays an unobtrusive floating button which the user can use to open the camera bubble.
+- [x] Displays an unobtrusive floating button which the user can use to open the camera bubble.
 
 Bubble camera
 
