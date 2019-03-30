@@ -10,12 +10,19 @@
     android:layout_gravity="left|center_vertical"
     android:padding="5dp"
     tools:ignore="RtlHardcoded"
-    android:alpha="0.5">
+    android:alpha="0.5"
+    android:clickable="true"
+    android:focusable="true"
+    android:layout_marginRight="10dp"
+    android:layout_marginTop="10dp"
+    android:layout_marginBottom="10dp">
 
     <ImageView
         android:id="@+id/icon_launch"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:clickable="true"
+        android:focusable="true"
         android:src="@drawable/ic_videocam_black_24dp"
         android:tint="@android:color/white"
         />

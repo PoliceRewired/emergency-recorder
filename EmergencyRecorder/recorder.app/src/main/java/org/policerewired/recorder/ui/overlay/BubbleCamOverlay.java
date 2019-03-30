@@ -37,6 +37,7 @@ import org.policerewired.recorder.tasks.AbstractWhat3WordsTask;
 import org.policerewired.recorder.tasks.HybridCollection;
 import org.policerewired.recorder.util.CapturePhotoUtils;
 import org.policerewired.recorder.util.NamingUtils;
+import org.policerewired.recorder.util.PhotoAnnotationUtils;
 import org.policerewired.recorder.util.StorageUtils;
 
 import java.io.File;
@@ -80,6 +81,7 @@ public class BubbleCamOverlay implements IBubbleCamOverlay {
   private Listener listener;
 
   private NamingUtils naming;
+  private PhotoAnnotationUtils annotation;
   private StorageUtils storage;
 
   private boolean created;
@@ -87,6 +89,8 @@ public class BubbleCamOverlay implements IBubbleCamOverlay {
   private FusedLocationProviderClient fusedLocationClient;
   private LocationCallback locationCallback;
   private Location lastLocation;
+  private String lastGeocode;
+  private String lastW3W;
   private Date locationUpdated;
   private AbstractGeocodingTask geocoder;
   private AbstractWhat3WordsTask what3wordser;
@@ -105,6 +109,7 @@ public class BubbleCamOverlay implements IBubbleCamOverlay {
     this.windowManager = (WindowManager) context.getSystemService(Context.WINDOW_SERVICE);
     context.setTheme(R.style.AppTheme);
     this.naming = new NamingUtils(context);
+    this.annotation = new PhotoAnnotationUtils(context);
     this.storage = new StorageUtils(context);
     this.fusedLocationClient = LocationServices.getFusedLocationProviderClient(context);
   }
@@ -311,9 +316,14 @@ public class BubbleCamOverlay implements IBubbleCamOverlay {
   private CameraKitView.ImageCallback photo_callback = new CameraKitView.ImageCallback() {
     @Override
     public void onImage(CameraKitView cameraKitView, byte[] bytes) {
+      final Date now = new Date();
       handler.post(() -> {
-        Bitmap bmp = BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
-        Date now = new Date();
+        Bitmap bmp = annotation.drawOnBitmap(
+          BitmapFactory.decodeByteArray(bytes, 0, bytes.length),
+          now,
+          lastLocation,
+          lastGeocode,
+          lastW3W);
         String title = naming.generate_photo_title(now);
         String description = naming.generate_photo_description(now);
         Uri uri = CapturePhotoUtils.insertImage(context.getContentResolver(), bmp, title, description, now);
@@ -329,9 +339,14 @@ public class BubbleCamOverlay implements IBubbleCamOverlay {
   private CameraKitView.ImageCallback hybrid_callback = new CameraKitView.ImageCallback() {
     @Override
     public void onImage(CameraKitView cameraKitView, byte[] bytes) {
+      final Date now = new Date();
       handler.post(() -> {
-        Bitmap bmp = BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
-        Date now = new Date();
+        Bitmap bmp = annotation.drawOnBitmap(
+          BitmapFactory.decodeByteArray(bytes, 0, bytes.length),
+          now,
+          lastLocation,
+          lastGeocode,
+          lastW3W);
         String title = naming.generate_hybrid_photo_title(now);
         String description = naming.generate_hybrid_photo_description(now, hybridCollection.started);
         Uri uri = CapturePhotoUtils.insertImage(context.getContentResolver(), bmp, title, description, now);
@@ -476,7 +491,9 @@ public class BubbleCamOverlay implements IBubbleCamOverlay {
           for(int line = 0; line <= address.getMaxAddressLineIndex(); line++) {
             addressLines[line] = address.getAddressLine(line);
           }
-          text_location.setText(StringUtils.join2(addressLines, '\n'));
+          lastGeocode = StringUtils.join2(addressLines, '\n');
+          text_location.setText(naming.describeGeocode(lastGeocode));
+
         } else {
           Log.w(TAG, "No address to display from geocoder.");
         }
@@ -498,7 +515,8 @@ public class BubbleCamOverlay implements IBubbleCamOverlay {
       protected void onPostExecute(Result result) {
         super.onPostExecute(result);
         if (result.attempted && result.words.isSuccessful()) {
-          text_w3w.setText(result.words.getWords());
+          lastW3W = result.words.getWords();
+          text_w3w.setText(naming.describeW3W(lastW3W));
         } else {
           Log.w(TAG, "What3Words reports unsuccessful.");
         }

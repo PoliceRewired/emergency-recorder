@@ -1,5 +1,6 @@
 package org.policerewired.recorder.ui.overlay;
 
+import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.WindowManager;
@@ -25,24 +26,30 @@ public class OverlayDragListener implements View.OnTouchListener {
   float penDownX;
   float penDownY;
 
-  float dX; // adjustment
-  float dY; // adjustment
+  float originalX;
+  float originalY;
 
   int lastAction;
 
+  float tap_limit = 20.0f;
+
   @Override
   public boolean onTouch(View v, MotionEvent event) {
-
     int[] overlayPosition = new int[2];
+
     //overlay.getLocationOnScreen(overlayPosition);
     //int overlayX = overlayPosition[0];
     //int overlayY = overlayPosition[1];
+
     WindowManager.LayoutParams params = (WindowManager.LayoutParams) overlay.getLayoutParams();
     int overlayX = params.x;
     int overlayY = params.y;
 
     switch (event.getActionMasked()) {
       case MotionEvent.ACTION_DOWN:
+        originalX = event.getRawX();
+        originalY = event.getRawY();
+
         penDownX = event.getRawX() - overlayX;
         penDownY = event.getRawY() - overlayY;
 
@@ -69,9 +76,19 @@ public class OverlayDragListener implements View.OnTouchListener {
         return true;
 
       case MotionEvent.ACTION_UP:
-        if (lastAction == MotionEvent.ACTION_DOWN) {
+        float newDownX = event.getRawX() - overlayX;
+        float newDownY = event.getRawY() - overlayY;
+
+        float diffX = event.getRawX() - originalX;
+        float diffY = event.getRawY() - originalY;
+
+        Log.v(TAG, "diffX " + diffX + ", diffY" + diffY);
+
+        if (lastAction == MotionEvent.ACTION_DOWN ||
+          (Math.abs(diffX) < tap_limit && Math.abs(diffY) < tap_limit)) {
           v.performClick(); // click detected
         }
+
         lastAction = MotionEvent.ACTION_UP;
         return true;
 

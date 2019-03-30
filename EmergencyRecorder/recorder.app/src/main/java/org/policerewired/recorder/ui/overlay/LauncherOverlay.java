@@ -62,7 +62,7 @@ public class LauncherOverlay implements ILauncherOverlay {
     }
   }
 
-  @OnClick(R.id.icon_launch)
+  @OnClick({R.id.icon_launch, R.id.layout_overlay})
   public void launcher_click() {
     listener.launchSelected();
   }

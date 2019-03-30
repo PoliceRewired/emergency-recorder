@@ -1,6 +1,7 @@
 package org.policerewired.recorder.util;
 
 import android.content.Context;
+import android.location.Location;
 
 import org.policerewired.recorder.R;
 
@@ -66,5 +67,17 @@ public class NamingUtils {
   public String getLongFormatDate(Date date) {
     SimpleDateFormat format = new SimpleDateFormat("yyyy.MM.dd 'at' HH:mm:ss z", locale);
     return format.format(date);
+  }
+
+  public String describeLocation(Location location) {
+    return context.getString(R.string.location_description, location.getLatitude(), location.getLongitude());
+  }
+
+  public String describeGeocode(String geocode) {
+    return context.getString(R.string.geocode_description, geocode);
+  }
+
+  public String describeW3W(String w3w) {
+    return context.getString(R.string.w3w_description, w3w);
   }
 }
