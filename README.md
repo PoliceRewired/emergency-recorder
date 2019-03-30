@@ -62,9 +62,9 @@ Bubble camera
 - [x] App displays a notification whilst photographs are being stitched into video.
 - [x] Audio recording accompanies the burst mode photography.
 - [x] The new audio appears in an album called 'Emergency Audio' in the user's music app immediately.
+- [x] A record of each recording made is stored in the app's internal database.
 - [ ] User can take a standard video using the overlay. (See dependencies, below.)
 - [ ] The new video appears in the user's phone gallery immediately.
-- [x] A record of each recording made is stored in the app's internal database.
 
 Receive outgoing calls
 
@@ -83,8 +83,8 @@ Location
 - [x] App fetches the user's current location.
 - [x] App geocodes that location, and displays the closest address to the user.
 - [x] App also utilises the What3Words API to make visible the closest What3Words location.
+- [x] App superimposes coordinates and time onto visible portion of each stored photo.
 - [ ] App stores taken time and location information in metadata for each stored photo.
-- [ ] App superimposes coordinates and time onto visible portion of each stored photo.
 
 User information
 
