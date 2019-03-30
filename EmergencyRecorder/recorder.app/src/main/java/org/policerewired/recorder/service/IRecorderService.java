@@ -1,5 +1,6 @@
 package org.policerewired.recorder.service;
 
+import android.location.Location;
 import android.net.Uri;
 
 import org.policerewired.recorder.db.entity.Rule;
@@ -82,6 +83,27 @@ public interface IRecorderService {
    */
   void recordVideo(Date started, Uri uri);
 
+  /**
+   * Prepares the photo with visible annotations, and stores it.
+   * @param data raw bytes of the photo, from the camera
+   * @param taken time the photo was taken
+   * @param location location (if available)
+   * @param geocode geocoded address (if available)
+   * @param w3w what3words triplet (if avaialble)
+   * @return uri of the stored photo
+   */
+  Uri storeUserPhoto(byte[] data, Date taken, Location location, String geocode, String w3w);
 
+  /**
+   * Prepares the photo with visible annotations, and stores it.
+   * @param data raw bytes of the photo, from the camera
+   * @param started time the hybrid collection was begun
+   * @param taken time the photo was taken
+   * @param location location (if available)
+   * @param geocode geocoded address (if available)
+   * @param w3w what3words triplet (if avaialble)
+   * @return uri of the stored photo
+   */
+  Uri storeHybridPhoto(byte[] data, Date started, Date taken, Location location, String geocode, String w3w);
 
 }

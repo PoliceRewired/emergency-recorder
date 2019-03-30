@@ -11,8 +11,6 @@ import android.location.Location;
 
 import com.google.android.gms.common.util.Strings;
 
-import org.jcodec.common.StringUtils;
-
 import java.util.Date;
 
 public class PhotoAnnotationUtils {
@@ -47,12 +45,14 @@ public class PhotoAnnotationUtils {
     paintOutline.setXfermode(new PorterDuffXfermode(PorterDuff.Mode.SRC_OVER)); // Text Overlapping Pattern
     paintOutline.setColor(Color.BLACK);
     paintOutline.setFakeBoldText(true);
+    paintOutline.setStrokeWidth(2.0f);
     paintOutline.setTextSize(textSize);
 
     int y = textSize + textSpacing;
     int x = textSpacing;
 
     canvas.drawText(naming.getLongFormatDate(now), x, y, paintText);
+    canvas.drawText(naming.getLongFormatDate(now), x, y, paintOutline);
 
     if (location != null) {
       y += textSize + textSpacing;

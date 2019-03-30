@@ -32,6 +32,8 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import org.jcodec.common.StringUtils;
 import org.policerewired.recorder.R;
+import org.policerewired.recorder.service.IRecorderService;
+import org.policerewired.recorder.service.RecorderService;
 import org.policerewired.recorder.tasks.AbstractGeocodingTask;
 import org.policerewired.recorder.tasks.AbstractWhat3WordsTask;
 import org.policerewired.recorder.tasks.HybridCollection;
@@ -77,6 +79,7 @@ public class BubbleCamOverlay implements IBubbleCamOverlay {
   private WindowManager.LayoutParams overlay_params;
   private WindowManager windowManager;
   private Context context;
+  private IRecorderService service;
   private Handler handler;
   private Listener listener;
 
@@ -101,8 +104,9 @@ public class BubbleCamOverlay implements IBubbleCamOverlay {
 
   private State state = State.Hidden;
 
-  public BubbleCamOverlay(Context context, Listener listener, BubbleCamConfig config) {
-    this.context = context;
+  public BubbleCamOverlay(RecorderService service, Listener listener, BubbleCamConfig config) {
+    this.service = service;
+    this.context = service;
     this.handler = new Handler(context.getMainLooper());
     this.listener = listener;
     this.config = config;
@@ -318,15 +322,7 @@ public class BubbleCamOverlay implements IBubbleCamOverlay {
     public void onImage(CameraKitView cameraKitView, byte[] bytes) {
       final Date now = new Date();
       handler.post(() -> {
-        Bitmap bmp = annotation.drawOnBitmap(
-          BitmapFactory.decodeByteArray(bytes, 0, bytes.length),
-          now,
-          lastLocation,
-          lastGeocode,
-          lastW3W);
-        String title = naming.generate_photo_title(now);
-        String description = naming.generate_photo_description(now);
-        Uri uri = CapturePhotoUtils.insertImage(context.getContentResolver(), bmp, title, description, now);
+        Uri uri = service.storeUserPhoto(bytes, now, lastLocation, lastGeocode, lastW3W);
         listener.photoCaptured(now, uri);
       });
       resetFrameEdge();
@@ -341,15 +337,7 @@ public class BubbleCamOverlay implements IBubbleCamOverlay {
     public void onImage(CameraKitView cameraKitView, byte[] bytes) {
       final Date now = new Date();
       handler.post(() -> {
-        Bitmap bmp = annotation.drawOnBitmap(
-          BitmapFactory.decodeByteArray(bytes, 0, bytes.length),
-          now,
-          lastLocation,
-          lastGeocode,
-          lastW3W);
-        String title = naming.generate_hybrid_photo_title(now);
-        String description = naming.generate_hybrid_photo_description(now, hybridCollection.started);
-        Uri uri = CapturePhotoUtils.insertImage(context.getContentResolver(), bmp, title, description, now);
+        Uri uri = service.storeHybridPhoto(bytes, now, hybridCollection.started, lastLocation, lastGeocode, lastW3W);
         hybridCollection.image_callback.onImage(cameraKitView, bytes);
         listener.hybridPhotoCaptured(now, uri);
       });

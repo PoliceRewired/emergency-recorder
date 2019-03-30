@@ -6,6 +6,9 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.location.Location;
 import android.net.Uri;
 import android.os.SystemClock;
 import android.util.Log;
@@ -30,6 +33,9 @@ import org.policerewired.recorder.ui.overlay.IBubbleCamOverlay;
 import org.policerewired.recorder.ui.overlay.ILauncherOverlay;
 import org.policerewired.recorder.ui.overlay.LauncherConfig;
 import org.policerewired.recorder.ui.overlay.LauncherOverlay;
+import org.policerewired.recorder.util.CapturePhotoUtils;
+import org.policerewired.recorder.util.NamingUtils;
+import org.policerewired.recorder.util.PhotoAnnotationUtils;
 
 import java.util.Date;
 import java.util.List;
@@ -49,6 +55,9 @@ public class RecorderService extends AbstractBackgroundBindingService<IRecorderS
   private BubbleCamOverlay bubblecam;
   private LauncherOverlay launcher;
 
+  private NamingUtils naming;
+  private PhotoAnnotationUtils annotation;
+
   public RecorderService() { }
 
   @Override
@@ -64,6 +73,9 @@ public class RecorderService extends AbstractBackgroundBindingService<IRecorderS
   @Override
   public void onCreate() {
     super.onCreate();
+
+    naming = new NamingUtils(this);
+    annotation = new PhotoAnnotationUtils(this);
 
     call_receiver = new OutgoingCallReceiver(call_listener);
     IntentFilter filter = new IntentFilter();
@@ -243,6 +255,34 @@ public class RecorderService extends AbstractBackgroundBindingService<IRecorderS
   @Override
   public void getConfig() {
     // TODO(v2): called from the config activity to retrieve configuration parameters
+  }
+
+  @Override
+  public Uri storeUserPhoto(byte[] data, Date taken, Location location, String geocode, String w3w) {
+    Bitmap bmp = annotation.drawOnBitmap(
+      BitmapFactory.decodeByteArray(data, 0, data.length),
+      taken,
+      location,
+      geocode,
+      w3w);
+    String title = naming.generate_photo_title(taken);
+    String description = naming.generate_photo_description(taken);
+    Uri uri = CapturePhotoUtils.insertImage(getContentResolver(), bmp, title, description, taken);
+    return uri;
+  }
+
+  @Override
+  public Uri storeHybridPhoto(byte[] data, Date started, Date taken, Location location, String geocode, String w3w) {
+    Bitmap bmp = annotation.drawOnBitmap(
+      BitmapFactory.decodeByteArray(data, 0, data.length),
+      taken,
+      location,
+      geocode,
+      w3w);
+    String title = naming.generate_hybrid_photo_title(taken);
+    String description = naming.generate_hybrid_photo_description(taken, started);
+    Uri uri = CapturePhotoUtils.insertImage(getContentResolver(), bmp, title, description, taken);
+    return uri;
   }
 
   @Override
