@@ -1,10 +1,13 @@
 package org.policerewired.recorder.ui.overlay;
 
-import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.WindowManager;
 
+/**
+ * A drag listener that allows drags on particular views to affect their container rather than
+ * themselves.
+ */
 public class OverlayDragListener implements View.OnTouchListener {
   private static final String TAG = "ODL";
 

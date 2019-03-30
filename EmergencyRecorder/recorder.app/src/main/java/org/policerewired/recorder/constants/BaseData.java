@@ -9,8 +9,9 @@ import org.policerewired.recorder.db.entity.Rule;
 import java.util.LinkedList;
 import java.util.List;
 
-import androidx.room.util.StringUtil;
-
+/**
+ * Utility methods for parsing the default rules, and creating new rules.
+ */
 public class BaseData {
 
   public static Behaviour baseBehaviour = Behaviour.OpenBubbleCamStartBurstMode;
@@ -24,13 +25,13 @@ public class BaseData {
     List<Rule> rules = new LinkedList<>();
     for (String item : items) {
       String[] parts = StringUtils.splitS(item, ",");
-      rules.add(new Rule(parts[0], parts[1], baseBehaviour, true));
+      rules.add(new Rule(parts[0], parts[1], Behaviour.valueOf(parts[2]), true));
     }
     return rules.toArray(new Rule[rules.size()]);
   }
 
-  public static Rule createBaseRule() {
-    return new Rule(null, null, baseBehaviour, true);
+  public static Rule createNewRule() {
+    return new Rule(null, null, baseBehaviour, false);
   }
 
 }

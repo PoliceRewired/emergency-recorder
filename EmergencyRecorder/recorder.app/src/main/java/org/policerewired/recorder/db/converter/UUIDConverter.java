@@ -1,7 +1,5 @@
 package org.policerewired.recorder.db.converter;
 
-import android.net.Uri;
-
 import java.util.UUID;
 
 import androidx.room.TypeConverter;

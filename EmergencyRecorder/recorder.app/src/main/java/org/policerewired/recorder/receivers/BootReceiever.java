@@ -1,10 +1,7 @@
 package org.policerewired.recorder.receivers;
 
-import android.app.AlarmManager;
-import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
-import android.os.SystemClock;
 import android.util.Log;
 
 import com.flt.servicelib.AbstractBootReceiver;
@@ -12,8 +9,11 @@ import com.flt.servicelib.AbstractBootReceiver;
 import org.policerewired.recorder.EmergencyRecorderApp;
 import org.policerewired.recorder.service.RecorderService;
 
+/**
+ * Responsible for receiving notification when the system starts.
+ */
 public class BootReceiever extends AbstractBootReceiver<RecorderService> {
-private static final String TAG = BootReceiever.class.getSimpleName();
+  private static final String TAG = BootReceiever.class.getSimpleName();
 
   @Override
   public void onReceive(Context context, Intent intent) {

@@ -11,6 +11,9 @@ import android.util.Log;
 import java.util.List;
 import java.util.Locale;
 
+/**
+ * Geocodes a given location, and returns the closest human readable address.
+ */
 public abstract class AbstractGeocodingTask extends AsyncTask<AbstractGeocodingTask.Params, AbstractGeocodingTask.Progress, AbstractGeocodingTask.Result> {
   private static final String TAG = AbstractGeocodingTask.class.getSimpleName();
 

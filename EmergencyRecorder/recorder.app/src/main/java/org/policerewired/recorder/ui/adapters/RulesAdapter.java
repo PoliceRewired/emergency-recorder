@@ -17,6 +17,9 @@ import androidx.recyclerview.widget.SortedListAdapterCallback;
 import butterknife.BindView;
 import butterknife.OnClick;
 
+/**
+ * Adapter for a collection of Rules, allowing them to be shown and modified from a RecyclerView.
+ */
 public class RulesAdapter extends CrudAdapter<Rule, RulesAdapter.ViewHolder> {
 
   public RulesAdapter(Context context, Listener<Rule> listener) {

@@ -11,6 +11,10 @@ import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
 
+/**
+ * A class representing a collection of images, a start date, and an accompanying audio file.
+ * Used to store everything that represents a 'hybrid' (aka 'burst mode') session.
+ */
 public class HybridCollection {
 
   public List<Pair<Date, byte[]>> blobs;
@@ -27,6 +31,7 @@ public class HybridCollection {
     this.started = new Date(); // now!
   }
 
+  @SuppressWarnings("unused")
   public CameraKitView.FrameCallback frame_callback = new CameraKitView.FrameCallback() {
     @Override
     public void onFrame(CameraKitView cameraKitView, byte[] bytes) {

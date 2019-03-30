@@ -12,6 +12,9 @@ import com.what3words.javawrapper.response.ConvertTo3WA;
 
 import org.policerewired.recorder.R;
 
+/**
+ * Passes a given location to the What3Words API, and returns the closest matching triplet.
+ */
 public class AbstractWhat3WordsTask extends AsyncTask<AbstractWhat3WordsTask.Params, AbstractWhat3WordsTask.Progress, AbstractWhat3WordsTask.Result> {
   private static final String TAG = AbstractWhat3WordsTask.class.getSimpleName();
 

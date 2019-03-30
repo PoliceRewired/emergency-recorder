@@ -1,7 +1,6 @@
 package org.policerewired.recorder.tasks;
 
 import android.app.NotificationChannel;
-import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
@@ -19,7 +18,6 @@ import org.policerewired.recorder.R;
 import org.policerewired.recorder.service.IRecorderService;
 import org.policerewired.recorder.service.RecorderService;
 import org.policerewired.recorder.util.CaptureAudioUtils;
-import org.policerewired.recorder.util.CapturePhotoUtils;
 import org.policerewired.recorder.util.CaptureVideoUtils;
 import org.policerewired.recorder.util.NamingUtils;
 import org.policerewired.recorder.util.StorageUtils;
@@ -29,6 +27,9 @@ import java.util.Date;
 
 import androidx.core.app.NotificationCompat;
 
+/**
+ * Takes all images from a HybridCollection (burst mode), and combines them into a video.
+ */
 public class StitchHybridImagesTask extends AbstractNotifyingAsyncTask<StitchHybridImagesTask.Params, StitchHybridImagesTask.Progress, StitchHybridImagesTask.Result> {
   private static final String TAG = StitchHybridImagesTask.class.getSimpleName();
 
@@ -170,21 +171,7 @@ public class StitchHybridImagesTask extends AbstractNotifyingAsyncTask<StitchHyb
 
       for (Pair<Date, byte[]> pair : param.collection.blobs) {
         publishProgress(new Progress(parsed, of));
-
-        // ensure the photo itself enters into the media store
-        Date taken = pair.first;
         byte[] blob = pair.second;
-        Bitmap standard = BitmapFactory.decodeByteArray(blob, 0, blob.length);
-        Uri uri = CapturePhotoUtils.insertImage(
-          context.getContentResolver(),
-          standard,
-          naming.generate_hybrid_photo_title(taken),
-          naming.generate_hybrid_photo_description(taken, param.collection.started),
-          taken);
-
-        service.recordHybridPhoto(pair.first, uri);
-
-        // now encode the photo to be a part of the video
         Bitmap bmp = BitmapFactory.decodeByteArray(blob, 0, blob.length, rescale);
         Picture pic = BitmapUtil.fromBitmap(bmp);
         bmp.recycle();

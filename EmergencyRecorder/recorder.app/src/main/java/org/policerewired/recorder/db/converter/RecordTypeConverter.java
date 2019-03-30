@@ -1,6 +1,5 @@
 package org.policerewired.recorder.db.converter;
 
-import org.policerewired.recorder.constants.Behaviour;
 import org.policerewired.recorder.constants.RecordType;
 
 import androidx.room.TypeConverter;

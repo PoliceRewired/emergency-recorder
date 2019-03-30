@@ -2,13 +2,11 @@ package org.policerewired.recorder.ui.dialogs;
 
 import android.app.Dialog;
 import android.content.Context;
-import android.view.View;
 import android.widget.ArrayAdapter;
 
 import com.google.android.gms.common.util.Strings;
 import com.google.android.material.textfield.TextInputLayout;
 
-import org.jcodec.common.StringUtils;
 import org.policerewired.recorder.R;
 import org.policerewired.recorder.constants.Behaviour;
 import org.policerewired.recorder.db.entity.Rule;
@@ -20,6 +18,9 @@ import androidx.appcompat.widget.AppCompatSpinner;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
+/**
+ * Manages a dialog that can be used to update the contents of a Rule.
+ */
 public class EditRuleDialog {
 
   private Context context;
@@ -42,8 +43,8 @@ public class EditRuleDialog {
   public void show() {
     dialog.show();
 
-    // messy - we have to assign the click listeners AFTER showing the dialog
-    // to prevent auto close on click of any button.
+    // messy - we have to assign the click listeners AFTER showing the dialog to prevent auto-close
+    // on click of any button. This then allows us to do validation in the dialog.
     dialog.getButton(Dialog.BUTTON_POSITIVE).setOnClickListener(v -> {
       boolean ok = validate();
       if (ok) {
@@ -99,6 +100,8 @@ public class EditRuleDialog {
     input_name.getEditText().setText(rule.name);
     input_number.getEditText().setText(rule.match);
     spinner_behaviour.setSelection(Arrays.asList(Behaviour.values()).indexOf(rule.behaviour));
+    input_name.setEnabled(!rule.locked);   // only editable if the rule isn't locked
+    input_number.setEnabled(!rule.locked); // only editable if the rule isn't locked
   }
 
   private void updateRuleFromDialog() {

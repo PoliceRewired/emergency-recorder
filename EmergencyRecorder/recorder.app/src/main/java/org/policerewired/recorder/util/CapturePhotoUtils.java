@@ -1,10 +1,5 @@
 package org.policerewired.recorder.util;
 
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.io.OutputStream;
-import java.util.Date;
-
 import android.content.ContentResolver;
 import android.content.ContentUris;
 import android.content.ContentValues;
@@ -14,6 +9,11 @@ import android.net.Uri;
 import android.provider.MediaStore;
 import android.provider.MediaStore.Images;
 import android.util.Log;
+
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.OutputStream;
+import java.util.Date;
 
 /**
  * Derived from work by Samuel Kirton.

@@ -2,8 +2,6 @@ package org.policerewired.recorder.db.converter;
 
 import android.net.Uri;
 
-import java.util.Date;
-
 import androidx.room.TypeConverter;
 
 public class UriConverter {

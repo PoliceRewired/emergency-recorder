@@ -12,6 +12,7 @@ import android.location.Address;
 import android.location.Location;
 import android.media.MediaRecorder;
 import android.net.Uri;
+import android.os.Handler;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -30,10 +31,10 @@ import com.google.android.gms.location.LocationServices;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import org.jcodec.common.StringUtils;
+import org.policerewired.recorder.R;
 import org.policerewired.recorder.tasks.AbstractGeocodingTask;
 import org.policerewired.recorder.tasks.AbstractWhat3WordsTask;
 import org.policerewired.recorder.tasks.HybridCollection;
-import org.policerewired.recorder.R;
 import org.policerewired.recorder.util.CapturePhotoUtils;
 import org.policerewired.recorder.util.NamingUtils;
 import org.policerewired.recorder.util.StorageUtils;
@@ -41,8 +42,6 @@ import org.policerewired.recorder.util.StorageUtils;
 import java.io.File;
 import java.io.IOException;
 import java.util.Date;
-import java.util.LinkedList;
-import java.util.List;
 
 import androidx.cardview.widget.CardView;
 import butterknife.BindView;
@@ -53,6 +52,9 @@ import static android.view.View.GONE;
 import static android.view.View.VISIBLE;
 import static com.google.android.gms.location.LocationRequest.PRIORITY_HIGH_ACCURACY;
 
+/**
+ * The overlay containing the camera view, buttons, and location information a user sees.
+ */
 public class BubbleCamOverlay implements IBubbleCamOverlay {
   private static final String TAG = BubbleCamOverlay.class.getSimpleName();
 
@@ -74,6 +76,7 @@ public class BubbleCamOverlay implements IBubbleCamOverlay {
   private WindowManager.LayoutParams overlay_params;
   private WindowManager windowManager;
   private Context context;
+  private Handler handler;
   private Listener listener;
 
   private NamingUtils naming;
@@ -96,6 +99,7 @@ public class BubbleCamOverlay implements IBubbleCamOverlay {
 
   public BubbleCamOverlay(Context context, Listener listener, BubbleCamConfig config) {
     this.context = context;
+    this.handler = new Handler(context.getMainLooper());
     this.listener = listener;
     this.config = config;
     this.windowManager = (WindowManager) context.getSystemService(Context.WINDOW_SERVICE);
@@ -149,6 +153,9 @@ public class BubbleCamOverlay implements IBubbleCamOverlay {
     return state.recording;
   }
 
+  /**
+   * Inflates the layout for this overlay, sets the drag listeners, and default window behaviours.
+   */
   public void onCreate() {
     LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
     overlay = inflater.inflate(R.layout.overlay_bubble_cam, null);
@@ -184,7 +191,19 @@ public class BubbleCamOverlay implements IBubbleCamOverlay {
     created = true;
   }
 
+  /**
+   * Method called to switch the bubble camera's state.
+   * @see org.policerewired.recorder.ui.overlay.BubbleCamOverlay.State
+   * @param next the state to switch to
+   */
   public void setState(State next) {
+
+    // special case - CameraKit does not yet support video mode, so fallback on Hybrid recording
+    if (!context.getResources().getBoolean(R.bool.supports_video_mode) && next == State.Recording) {
+      setState(State.Hybrid);
+      return;
+    }
+
     if (state == next) {
       return;
     }
@@ -221,6 +240,14 @@ public class BubbleCamOverlay implements IBubbleCamOverlay {
     updateUI();
   }
 
+  /**
+   * Initiates the hybrid recording process:
+   * <ul>
+   *   <li>Initialises and starts audio recording.</li>
+   *   <li>Initialises a photo collection.</li>
+   *   <li>Takes a photo, and schedules the next.</li>
+   * </ul>
+   */
   private void startHybrid() {
     try {
       audio_recorder = new MediaRecorder();
@@ -236,11 +263,20 @@ public class BubbleCamOverlay implements IBubbleCamOverlay {
       Log.e(TAG, "Unable to initiate Media Recorder");
     }
 
-    hybridCollection = new HybridCollection(config.hybrid_delay_ms);
+    hybridCollection = new HybridCollection(config.hybrid_interval_ms);
     takeHybridImage();
     scheduleNextHybridImage();
   }
 
+  /**
+   * Completes the hybrid recording process:
+   * <ul>
+   *   <li>Stops the audio recording.</li>
+   *   <li>Notifies the listener that hybrid collection has completed.</li>
+   * </ul>
+   * <i>After hybrid recording, the RecorderService starts a process to combine the photos taken
+   * into a video, and store the audio taken.</i>
+   */
   private void stopHybrid() {
     try {
       audio_recorder.stop();
@@ -255,46 +291,72 @@ public class BubbleCamOverlay implements IBubbleCamOverlay {
     listener.hybridsCaptured(hybridCollection);
   }
 
+  /**
+   * Posts a delayed task to take the next hybrid image - and schedule the next after that!
+   * NB. hybrid imaging stops when the state changes away from Hybrid.
+   */
   private void scheduleNextHybridImage() {
-    camera_kit.postDelayed(() -> {
+    handler.postDelayed(() -> {
       if (state.hybriding) {
         takeHybridImage();
         scheduleNextHybridImage();
       }
-    }, config.hybrid_delay_ms);
+    }, config.hybrid_interval_ms);
   }
 
+  /**
+   * Receives a photo initiated by the user, stores it, and notifies the listener.
+   */
   private CameraKitView.ImageCallback photo_callback = new CameraKitView.ImageCallback() {
     @Override
     public void onImage(CameraKitView cameraKitView, byte[] bytes) {
-      Bitmap bmp = BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
-      Date now = new Date();
-      String title = naming.generate_photo_title(now);
-      String description = naming.generate_photo_description(now);
-      Uri uri = CapturePhotoUtils.insertImage(context.getContentResolver(), bmp, title, description, now);
+      handler.post(() -> {
+        Bitmap bmp = BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
+        Date now = new Date();
+        String title = naming.generate_photo_title(now);
+        String description = naming.generate_photo_description(now);
+        Uri uri = CapturePhotoUtils.insertImage(context.getContentResolver(), bmp, title, description, now);
+        listener.photoCaptured(now, uri);
+      });
       resetFrameEdge();
-      listener.photoCaptured(now, uri);
     }
   };
 
+  /**
+   * Receives a photo initiated by the hybrid recording process, stores it, and notifies the listener.
+   */
   private CameraKitView.ImageCallback hybrid_callback = new CameraKitView.ImageCallback() {
     @Override
     public void onImage(CameraKitView cameraKitView, byte[] bytes) {
-      hybridCollection.image_callback.onImage(cameraKitView, bytes);
+      handler.post(() -> {
+        Bitmap bmp = BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
+        Date now = new Date();
+        String title = naming.generate_hybrid_photo_title(now);
+        String description = naming.generate_hybrid_photo_description(now, hybridCollection.started);
+        Uri uri = CapturePhotoUtils.insertImage(context.getContentResolver(), bmp, title, description, now);
+        hybridCollection.image_callback.onImage(cameraKitView, bytes);
+        listener.hybridPhotoCaptured(now, uri);
+      });
       resetFrameEdge();
     }
   };
 
+  /**
+   * Receives a video initiated by the user, stores it, and notifies the listener.
+   * TODO: when CameraKit supports video, return and update this method to store the video
+   */
   @SuppressWarnings("Convert2Lambda")
   private CameraKitView.VideoCallback video_callback = new CameraKitView.VideoCallback() {
     @Override
     public void onVideo(CameraKitView cameraKitView, Object o) {
       Log.w(TAG, "CameraKit does not support video recording, as of v1.0.0 beta 3.11 - this method will not be called.");
-      // TODO: when CameraKit supports video, return and update this method to store the video
       listener.videoCaptured(null, null); // this won't be called until camerakit supports video
     }
   };
 
+  /**
+   * Updates the visible state of gadgetry in the overlay based on the current state.
+   */
   private void updateUI() {
     if (!created || !isShowing()) {
       return;
@@ -320,6 +382,14 @@ public class BubbleCamOverlay implements IBubbleCamOverlay {
     fab_control_hybrid.setImageResource(state.hybriding ? R.drawable.ic_stop_black_24dp : R.drawable.ic_burst_mode_black_24dp);
   }
 
+  /**
+   * Utility method to return the background of the main card to white. Called from various places.
+   */
+  private void resetFrameEdge() {
+    card_video.setCardBackgroundColor(context.getColor(android.R.color.white));
+  }
+
+
   @Override
   public void hide() {
     if (isShowing()) {
@@ -338,10 +408,6 @@ public class BubbleCamOverlay implements IBubbleCamOverlay {
     }
   }
 
-  private void resetFrameEdge() {
-    card_video.setCardBackgroundColor(context.getColor(android.R.color.white));
-  }
-
   @Override
   public void showAndRecord() {
     show();
@@ -356,6 +422,10 @@ public class BubbleCamOverlay implements IBubbleCamOverlay {
     setState(State.Hybrid);
   }
 
+  /**
+   * Initiates a location request from the system, with callbacks to the geocoding and what3wordsing
+   * methods when there is a location update.
+   */
   private void startLocationUpdates() {
     locationCallback = new LocationCallback() {
       @Override
@@ -378,7 +448,7 @@ public class BubbleCamOverlay implements IBubbleCamOverlay {
 
     LocationRequest request = new LocationRequest();
     request.setPriority(PRIORITY_HIGH_ACCURACY);
-    request.setInterval(5 * 1000);
+    request.setInterval(config.location_interval_ms);
 
     if (context.checkSelfPermission(Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
       fusedLocationClient.requestLocationUpdates(request, locationCallback, null /* Looper */);
@@ -387,6 +457,9 @@ public class BubbleCamOverlay implements IBubbleCamOverlay {
     }
   }
 
+  /**
+   * Requests a geocoding through Android, and displays the nearest address when available.
+   */
   @SuppressLint("StaticFieldLeak")
   private void geocodeAndDisplay() {
     AbstractGeocodingTask.Params param = new AbstractGeocodingTask.Params(lastLocation);
@@ -412,6 +485,9 @@ public class BubbleCamOverlay implements IBubbleCamOverlay {
     geocoder.execute(param);
   }
 
+  /**
+   * Passes the last location to the What3Words API, and displays the nearest word triplet.
+   */
   @SuppressLint("StaticFieldLeak")
   private void w3wAndDisplay() {
     AbstractWhat3WordsTask.Params param = new AbstractWhat3WordsTask.Params(lastLocation);
@@ -422,6 +498,8 @@ public class BubbleCamOverlay implements IBubbleCamOverlay {
         super.onPostExecute(result);
         if (result.attempted && result.words.isSuccessful()) {
           text_w3w.setText(result.words.getWords());
+        } else {
+          Log.w(TAG, "What3Words reports unsuccessful.");
         }
       }
     };
@@ -429,12 +507,24 @@ public class BubbleCamOverlay implements IBubbleCamOverlay {
     what3wordser.execute(param);
   }
 
+  /**
+   * Cancels the location request.
+   */
   private void stopLocationUpdates() {
     if (locationCallback != null) {
       fusedLocationClient.removeLocationUpdates(locationCallback);
     }
   }
 
+  /**
+   * Represents the various states this overlay can be in:
+   * <ul>
+   *   <li>Hidden: not visible to the user</li>
+   *   <li>Ready: now showing the camera, not recording</li>
+   *   <li>Recording: recording video</li>
+   *   <li>Hybrid: a process to take periodic photos, and record audio - referred to as "burst mode" in user land</li>
+   * </ul>
+   */
   private enum State {
     Hidden(false, false, false, 0, 0, false, false, false),
     Ready(true, false, false, R.string.state_ready, R.color.colorDisabled, true, true, true),

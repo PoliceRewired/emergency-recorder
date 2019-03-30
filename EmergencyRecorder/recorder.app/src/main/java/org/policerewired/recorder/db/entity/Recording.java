@@ -1,7 +1,5 @@
 package org.policerewired.recorder.db.entity;
 
-import android.net.Uri;
-
 import org.policerewired.recorder.constants.RecordType;
 
 import java.util.Date;
@@ -11,6 +9,9 @@ import androidx.annotation.NonNull;
 import androidx.room.Entity;
 import androidx.room.PrimaryKey;
 
+/**
+ * Represents an entry in the app's log - showing what activities took place for user reference.
+ */
 @Entity(tableName = "recording")
 public class Recording {
 

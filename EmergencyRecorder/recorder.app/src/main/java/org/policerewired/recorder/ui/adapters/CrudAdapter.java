@@ -14,6 +14,10 @@ import androidx.recyclerview.widget.SortedList;
 import androidx.recyclerview.widget.SortedListAdapterCallback;
 import butterknife.ButterKnife;
 
+/**
+ * Abstract adapter that can easily represent a collection of Items, with listener and callbacks
+ * for basic CRUD manipulations (create/update/delete).
+ */
 public abstract class CrudAdapter<Item, VH extends CrudAdapter.ViewHolder> extends RecyclerView.Adapter<VH> {
 
   private Listener<Item> listener;

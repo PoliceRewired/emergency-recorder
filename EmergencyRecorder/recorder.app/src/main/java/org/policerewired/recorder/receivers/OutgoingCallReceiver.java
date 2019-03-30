@@ -4,6 +4,9 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 
+/**
+ * Responsible for receiving and parsing outgoing phonecalls.
+ */
 public class OutgoingCallReceiver extends BroadcastReceiver {
 
   private Listener listener;

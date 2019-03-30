@@ -14,6 +14,10 @@ import androidx.room.Database;
 import androidx.room.RoomDatabase;
 import androidx.room.TypeConverters;
 
+/**
+ * Main database for the app - hold information about rules (behaviours to taken when outgoing
+ * calls are detected) and recordings (the app's log of events).
+ */
 @Database(entities = {Rule.class, Recording.class}, version = 1, exportSchema = false)
 @TypeConverters({DateConverter.class, BehaviourConverter.class, UriConverter.class, RecordTypeConverter.class, UUIDConverter.class})
 public abstract class RecordingDb extends RoomDatabase {

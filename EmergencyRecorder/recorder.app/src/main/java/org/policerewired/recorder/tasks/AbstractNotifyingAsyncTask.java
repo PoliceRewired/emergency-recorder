@@ -8,8 +8,9 @@ import android.os.AsyncTask;
 import android.os.Build;
 import android.widget.Toast;
 
-import org.policerewired.recorder.R;
-
+/**
+ * An abstract asynchronous task that provides a notification to the user while it is running.
+ */
 public abstract class AbstractNotifyingAsyncTask<Params,Progress,Result> extends AsyncTask<Params,Progress,Result> {
 
   protected Context context;

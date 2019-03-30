@@ -1,34 +1,22 @@
 package org.policerewired.recorder.ui;
 
 import android.content.Intent;
-import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.Button;
 import android.widget.ImageView;
 
-import com.flt.servicelib.AbstractPermissionExtensionAppCompatActivity;
-import com.flt.servicelib.AbstractServiceBoundAppCompatActivity;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
-import org.policerewired.recorder.EmergencyRecorderApp;
 import org.policerewired.recorder.R;
-import org.policerewired.recorder.db.entity.Rule;
-import org.policerewired.recorder.service.IRecorderService;
-import org.policerewired.recorder.service.RecorderService;
-import org.policerewired.recorder.ui.adapters.CrudAdapter;
-import org.policerewired.recorder.ui.adapters.RulesAdapter;
 
-import java.util.List;
-
-import androidx.lifecycle.LiveData;
-import androidx.lifecycle.Observer;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
 import butterknife.BindView;
-import butterknife.ButterKnife;
 import butterknife.OnClick;
 
+/**
+ * Main activity - show's the app's permissions and allows the user to launch the bubble cam overlay
+ * or the rules activity.
+ */
 public class ConfigActivity extends AbstractRecorderActivity {
 
   @BindView(R.id.icon_warn_permissions) ImageView icon_permissions;

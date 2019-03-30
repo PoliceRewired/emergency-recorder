@@ -1,12 +1,5 @@
 package org.policerewired.recorder.ui;
 
-import androidx.appcompat.app.AlertDialog;
-import androidx.lifecycle.LiveData;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
-import butterknife.BindView;
-import butterknife.OnClick;
-
 import android.os.Bundle;
 import android.view.MenuItem;
 
@@ -21,6 +14,16 @@ import org.policerewired.recorder.ui.dialogs.EditRuleDialog;
 
 import java.util.List;
 
+import androidx.appcompat.app.AlertDialog;
+import androidx.lifecycle.LiveData;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+import butterknife.BindView;
+import butterknife.OnClick;
+
+/**
+ * Shows a list of the app's rules to the user, allowing them to modify them.
+ */
 public class RulesActivity extends AbstractRecorderActivity {
 
   @BindView(R.id.recycler_rules) RecyclerView recycler_rules;
@@ -71,7 +74,7 @@ public class RulesActivity extends AbstractRecorderActivity {
 
   @OnClick(R.id.fab_add)
   public void add_click() {
-    Rule rule = BaseData.createBaseRule();
+    Rule rule = BaseData.createNewRule();
     edit_dialog = new EditRuleDialog(RulesActivity.this, rule, new EditRuleDialog.Listener() {
       @Override
       public void done(Rule rule) {

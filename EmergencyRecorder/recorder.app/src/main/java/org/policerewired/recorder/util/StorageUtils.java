@@ -8,7 +8,6 @@ import org.policerewired.recorder.R;
 import java.io.File;
 import java.io.IOException;
 import java.util.Date;
-import java.util.UUID;
 
 public class StorageUtils {
 

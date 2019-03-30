@@ -1,12 +1,25 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
+    <!-- supported modes -->
+    <bool name="supports_video_mode">false</bool>
+    <bool name="supports_photo_mode">true</bool>
+    <bool name="supports_hybrid_mode">true</bool>
+
+    <!-- default rules -->
     <string-array name="call_matches">
-        <item>UK emergency services,999</item>
-        <item>UK non-emergency police,101</item>
-        <item>USA emergency services,911</item>
+        <item>UK emergency services,999,OpenBubbleCamStartVideoMode</item>
+        <item>UK non-emergency police,101,OpenBubbleCam</item>
+        <item>UK non-emergency medical,111,Nothing</item>
+        <item>USA emergency services,911,OpenBubbleCamStartVideoMode</item>
+        <item>Emergency number (international),112,OpenBubbleCamStartVideoMode</item>
     </string-array>
 
+    <!-- hybrid processing -->
     <integer name="default_hybrid_video_max_width">480</integer>
+
+    <!-- intervals -->
+    <integer name="location_interval_ms">5000</integer>
+    <integer name="hybrid_interval_ms">2000</integer>
 
 </resources>

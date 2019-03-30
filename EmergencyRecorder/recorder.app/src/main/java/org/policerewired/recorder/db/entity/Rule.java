@@ -9,6 +9,10 @@ import androidx.room.Entity;
 import androidx.room.Ignore;
 import androidx.room.PrimaryKey;
 
+/**
+ * Represents a rule that the app should follow when deciding which action to take on detection of
+ * an outgoing phonecall.
+ */
 @Entity(tableName = "rule")
 public class Rule {
 

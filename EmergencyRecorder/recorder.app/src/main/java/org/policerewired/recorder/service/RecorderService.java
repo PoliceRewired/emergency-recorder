@@ -36,6 +36,9 @@ import androidx.core.app.NotificationCompat;
 import androidx.core.app.NotificationManagerCompat;
 import androidx.lifecycle.LiveData;
 
+/**
+ * Core service for this app - responsible for managing the overlay, and app database.
+ */
 public class RecorderService extends AbstractBackgroundBindingService<IRecorderService> implements IRecorderService {
   private static final String TAG = RecorderService.class.getSimpleName();
 
@@ -64,7 +67,7 @@ public class RecorderService extends AbstractBackgroundBindingService<IRecorderS
     filter.addCategory(Intent.CATEGORY_DEFAULT);
     registerReceiver(call_receiver,  filter);
 
-    bubblecam = new BubbleCamOverlay(this, bubble_cam_listener, BubbleCamConfig.defaults());
+    bubblecam = new BubbleCamOverlay(this, bubble_cam_listener, BubbleCamConfig.defaults(this));
   }
 
   @Override
@@ -94,6 +97,9 @@ public class RecorderService extends AbstractBackgroundBindingService<IRecorderS
     public void videoCaptured(Date started, Uri video) {
       recordVideo(started, video);
     }
+
+    @Override
+    public void hybridPhotoCaptured(Date taken, Uri photo) { recordHybridPhoto(taken, photo); }
 
     @Override
     public void hybridsCaptured(HybridCollection collection) {
