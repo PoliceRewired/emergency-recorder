@@ -1,6 +1,10 @@
 package org.policerewired.recorder.util;
 
+import android.content.Context;
+import android.content.pm.PackageInfo;
 import android.location.Location;
+
+import org.policerewired.recorder.R;
 
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -61,6 +65,16 @@ public class ExifUtils {
     int minutes = calendar.get(Calendar.MINUTE);
     int seconds = calendar.get(Calendar.SECOND);
     return hourOfDay + "/1," + minutes + "/1," + seconds + "/1";
+  }
+
+  public static String getExifFormatSoftwareName(Context context) {
+    try {
+      PackageInfo pInfo = context.getPackageManager().getPackageInfo(context.getPackageName(), 0);
+      String version = pInfo.versionName;
+      return context.getString(R.string.exif_software, version);
+    } catch (Exception e) {
+      return context.getString(R.string.exif_software, "").trim();
+    }
   }
 
 }

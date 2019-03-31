@@ -32,6 +32,7 @@ import static org.policerewired.recorder.util.ExifUtils.getExifFormatLatitude;
 import static org.policerewired.recorder.util.ExifUtils.getExifFormatLatitudeRef;
 import static org.policerewired.recorder.util.ExifUtils.getExifFormatLongitude;
 import static org.policerewired.recorder.util.ExifUtils.getExifFormatLongitudeRef;
+import static org.policerewired.recorder.util.ExifUtils.getExifFormatSoftwareName;
 import static org.policerewired.recorder.util.ExifUtils.getExifGpsFormatTimestamp;
 
 /**
@@ -113,7 +114,7 @@ public class CapturePhotoUtils {
       exifs.setAttribute(ExifInterface.TAG_GPS_ALTITUDE_REF, getExifFormatAltitudeRef(location));
 
       if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-        exifs.setAttribute(ExifInterface.TAG_ARTIST , context.getString(R.string.exif_artist));
+        exifs.setAttribute(ExifInterface.TAG_SOFTWARE, getExifFormatSoftwareName(context));
         exifs.setAttribute(ExifInterface.TAG_IMAGE_DESCRIPTION, description);
       }
     }

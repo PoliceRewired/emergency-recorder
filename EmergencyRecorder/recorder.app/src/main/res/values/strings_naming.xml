@@ -20,6 +20,6 @@
     <string name="geocode_description">%s</string>
     <string name="w3w_description">///%s</string>
 
-    <string name="exif_artist">Emergency Recorder app</string>
+    <string name="exif_software">Emergency Recorder app %s</string>
 
 </resources>
