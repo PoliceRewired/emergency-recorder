@@ -19,29 +19,35 @@ public class StorageUtils {
     this.naming = new NamingUtils(context);
   }
 
-  public String photoFile(Context context, Date date) {
+  public String photoFile(Date date) {
     return context.getString(R.string.photo_filename, naming.getConciseDate(date));
   }
 
-  public String audioFile(Context context, Date date) {
+  public String audioFile(Date date) {
     return context.getString(R.string.audio_filename, naming.getConciseDate(date));
   }
 
-  public File tempVideoFile(Context context, String suffix) throws IOException {
+  public File tempPhotoFile(String suffix) throws IOException {
+    File outputDir = context.getCacheDir();
+    File file = File.createTempFile("photo_temp", suffix, outputDir);
+    return file;
+  }
+
+  public File tempVideoFile(String suffix) throws IOException {
     File outputDir = context.getCacheDir();
     File file = File.createTempFile("video_processing", suffix, outputDir);
     return file;
   }
 
-  public File tempAudioFile(Context context, String suffix) throws IOException {
+  public File tempAudioFile(String suffix) throws IOException {
     File outputDir = context.getCacheDir();
     File file = File.createTempFile("audio_temp", suffix, outputDir);
     return file;
   }
 
-  public File externalAudioFile(Context context, Date date, String suffix) throws IOException {
+  public File externalAudioFile(Date date, String suffix) throws IOException {
     File dir = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PODCASTS);
-    String filename = audioFile(context, date);
+    String filename = audioFile(date);
     File file = new File(dir, filename + suffix);
     return file;
   }

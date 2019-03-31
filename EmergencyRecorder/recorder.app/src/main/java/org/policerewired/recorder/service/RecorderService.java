@@ -267,7 +267,7 @@ public class RecorderService extends AbstractBackgroundBindingService<IRecorderS
       w3w);
     String title = naming.generate_photo_title(taken);
     String description = naming.generate_photo_description(taken);
-    Uri uri = CapturePhotoUtils.insertImage(getContentResolver(), bmp, title, description, taken);
+    Uri uri = CapturePhotoUtils.insertImage(this, bmp, title, description, taken, location);
     return uri;
   }
 
@@ -281,7 +281,7 @@ public class RecorderService extends AbstractBackgroundBindingService<IRecorderS
       w3w);
     String title = naming.generate_hybrid_photo_title(taken);
     String description = naming.generate_hybrid_photo_description(taken, started);
-    Uri uri = CapturePhotoUtils.insertImage(getContentResolver(), bmp, title, description, taken);
+    Uri uri = CapturePhotoUtils.insertImage(this, bmp, title, description, taken, location);
     return uri;
   }
 

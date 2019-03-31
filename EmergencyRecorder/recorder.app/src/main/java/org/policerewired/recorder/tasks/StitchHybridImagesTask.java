@@ -107,7 +107,7 @@ public class StitchHybridImagesTask extends AbstractNotifyingAsyncTask<StitchHyb
       Uri uri = CaptureAudioUtils.insertAudio(
         context.getContentResolver(),
         result.audio,
-        storage.externalAudioFile(context, result.started, ".3gpp"),
+        storage.externalAudioFile(result.started, ".3gpp"),
         naming.generate_audio_title(result.started),
         naming.generate_audio_description(result.started, result.duration_ms()),
         naming.generate_audio_album(result.started),
@@ -143,7 +143,7 @@ public class StitchHybridImagesTask extends AbstractNotifyingAsyncTask<StitchHyb
 
     try {
 
-      File video_file = storage.tempVideoFile(context, ".mp4");
+      File video_file = storage.tempVideoFile(".mp4");
 
       SeekableByteChannel channel = NIOUtils.writableChannel(video_file);
 
