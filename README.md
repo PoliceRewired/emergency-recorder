@@ -84,7 +84,7 @@ Location
 - [x] App geocodes that location, and displays the closest address to the user.
 - [x] App also utilises the What3Words API to make visible the closest What3Words location.
 - [x] App superimposes coordinates and time onto visible portion of each stored photo.
-- [ ] App stores taken time and location information in metadata for each stored photo.
+- [x] App stores taken time and location information in metadata for each stored photo.
 
 User information
 
