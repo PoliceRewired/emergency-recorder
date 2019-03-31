@@ -57,7 +57,7 @@ Bubble camera
 - [x] User can take photos using the overlay.
 - [x] The new photo appears in the user's phone gallery immediately.
 - [x] User can take a burst of photos using the overlay.
-- [ ] During the burst, each photo taken is added to the phone gallery immediately.
+- [x] During the burst, each photo taken is added to the phone gallery immediately.
 - [x] After a burst, photos are stitched into a video, and appear in the user's phone gallery.
 - [x] App displays a notification whilst photographs are being stitched into video.
 - [x] Audio recording accompanies the burst mode photography.
