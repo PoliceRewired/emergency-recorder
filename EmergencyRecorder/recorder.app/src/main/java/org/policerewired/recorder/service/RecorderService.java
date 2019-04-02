@@ -28,7 +28,6 @@ import org.policerewired.recorder.receivers.ScreenReceiver;
 import org.policerewired.recorder.tasks.HybridCollection;
 import org.policerewired.recorder.tasks.StitchHybridImagesTask;
 import org.policerewired.recorder.ui.ConfigActivity;
-import org.policerewired.recorder.ui.LockScreenActivity;
 import org.policerewired.recorder.ui.overlay.BubbleCamConfig;
 import org.policerewired.recorder.ui.overlay.BubbleCamOverlay;
 import org.policerewired.recorder.ui.overlay.IBubbleCamOverlay;
@@ -151,6 +150,7 @@ public class RecorderService extends AbstractBackgroundBindingService<IRecorderS
     }
   };
 
+  @SuppressWarnings({"Convert2Lambda", "Anonymous2MethodRef"})
   private ILauncherOverlay.Listener launcher_listener = new ILauncherOverlay.Listener() {
     @Override
     public void launchSelected() {
@@ -408,6 +408,11 @@ public class RecorderService extends AbstractBackgroundBindingService<IRecorderS
   @Override
   public LiveData<List<Rule>> getRules() {
     return EmergencyRecorderApp.db.getRuleDao().getAll();
+  }
+
+  @Override
+  public LiveData<List<Recording>> getRecordingLog() {
+    return EmergencyRecorderApp.db.getRecordingDao().getAll();
   }
 
   public List<Rule> getRulesFor(String number) {

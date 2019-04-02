@@ -21,6 +21,7 @@
     <string name="btn_grant_overlay">Grant overlay permission…</string>
 
     <string name="menu_view_rules">Edit rules…</string>
+    <string name="menu_view_log">View log…</string>
     <string name="menu_view_about">About…</string>
 
 </resources>

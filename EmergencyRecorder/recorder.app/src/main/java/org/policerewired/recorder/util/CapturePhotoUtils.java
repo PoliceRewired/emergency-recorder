@@ -14,7 +14,6 @@ import android.provider.MediaStore.Images;
 import android.util.Log;
 
 import org.jcodec.common.io.IOUtils;
-import org.policerewired.recorder.R;
 
 import java.io.File;
 import java.io.FileInputStream;

@@ -1,9 +1,9 @@
 package org.policerewired.recorder.service;
 
-import android.content.Context;
 import android.location.Location;
 import android.net.Uri;
 
+import org.policerewired.recorder.db.entity.Recording;
 import org.policerewired.recorder.db.entity.Rule;
 
 import java.util.Date;
@@ -38,6 +38,12 @@ public interface IRecorderService {
    * @return a Live copy of all rules contained by the app.
    */
   LiveData<List<Rule>> getRules();
+
+  /**
+   * TODO: adapt this to fetch only recent logs (or logs in a timeframe)
+   * @return a Live copy of all events recorded in the log so far.
+   */
+  LiveData<List<Recording>> getRecordingLog();
 
   /**
    * Removes a rule.

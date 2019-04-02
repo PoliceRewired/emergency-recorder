@@ -5,6 +5,7 @@ import org.policerewired.recorder.db.entity.Recording;
 
 import java.util.List;
 
+import androidx.lifecycle.LiveData;
 import androidx.room.Dao;
 import androidx.room.Delete;
 import androidx.room.Insert;
@@ -15,7 +16,7 @@ import androidx.room.Update;
 public interface RecordingDao {
 
   @Query("SELECT * FROM recording")
-  List<Recording> getAll();
+  LiveData<List<Recording>> getAll();
 
   @Update
   void update(Recording... recordings);

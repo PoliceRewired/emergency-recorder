@@ -93,7 +93,7 @@ public class EmergencyRecorderApp extends Application {
   /**
    * See: https://developer.android.com/about/versions/pie/android-9.0-changes-all#privacy-changes-all
    * The READ_CALL_LOG permission is required for Android 9 and above in order to have visibility of
-   * calls when using PROCESS_OUTGOING_CALLS. The READ_CALL_LOG permission also requires that a
+   * calls when using PROCESS_OUTGOING_CALLS. The READ_CALL_LOG permission also requires a form
    * submission to Google Play - as apps that use it are limited by the platform.
    */
   public static String[] permissions = new String[] {

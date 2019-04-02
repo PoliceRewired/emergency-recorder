@@ -69,6 +69,7 @@ public class ConfigActivity extends AbstractRecorderActivity {
   @Override
   public boolean onCreateOptionsMenu(Menu menu) {
     menu.add(Menu.NONE, R.string.menu_view_rules, 0, R.string.menu_view_rules);
+    menu.add(Menu.NONE, R.string.menu_view_log, 0, R.string.menu_view_log);
     menu.add(Menu.NONE, R.string.menu_view_about, 0, R.string.menu_view_about);
     return super.onCreateOptionsMenu(menu);
   }
@@ -76,6 +77,10 @@ public class ConfigActivity extends AbstractRecorderActivity {
   @Override
   public boolean onOptionsItemSelected(MenuItem item) {
     switch (item.getItemId()) {
+
+      case R.string.menu_view_log:
+        startActivity(new Intent(this, LogActivity.class));
+        return true;
 
       case R.string.menu_view_rules:
         startActivity(new Intent(this, RulesActivity.class));
