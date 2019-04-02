@@ -2,6 +2,10 @@ package org.policerewired.recorder.ui.overlay;
 
 import android.Manifest;
 import android.annotation.SuppressLint;
+import android.app.Activity;
+import android.app.ActivityManager;
+import android.app.Dialog;
+import android.app.Service;
 import android.content.Context;
 import android.content.pm.PackageManager;
 import android.content.res.ColorStateList;
@@ -10,6 +14,7 @@ import android.location.Address;
 import android.location.Location;
 import android.media.MediaRecorder;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Handler;
 import android.util.Log;
 import android.view.Gravity;
@@ -55,6 +60,7 @@ import static com.google.android.gms.location.LocationRequest.PRIORITY_HIGH_ACCU
 /**
  * The overlay containing the camera view, buttons, and location information a user sees.
  */
+@SuppressWarnings("FieldCanBeLocal")
 public class BubbleCamOverlay implements IBubbleCamOverlay {
   private static final String TAG = BubbleCamOverlay.class.getSimpleName();
 
@@ -162,6 +168,7 @@ public class BubbleCamOverlay implements IBubbleCamOverlay {
   /**
    * Inflates the layout for this overlay, sets the drag listeners, and default window behaviours.
    */
+  @SuppressLint("ClickableViewAccessibility")
   public void onCreate() {
     LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
     overlay = inflater.inflate(R.layout.overlay_bubble_cam, null);
@@ -173,7 +180,7 @@ public class BubbleCamOverlay implements IBubbleCamOverlay {
     camera_kit.setOnTouchListener(drag);
 
     int window_type;
-    if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
+    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
       window_type = WindowManager.LayoutParams.TYPE_APPLICATION_OVERLAY;
     } else {
       window_type = WindowManager.LayoutParams.TYPE_SYSTEM_ALERT;
@@ -183,12 +190,19 @@ public class BubbleCamOverlay implements IBubbleCamOverlay {
       WindowManager.LayoutParams.WRAP_CONTENT,
       WindowManager.LayoutParams.WRAP_CONTENT,
       window_type,
-      WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE
-        | WindowManager.LayoutParams.FLAG_NOT_TOUCH_MODAL
-        | WindowManager.LayoutParams.FLAG_SHOW_WHEN_LOCKED
-        | WindowManager.LayoutParams.FLAG_TURN_SCREEN_ON
-        | WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON
+      WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE // cannot receive keypresses
+        | WindowManager.LayoutParams.FLAG_NOT_TOUCH_MODAL // passes external taps to other windows
+        | WindowManager.LayoutParams.FLAG_SHOW_WHEN_LOCKED // ignored for O+
+        | WindowManager.LayoutParams.FLAG_TURN_SCREEN_ON // turns on the screen if activated
+        | WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON // screen does not dim or time-out
       , PixelFormat.TRANSLUCENT);
+
+    // FLAG_SHOW_WHEN_LOCKED is deprecated from API 27 (Android O)
+    // FLAG_DISMISS_KEYGUARD was deprecated from API 26 (and not that useful anyway)
+    // Best fallback option: use setShowWhenLocked() - a method only available on Activities
+    // Can our overlays be Activities?
+    //ActivityManager am = (ActivityManager)context.getSystemService(Service.ACTIVITY_SERVICE);
+    //am.moveTaskToFront(taskId, flags);
 
     overlay_params.gravity = Gravity.START | Gravity.TOP;
     overlay_params.x = 0;
@@ -202,7 +216,7 @@ public class BubbleCamOverlay implements IBubbleCamOverlay {
    * @see org.policerewired.recorder.ui.overlay.BubbleCamOverlay.State
    * @param next the state to switch to
    */
-  public void setState(State next) {
+  private void setState(State next) {
 
     // special case - CameraKit does not yet support video mode, so fallback on Hybrid recording
     if (!context.getResources().getBoolean(R.bool.supports_video_mode) && next == State.Recording) {

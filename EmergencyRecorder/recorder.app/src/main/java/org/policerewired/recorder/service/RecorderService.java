@@ -24,9 +24,11 @@ import org.policerewired.recorder.constants.RecordType;
 import org.policerewired.recorder.db.entity.Recording;
 import org.policerewired.recorder.db.entity.Rule;
 import org.policerewired.recorder.receivers.OutgoingCallReceiver;
+import org.policerewired.recorder.receivers.ScreenReceiver;
 import org.policerewired.recorder.tasks.HybridCollection;
 import org.policerewired.recorder.tasks.StitchHybridImagesTask;
 import org.policerewired.recorder.ui.ConfigActivity;
+import org.policerewired.recorder.ui.LockScreenActivity;
 import org.policerewired.recorder.ui.overlay.BubbleCamConfig;
 import org.policerewired.recorder.ui.overlay.BubbleCamOverlay;
 import org.policerewired.recorder.ui.overlay.IBubbleCamOverlay;
@@ -52,6 +54,8 @@ public class RecorderService extends AbstractBackgroundBindingService<IRecorderS
   private static final String TAG = RecorderService.class.getSimpleName();
 
   private OutgoingCallReceiver call_receiver;
+  private ScreenReceiver screen_receiver;
+
   private BubbleCamOverlay bubblecam;
   private LauncherOverlay launcher;
 
@@ -78,10 +82,16 @@ public class RecorderService extends AbstractBackgroundBindingService<IRecorderS
     annotation = new PhotoAnnotationUtils(this);
 
     call_receiver = new OutgoingCallReceiver(call_listener);
-    IntentFilter filter = new IntentFilter();
-    filter.addAction(Intent.ACTION_NEW_OUTGOING_CALL);
-    filter.addCategory(Intent.CATEGORY_DEFAULT);
-    registerReceiver(call_receiver,  filter);
+    IntentFilter call_filter = new IntentFilter();
+    call_filter.addAction(Intent.ACTION_NEW_OUTGOING_CALL);
+    call_filter.addCategory(Intent.CATEGORY_DEFAULT);
+    registerReceiver(call_receiver,  call_filter);
+
+    screen_receiver = new ScreenReceiver(screen_listener);
+    IntentFilter screen_filter = new IntentFilter();
+    screen_filter.addAction(Intent.ACTION_SCREEN_ON);
+    screen_filter.addAction(Intent.ACTION_SCREEN_OFF);
+    registerReceiver(screen_receiver, screen_filter);
 
     bubblecam = new BubbleCamOverlay(this, bubble_cam_listener, BubbleCamConfig.defaults(this));
     launcher = new LauncherOverlay(this, launcher_listener, LauncherConfig.defaults(this));
@@ -107,8 +117,8 @@ public class RecorderService extends AbstractBackgroundBindingService<IRecorderS
 
   @Override
   public void onPermissionsUpdated() {
-    if (hasOverlayPermission() && !bubblecam.isShowing() && !launcher.isShowing()) {
-      showLauncher();
+    if (hasOverlayPermission() && !bubblecam.isShowing() && !launcher.isInitialised()) {
+      launcher.init();
     }
   }
 
@@ -116,7 +126,7 @@ public class RecorderService extends AbstractBackgroundBindingService<IRecorderS
 
     @Override
     public void closed() {
-      showLauncher();
+      launcher.indicate();
     }
 
     @Override
@@ -175,11 +185,15 @@ public class RecorderService extends AbstractBackgroundBindingService<IRecorderS
     }
   }
 
-  private void showLauncher() {
-    if (hasOverlayPermission()) {
-      launcher.show();
+  @SuppressWarnings("Convert2Lambda")
+  private ScreenReceiver.Listener screen_listener = new ScreenReceiver.Listener() {
+    @Override
+    public void onScreenStateChange(boolean isScreenAwake, boolean isPhoneLocked) {
+      if (launcher.isInitialised() && isScreenAwake && isPhoneLocked) {
+        launcher.indicate();
+      }
     }
-  }
+  };
 
   @SuppressWarnings("Convert2Lambda")
   private OutgoingCallReceiver.Listener call_listener = new OutgoingCallReceiver.Listener() {

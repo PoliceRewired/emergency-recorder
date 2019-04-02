@@ -2,10 +2,12 @@
   <dictionary name="lewis">
     <words>
       <w>bubblecam</w>
+      <w>geocoder</w>
       <w>hybriding</w>
       <w>policerewired</w>
       <w>reregister</w>
       <w>videocam</w>
+      <w>wordser</w>
     </words>
   </dictionary>
 </component>

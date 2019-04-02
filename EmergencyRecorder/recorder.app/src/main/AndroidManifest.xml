@@ -8,7 +8,7 @@
     <uses-permission android:name="android.permission.CAMERA" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.READ_PHONE_STATE" />
-    <uses-permission android:name="android.permission.READ_CALL_LOG" /><!-- required for Android 9 -->
+    <uses-permission android:name="android.permission.READ_CALL_LOG" /> <!-- required for Android 9 -->
     <uses-permission android:name="android.permission.PROCESS_OUTGOING_CALLS" />
     <uses-permission android:name="android.permission.RECORD_AUDIO" />
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
@@ -26,26 +26,30 @@
         android:theme="@style/AppTheme"
         tools:ignore="AllowBackup,GoogleAppIndexingWarning">
 
+        <activity
+            android:name=".ui.LockScreenActivity"
+            android:launchMode="singleTop"
+            android:theme="@style/AppThemeTransparent"
+            />
+
         <service
             android:name=".service.RecorderService"
             android:enabled="true"
-            android:exported="true"
-            />
+            android:exported="true" />
 
         <activity
             android:name=".ui.ConfigActivity"
             android:launchMode="singleTop">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
+
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-
         <activity
             android:name=".ui.RulesActivity"
-            android:launchMode="singleTop"
-            android:label="@string/activity_rules">
-        </activity>
+            android:label="@string/activity_rules"
+            android:launchMode="singleTop" />
 
         <receiver
             android:name=".receivers.BootReceiever"
