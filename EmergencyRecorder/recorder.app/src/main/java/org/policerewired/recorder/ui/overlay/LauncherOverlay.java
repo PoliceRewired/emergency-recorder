@@ -36,7 +36,7 @@ public class LauncherOverlay implements ILauncherOverlay {
 
   private boolean initialised;
 
-  private LauncherConfig config; // future planning
+  private LauncherConfig config;
 
   private State state = State.Hidden;
 
@@ -71,11 +71,6 @@ public class LauncherOverlay implements ILauncherOverlay {
   }
 
   @Override
-  public void indicate() {
-    show();
-  }
-
-  @Override
   public boolean isInitialised() {
     return initialised;
   }
@@ -83,33 +78,46 @@ public class LauncherOverlay implements ILauncherOverlay {
   private void setState(State next) {
     if ((state == null || !state.showing) && next.showing) {
 
-      float newX = 0f;
-      ObjectAnimator animation = ObjectAnimator.ofFloat(layout, "translationX", newX);
-      animation.setDuration(500);
-      animation.start();
-
-      handler.removeCallbacks(runnable_hide);
-      handler.postDelayed(runnable_hide, 5000);
+      slide_out(config.fast_slide_ms);
+      schedule_slide_in(config.normal_dismiss_ms);
     }
 
     if ((state == null || state.showing) && !next.showing) {
-      float newX = -icon_launch.getWidth();
-      ObjectAnimator animation = ObjectAnimator.ofFloat(layout, "translationX", newX);
-      animation.setDuration(500);
-      animation.start();
-
-      handler.removeCallbacks(runnable_hide);
+      slide_in(config.slow_slide_ms);
     }
 
     state = next;
   }
 
-  private Runnable runnable_hide = new Runnable() {
-    @Override
-    public void run() {
-      hide();
-    }
-  };
+  private void slide_out(long duration) {
+    float newX = 0f;
+    ObjectAnimator animation = ObjectAnimator.ofFloat(layout, "translationX", newX);
+    animation.setDuration(duration);
+    animation.start();
+  }
+
+  private void schedule_slide_in(long delay) {
+    handler.removeCallbacks(runnable_hide);
+    handler.postDelayed(runnable_hide, delay);
+  }
+
+  private void slide_in(long duration) {
+    float newX = -icon_launch.getWidth();
+    ObjectAnimator animation = ObjectAnimator.ofFloat(layout, "translationX", newX);
+    animation.setDuration(duration);
+    animation.start();
+  }
+
+  @Override
+  public void indicate() {
+    slide_out(config.fast_slide_ms);
+    handler.postDelayed(
+      () -> slide_in(config.fast_slide_ms),
+      config.fast_slide_ms + config.fast_dismiss_ms);
+
+  }
+
+  private Runnable runnable_hide = () -> hide();
 
   @OnClick({R.id.icon_launch, R.id.layout_overlay})
   public void launcher_click() {

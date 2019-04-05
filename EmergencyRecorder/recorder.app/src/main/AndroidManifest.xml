@@ -34,21 +34,22 @@
         <service
             android:name=".service.RecorderService"
             android:enabled="true"
-            android:exported="true" />
+            />
 
         <activity
             android:name=".ui.ConfigActivity"
             android:launchMode="singleTop">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
         <activity
             android:name=".ui.RulesActivity"
             android:label="@string/activity_rules"
-            android:launchMode="singleTop" />
+            android:launchMode="singleTop"
+            />
 
         <receiver
             android:name=".receivers.BootReceiever"
@@ -57,7 +58,6 @@
                 <action android:name="android.intent.action.BOOT_COMPLETED" />
                 <action android:name="android.intent.action.QUICKBOOT_POWERON" />
                 <action android:name="android.intent.action.LOCKED_BOOT_COMPLETED" />
-
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </receiver>

@@ -22,4 +22,10 @@
     <integer name="location_interval_ms">5000</integer>
     <integer name="hybrid_interval_ms">2000</integer>
 
+    <!-- launcher -->
+    <integer name="launcher_fast_slide_ms">300</integer>
+    <integer name="launcher_slow_slide_ms">2000</integer>
+    <integer name="launcher_normal_dismiss_ms">5000</integer>
+    <integer name="launcher_fast_dismiss_ms">300</integer>
+
 </resources>
