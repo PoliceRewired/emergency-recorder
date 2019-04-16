@@ -12,4 +12,7 @@
     <string name="task_toast_complete_stitching">Your video is ready.</string>
     <string name="task_toast_failed_stitching">An error occurred preparing your video.</string>
 
+    <string name="toast_warning_unable_to_store_hybrid_video">Unable to store the video from your photos.</string>
+    <string name="toast_warning_unable_to_store_audio">Unable to store the separate audio track.</string>
+
 </resources>

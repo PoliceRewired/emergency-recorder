@@ -6,6 +6,7 @@ import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.util.Log;
 import android.util.Pair;
+import android.widget.Toast;
 
 import org.jcodec.api.SequenceEncoder;
 import org.jcodec.api.android.AndroidSequenceEncoder;
@@ -103,6 +104,7 @@ public class StitchHybridImagesTask extends AbstractNotifyingAsyncTask<StitchHyb
 
       } catch (Exception e) {
         Log.e(TAG, "Unable to store video.", e);
+        Toast.makeText(context, R.string.toast_warning_unable_to_store_hybrid_video, Toast.LENGTH_LONG).show();
       }
     }
 
@@ -121,6 +123,7 @@ public class StitchHybridImagesTask extends AbstractNotifyingAsyncTask<StitchHyb
 
     } catch (Exception e) {
       Log.e(TAG, "Unable to store audio.", e);
+      Toast.makeText(context, R.string.toast_warning_unable_to_store_audio, Toast.LENGTH_LONG).show();
     }
 
     super.onPostExecute(result);
