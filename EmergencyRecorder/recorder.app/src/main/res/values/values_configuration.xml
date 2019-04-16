@@ -19,7 +19,7 @@
     </string-array>
 
     <!-- hybrid processing -->
-    <integer name="default_hybrid_video_max_width">480</integer>
+    <integer name="default_hybrid_video_max_width">960</integer>
 
     <!-- intervals -->
     <integer name="location_interval_ms">5000</integer>

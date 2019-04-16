@@ -184,25 +184,9 @@ public class StitchHybridImagesTask extends AbstractNotifyingAsyncTask<StitchHyb
       encoder.finish();
       channel.close();
 
+      // mux the audio and video together...
       File output_video_file = storage.tempVideoFile(".mp4");
       MuxingUtils.mux(video_file, param.collection.audio_file, output_video_file);
-
-      /*
-      // video file is in: video_file
-      H264TrackImpl h264_video = new H264TrackImpl(new FileDataSourceImpl(video_file));
-
-      // audio file is in: param.collection.audio_file
-      AACTrackImpl aac_audio = new AACTrackImpl(new FileDataSourceImpl(param.collection.audio_file));
-
-      // merge the two tracks into a single mp4
-      Movie movie = new Movie();
-      movie.addTrack(h264_video);
-      movie.addTrack(aac_audio);
-      Container mp4file = new DefaultMp4Builder().build(movie);
-      FileChannel fc = new FileOutputStream(output_video_file).getChannel();
-      mp4file.writeContainer(fc);
-      fc.close();
-      */
 
       return new Result(true, output_video_file, param.collection.audio_file, param.collection.started, param.collection.blobs.size(), param.collection.ms_per_blob);
 
