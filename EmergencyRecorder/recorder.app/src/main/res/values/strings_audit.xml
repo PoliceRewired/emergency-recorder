@@ -17,7 +17,9 @@
     <string name="event_audit_prepopulate_database">Pre-populating blank database.</string>
     <string name="event_audit_application_terminated">Application terminated.</string>
     <string name="event_audit_intent_received">Intent received.</string>
+    <string name="event_audit_intent_received_ACTION">Intent received: %s</string>
     <string name="event_audit_service_stopped">Service stopped naturally.</string>
+    <string name="event_audit_service_started">Service started.</string>
     <string name="event_audit_alarm_set_1_min">Alarm set for 1 minute.</string>
 
     <string name="confirm_delete_log_title">Erase audit log?</string>

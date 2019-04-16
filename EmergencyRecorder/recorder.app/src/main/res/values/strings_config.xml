@@ -22,10 +22,15 @@
         Please disable Battery Optimisation for Emergency Recorder.
     </string>
 
+    <string name="dialog_title_config">Configuration</string>
+
+    <string name="config_embedded_listener">Embedded listener: %s</string>
+
     <string name="btn_grant_permissions">Grant permissions…</string>
     <string name="btn_grant_overlay">Grant overlay permission…</string>
     <string name="btn_request_power">Disable battery optimisation…</string>
 
+    <string name="menu_view_config">View configuration…</string>
     <string name="menu_view_rules">Edit rules…</string>
     <string name="menu_view_log">View log…</string>
     <string name="menu_view_about">About…</string>

@@ -56,18 +56,14 @@ public class EmergencyRecorderApp extends Application {
     Log.d(TAG, "Scheduling alarm from application class.");
     scheduleAlarm(this);
 
-    if (BuildConfig.DEBUG) {
-      recordAuditableEvent(new Date(), getString(R.string.event_audit_application_created), null, false);
-    }
+    recordAuditableEvent(new Date(), getString(R.string.event_audit_application_created), null, false);
   }
 
   @Override
   public void onTerminate() {
     super.onTerminate();
     Log.i(TAG, "Emergency Recorder: onTerminate");
-    if (BuildConfig.DEBUG) {
-      recordAuditableEvent(new Date(), getString(R.string.event_audit_application_terminated), null, false);
-    }
+    recordAuditableEvent(new Date(), getString(R.string.event_audit_application_terminated), null, false);
   }
 
   @Override

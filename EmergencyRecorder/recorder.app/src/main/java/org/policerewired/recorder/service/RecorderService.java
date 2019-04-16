@@ -25,7 +25,7 @@ import org.policerewired.recorder.constants.Behaviour;
 import org.policerewired.recorder.constants.AuditRecordType;
 import org.policerewired.recorder.db.entity.AuditRecord;
 import org.policerewired.recorder.db.entity.Rule;
-import org.policerewired.recorder.receivers.OutgoingCallReceiver;
+import org.policerewired.recorder.receivers.EmbeddedOutgoingCallReceiver;
 import org.policerewired.recorder.receivers.ScreenReceiver;
 import org.policerewired.recorder.tasks.HybridCollection;
 import org.policerewired.recorder.tasks.StitchHybridImagesTask;
@@ -57,7 +57,10 @@ import static org.policerewired.recorder.EmergencyRecorderApp.saveAuditRecord;
 public class RecorderService extends AbstractBackgroundBindingService<IRecorderService> implements IRecorderService {
   private static final String TAG = RecorderService.class.getSimpleName();
 
-  private OutgoingCallReceiver call_receiver;
+  public static final String ACTION_CALL_RECEIVED = "org.policerewired.recorder.service.RecorderService.CALL_RECEIVED";
+  public static final String EXTRA_NUMBER = "number";
+
+  private EmbeddedOutgoingCallReceiver call_receiver;
   private ScreenReceiver screen_receiver;
 
   private BubbleCamOverlay bubblecam;
@@ -85,11 +88,13 @@ public class RecorderService extends AbstractBackgroundBindingService<IRecorderS
     naming = new NamingUtils(this);
     annotation = new PhotoAnnotationUtils(this);
 
-    call_receiver = new OutgoingCallReceiver(call_listener);
+    call_receiver = new EmbeddedOutgoingCallReceiver(call_listener);
     IntentFilter call_filter = new IntentFilter();
     call_filter.addAction(Intent.ACTION_NEW_OUTGOING_CALL);
     call_filter.addCategory(Intent.CATEGORY_DEFAULT);
-    registerReceiver(call_receiver,  call_filter);
+    if (getResources().getBoolean(R.bool.use_embedded_listener)) {
+      registerReceiver(call_receiver, call_filter);
+    }
 
     screen_receiver = new ScreenReceiver(screen_listener);
     IntentFilter screen_filter = new IntentFilter();
@@ -99,6 +104,8 @@ public class RecorderService extends AbstractBackgroundBindingService<IRecorderS
 
     bubblecam = new BubbleCamOverlay(this, bubble_cam_listener, BubbleCamConfig.defaults(this));
     launcher = new LauncherOverlay(this, launcher_listener, LauncherConfig.defaults(this));
+
+    recordAuditableEvent(new Date(), getString(R.string.event_audit_service_started), null, true);
 
     onPermissionsUpdated();
   }
@@ -127,11 +134,17 @@ public class RecorderService extends AbstractBackgroundBindingService<IRecorderS
 
   @Override
   public int onStartCommand(Intent intent, int flags, int startId) {
-    Log.i(TAG, "Intent received" + (intent.getAction() != null ? ": action=" + intent.getAction() : " (null action)"));
-    if (BuildConfig.DEBUG) {
-      recordAuditableEvent(new Date(), getString(R.string.event_audit_intent_received), intent.getAction(), true);
+    String detail = intent.getAction() != null ? ": action=" + intent.getAction() : " (null action)";
+    Log.i(TAG, getString(R.string.event_audit_intent_received_ACTION, detail));
+    recordAuditableEvent(new Date(), getString(R.string.event_audit_intent_received), detail,true);
+
+    if (ACTION_CALL_RECEIVED.equals(intent.getAction())) {
+      Log.d(TAG, "Initiating call handling...");
+      String number = intent.getStringExtra(EXTRA_NUMBER);
+      onOutgoingCall(number);
     }
-    return super.onStartCommand(intent, flags, startId);
+
+    return super.onStartCommand(intent, flags, startId); // START_STICKY
   }
 
   @Override
@@ -139,6 +152,36 @@ public class RecorderService extends AbstractBackgroundBindingService<IRecorderS
     if (hasOverlayPermission() && !bubblecam.isShowing() && !launcher.isInitialised()) {
       launcher.init();
     }
+  }
+
+  private void onOutgoingCall(String number) {
+    // NB. this has to be quick - if the receiver takes too long, Android will kill it.
+    // If not, this could be the issue. We should schedule the bubblecam.show() with a Handler.
+
+    List<Rule> rules = getRulesFor(number);
+    for (Rule rule : rules) {
+      if (rule.matches(number)) {
+        informUser(getString(R.string.toast_info_call_detected, number));
+        recordCall(new Date(), number); // match found, record it
+        switch (rule.behaviour) {
+          case OpenBubbleCam:
+            showBubbleCam();
+            break;
+
+          case OpenBubbleCamStartBurstMode:
+            showAndHybridBubbleCam();
+            break;
+
+          case OpenBubbleCamStartVideoMode:
+            showAndRecordBubbleCam();
+            break;
+        }
+
+        if (rule.behaviour != Behaviour.Nothing) {
+          break; // exit loop -- we have taken an action now
+        }
+      } // matches the number
+    } // each rule
   }
 
   private IBubbleCamOverlay.Listener bubble_cam_listener = new IBubbleCamOverlay.Listener() {
@@ -216,39 +259,11 @@ public class RecorderService extends AbstractBackgroundBindingService<IRecorderS
   };
 
   @SuppressWarnings("Convert2Lambda")
-  private OutgoingCallReceiver.Listener call_listener = new OutgoingCallReceiver.Listener() {
+  private EmbeddedOutgoingCallReceiver.Listener call_listener = new EmbeddedOutgoingCallReceiver.Listener() {
     @Override
     public void onCall(String number) {
-      // NB. this has to be quick - if the receiver takes too long, Android will kill it.
-      // TODO(testing) - confirm that the bubblecam appears across a wide range of devices.
-      // If not, this could be the issue. We should schedule the bubblecam.show() with a Handler.
-
-      List<Rule> rules = getRulesFor(number);
-      for (Rule rule : rules) {
-        if (rule.matches(number)) {
-          Toast.makeText(RecorderService.this, getString(R.string.toast_info_call_detected, number), Toast.LENGTH_SHORT).show();
-          recordCall(new Date(), number);
-
-            switch (rule.behaviour) {
-              case OpenBubbleCam:
-                showBubbleCam();
-                break;
-
-              case OpenBubbleCamStartBurstMode:
-                showAndHybridBubbleCam();
-                break;
-
-              case OpenBubbleCamStartVideoMode:
-                showAndRecordBubbleCam();
-                break;
-            }
-
-            if (rule.behaviour != Behaviour.Nothing) {
-              break; // exit loop -- we have taken an action now
-            }
-          } // matches the number
-        } // each rule
-      }
+      onOutgoingCall(number);
+    }
   };
 
   @Override

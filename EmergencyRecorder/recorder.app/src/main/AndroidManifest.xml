@@ -63,6 +63,16 @@
             </intent-filter>
         </receiver>
 
+        <!-- the NEW_OUTGOING_CALL intent is still permitted for static receivers -->
+        <receiver
+            android:name=".receivers.StandaloneOutgoingCallReceiver"
+            android:enabled="true">
+            <intent-filter>
+                <action android:name="android.intent.action.NEW_OUTGOING_CALL" />
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+        </receiver>
+
         <provider
             android:name="androidx.core.content.FileProvider"
             android:authorities="${applicationId}.share"

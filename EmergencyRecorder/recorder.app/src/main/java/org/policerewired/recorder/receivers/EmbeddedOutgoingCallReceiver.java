@@ -7,11 +7,11 @@ import android.content.Intent;
 /**
  * Responsible for receiving and parsing outgoing phonecalls.
  */
-public class OutgoingCallReceiver extends BroadcastReceiver {
+public class EmbeddedOutgoingCallReceiver extends BroadcastReceiver {
 
   private Listener listener;
 
-  public OutgoingCallReceiver(Listener listener) {
+  public EmbeddedOutgoingCallReceiver(Listener listener) {
     this.listener = listener;
   }
 

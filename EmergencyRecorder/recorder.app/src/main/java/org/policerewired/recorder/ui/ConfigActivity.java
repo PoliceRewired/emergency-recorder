@@ -1,6 +1,7 @@
 package org.policerewired.recorder.ui;
 
 import android.app.Service;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.PowerManager;
@@ -12,8 +13,13 @@ import android.widget.ImageView;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
+import org.jcodec.common.StringUtils;
 import org.policerewired.recorder.R;
 
+import java.util.LinkedList;
+import java.util.List;
+
+import androidx.appcompat.app.AlertDialog;
 import butterknife.BindView;
 import butterknife.OnClick;
 
@@ -92,6 +98,7 @@ public class ConfigActivity extends AbstractRecorderActivity {
 
   @Override
   public boolean onCreateOptionsMenu(Menu menu) {
+    menu.add(Menu.NONE, R.string.menu_view_config, 0, R.string.menu_view_config);
     menu.add(Menu.NONE, R.string.menu_view_rules, 0, R.string.menu_view_rules);
     menu.add(Menu.NONE, R.string.menu_view_log, 0, R.string.menu_view_log);
     menu.add(Menu.NONE, R.string.menu_view_about, 0, R.string.menu_view_about);
@@ -101,6 +108,10 @@ public class ConfigActivity extends AbstractRecorderActivity {
   @Override
   public boolean onOptionsItemSelected(MenuItem item) {
     switch (item.getItemId()) {
+
+      case R.string.menu_view_config:
+        show_config();
+        return true;
 
       case R.string.menu_view_log:
         startActivity(new Intent(this, LogActivity.class));
@@ -115,6 +126,19 @@ public class ConfigActivity extends AbstractRecorderActivity {
       default:
         return super.onOptionsItemSelected(item);
     }
+  }
 
+  @SuppressWarnings("ToArrayCallWithZeroLengthArrayArgument")
+  private void show_config() {
+    List<String> lines = new LinkedList<>();
+    lines.add(getString(R.string.config_embedded_listener, String.valueOf(getResources().getBoolean(R.bool.use_embedded_listener))));
+    String[] lines_array = lines.toArray(new String[lines.size()]);
+    String message = StringUtils.joinS(lines_array, "\n");
+
+    new AlertDialog.Builder(this)
+      .setTitle(R.string.dialog_title_config)
+      .setMessage(message)
+      .setPositiveButton(R.string.btn_ok, (dialog, which) -> dialog.dismiss())
+      .show();
   }
 }
