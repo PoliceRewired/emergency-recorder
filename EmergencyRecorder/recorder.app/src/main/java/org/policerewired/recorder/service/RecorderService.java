@@ -122,14 +122,14 @@ public class RecorderService extends AbstractBackgroundBindingService<IRecorderS
       SystemClock.elapsedRealtime() + (60*1000),
       alarmIntent);
     Log.i(TAG, "Alarm scheduled for 1 minute.");
-    recordAuditableEvent(new Date(), getString(R.string.event_audit_service_stopped), getString(R.string.event_audit_alarm_set_1_min));
+    recordAuditableEvent(new Date(), getString(R.string.event_audit_service_stopped), getString(R.string.event_audit_alarm_set_1_min), true);
   }
 
   @Override
   public int onStartCommand(Intent intent, int flags, int startId) {
     Log.i(TAG, "Intent received" + (intent.getAction() != null ? ": action=" + intent.getAction() : " (null action)"));
     if (BuildConfig.DEBUG) {
-      recordAuditableEvent(new Date(), getString(R.string.event_audit_intent_received), intent.getAction());
+      recordAuditableEvent(new Date(), getString(R.string.event_audit_intent_received), intent.getAction(), true);
     }
     return super.onStartCommand(intent, flags, startId);
   }
@@ -433,7 +433,7 @@ public class RecorderService extends AbstractBackgroundBindingService<IRecorderS
 
   @Override
   public LiveData<List<AuditRecord>> getAuditLog_live() {
-    return EmergencyRecorderApp.db.getRecordingDao().getAll_live();
+    return EmergencyRecorderApp.db.getRecordingDao().getNearlyAll_live(AuditRecordType.Debug);
   }
 
   @Override

@@ -41,12 +41,12 @@ public interface IRecorderService {
   LiveData<List<Rule>> getRules();
 
   /**
-   * @return a Live copy of all events recorded in the log so far.
+   * @return a Live copy of all events recorded in the log so far (excluding Debug events).
    */
   LiveData<List<AuditRecord>> getAuditLog_live();
 
   /**
-   * @return a static copy of all events recorded in the log so far.
+   * @return a static copy of all events recorded in the log so far (including Debug events).
    */
   List<AuditRecord> getAuditLog_static();
 

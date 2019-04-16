@@ -8,6 +8,8 @@ import android.os.AsyncTask;
 import android.os.Build;
 import android.widget.Toast;
 
+import androidx.core.app.NotificationCompat;
+
 /**
  * An abstract asynchronous task that provides a notification to the user while it is running.
  */
@@ -15,7 +17,7 @@ public abstract class AbstractNotifyingAsyncTask<Params,Progress,Result> extends
 
   protected Context context;
   protected NotificationChannel channel;
-  protected Notification.Builder builder;
+  protected NotificationCompat.Builder builder;
   protected Notification notification;
   protected int notificationId;
 
@@ -49,37 +51,40 @@ public abstract class AbstractNotifyingAsyncTask<Params,Progress,Result> extends
     mgr.cancel(notificationId);
     notification = null;
 
-
-    String completionToast = getCompletionToast();
-    String failureToast = getCompletionToast();
-
     if (wasSuccess(result)) {
+      String completionToast = getCompletionToast();
       if (completionToast != null) {
         Toast.makeText(context, completionToast, Toast.LENGTH_LONG).show();
       }
     } else {
+      String failureToast = getFailureToast();
       if (failureToast != null) {
         Toast.makeText(context, failureToast, Toast.LENGTH_LONG).show();
       }
     }
   }
 
-  protected Notification.Builder buildNotification() {
-      Notification.Builder builder = new Notification.Builder(context);
+  protected NotificationCompat.Builder buildNotification() {
+    NotificationCompat.Builder builder;
+    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O && channel != null) {
+      builder = new NotificationCompat.Builder(context, channel.getId());
+    } else {
+      builder = new NotificationCompat.Builder(context); // yes it's deprecated
+    }
 
-      builder.setContentTitle(getNotificationTitle());
-      builder.setContentText(getNotificationContent());
-      if (getNotificationTicker() != null) { builder.setTicker(getNotificationTicker()); }
-      builder.setSmallIcon(getNotificationIcon());
-      builder.setPriority(getNotificationPriority());
-      builder.setAutoCancel(false);
-      builder.setOngoing(true); // shouldn't be swipable
+    builder.setContentTitle(getNotificationTitle());
+    builder.setContentText(getNotificationContent());
 
-      if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O && channel != null) {
-        builder.setChannelId(channel.getId());
-      }
+    builder.setProgress(100, 1, true);
 
-      return builder;
+    if (getNotificationTicker() != null) { builder.setTicker(getNotificationTicker()); }
+
+    builder.setSmallIcon(getNotificationIcon());
+    builder.setPriority(getNotificationPriority());
+    builder.setAutoCancel(false);
+    builder.setOngoing(true); // shouldn't be swipable
+
+    return builder;
   }
 
   protected abstract boolean wasSuccess(Result result);

@@ -9,8 +9,9 @@
     <string name="event_record_video_recording">Video recording</string>
     <string name="event_record_burst_mode_photo">Burst mode photo</string>
     <string name="event_record_burst_mode_video">Burst mode video</string>
-    <string name="event_record_audio_recording">Audio auditRecord</string>
-    <string name="event_record_audit">Audit</string>
+    <string name="event_record_audio_recording">Audio record</string>
+    <string name="event_record_audit">Audit event</string>
+    <string name="event_record_debug">Debug event</string>
 
     <string name="event_audit_application_created">Application created.</string>
     <string name="event_audit_prepopulate_database">Pre-populating blank database.</string>

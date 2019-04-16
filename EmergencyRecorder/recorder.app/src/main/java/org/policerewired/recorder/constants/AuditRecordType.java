@@ -16,7 +16,8 @@ public enum AuditRecordType {
   BurstModePhoto(R.drawable.ic_burst_mode_black_24dp, R.string.event_record_burst_mode_photo, true, "image/jpeg", "image/*"),
   BurstModeVideo(R.drawable.ic_videocam_black_24dp, R.string.event_record_burst_mode_video, true, "video/mp4", "video/*"),
   AudioRecording(R.drawable.ic_mic_black_24dp, R.string.event_record_audio_recording, true, "audio/3gpp", "audio/*"),
-  Audit(R.drawable.ic_settings_black_24dp, R.string.event_record_audit, false, null, null);
+  Audit(R.drawable.ic_settings_black_24dp, R.string.event_record_audit, false, null, null),
+  Debug(R.drawable.ic_settings_black_24dp, R.string.event_record_debug, false, null, null);
 
   /**
    * Icon used to represent this type of audit record.

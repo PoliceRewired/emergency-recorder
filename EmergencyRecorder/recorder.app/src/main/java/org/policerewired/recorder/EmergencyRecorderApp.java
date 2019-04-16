@@ -57,7 +57,7 @@ public class EmergencyRecorderApp extends Application {
     scheduleAlarm(this);
 
     if (BuildConfig.DEBUG) {
-      recordAuditableEvent(new Date(), getString(R.string.event_audit_application_created), null);
+      recordAuditableEvent(new Date(), getString(R.string.event_audit_application_created), null, false);
     }
   }
 
@@ -66,7 +66,7 @@ public class EmergencyRecorderApp extends Application {
     super.onTerminate();
     Log.i(TAG, "Emergency Recorder: onTerminate");
     if (BuildConfig.DEBUG) {
-      recordAuditableEvent(new Date(), getString(R.string.event_audit_application_terminated), null);
+      recordAuditableEvent(new Date(), getString(R.string.event_audit_application_terminated), null, false);
     }
   }
 
@@ -97,7 +97,7 @@ public class EmergencyRecorderApp extends Application {
 
   private Runnable prepopulate = () -> {
     Log.d(TAG, "Inserting default Rules into blank database.");
-    recordAuditableEvent(new Date(), getString(R.string.event_audit_prepopulate_database), null);
+    recordAuditableEvent(new Date(), getString(R.string.event_audit_prepopulate_database), null, false);
     db.getRuleDao().insert(BaseData.getRules(EmergencyRecorderApp.this));
   };
 
@@ -126,11 +126,12 @@ public class EmergencyRecorderApp extends Application {
    * @param at date/time of the event
    * @param event the type of event
    * @param detail essential details to be logged
+   * @param debug if true, flagged as a debug record and not visible in the UI (but saved to log files)
    */
-  public static void recordAuditableEvent(@NotNull Date at, @NotNull String event, String detail) {
+  public static void recordAuditableEvent(@NotNull Date at, @NotNull String event, String detail, boolean debug) {
     AuditRecord item = new AuditRecord();
     item.started = at;
-    item.type = AuditRecordType.Audit;
+    item.type = debug ? AuditRecordType.Debug : AuditRecordType.Audit;
     item.data = event + (StringUtils.isEmpty(detail) ? "" : ": " + detail);
     saveAuditRecord(item);
   }
