@@ -22,7 +22,7 @@ import butterknife.BindView;
 import butterknife.OnClick;
 
 /**
- * Shows a list of the app's rules to the user, allowing them to modify them.
+ * Activity to display a modifiable list of the app's rules to the user.
  */
 public class RulesActivity extends AbstractRecorderActivity {
 

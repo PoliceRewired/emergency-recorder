@@ -37,6 +37,9 @@ import java.util.List;
 
 import static androidx.core.content.FileProvider.getUriForFile;
 
+/**
+ * Activity to display the audit log - allows a user to view and share media, or the log itself.
+ */
 public class LogActivity extends AbstractRecorderActivity {
   private static final String TAG = LogActivity.class.getSimpleName();
 
@@ -121,6 +124,10 @@ public class LogActivity extends AbstractRecorderActivity {
     }
   }
 
+  /**
+   * Yes or no confirmation dialog to delete the entire audit log.
+   * NB. This dialog should only be available in debug mode.
+   */
   private void confirmDeleteLog() {
     new AlertDialog.Builder(this)
       .setTitle(R.string.confirm_delete_log_title)
@@ -138,6 +145,9 @@ public class LogActivity extends AbstractRecorderActivity {
     shareLog();
   }
 
+  /**
+   * Initiates sharing of the audit log file as a CSV email attachment.
+   */
   private void shareLog() {
     try {
       File file = createAuditLogFile();
@@ -155,7 +165,11 @@ public class LogActivity extends AbstractRecorderActivity {
     }
   }
 
+  /**
+   * Listens to the recycler/adapter and detects requests from the user to share or view media
+   */
   private AuditRecordsAdapter.Listener recordings_listener = new AuditRecordsAdapter.Listener() {
+
     @Override
     public void view(AuditRecord auditRecord) {
       Intent intent = new Intent();
@@ -198,6 +212,12 @@ public class LogActivity extends AbstractRecorderActivity {
     }
   };
 
+  /**
+   * Copies a file from the device media store to the temporary cache so it can be renamed and shared.
+   * @param record an Audit record containing type and content Uri information about the media
+   * @return a File pointing to the copied and cached media
+   * @throws Exception if unable to create the copy for any reason
+   */
   private File copyMediaFile(AuditRecord record) throws Exception {
     File outFile;
     switch (record.type) {
@@ -226,6 +246,11 @@ public class LogActivity extends AbstractRecorderActivity {
     return outFile;
   }
 
+  /**
+   * Generates a CSV edition of the audit log, stores it in the temporary cache
+   * @return a File pointing to the stored audit log
+   * @throws IOException if there's an issue creating the file
+   */
   private File createAuditLogFile() throws IOException {
     File file = storage.tempAuditFile(".csv");
     List<AuditRecord> records = service.getAuditLog_static();
