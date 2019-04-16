@@ -55,12 +55,13 @@ public class NamingUtils {
     return context.getString(R.string.audio_description, getLongFormatDate(date), duration_ms);
   }
 
-  public String getFilenameDate(Date date) {
-    return String.valueOf(date.getTime());
+  public String getConciseDate(Date date) {
+    SimpleDateFormat format = new SimpleDateFormat("yyyyMMdd HHmmss Z", locale);
+    return format.format(date);
   }
 
-  public String getConciseDate(Date date) {
-    SimpleDateFormat format = new SimpleDateFormat("yyyyMMdd hhmmss", locale);
+  public String getShortDate(Date date) {
+    SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss Z", locale);
     return format.format(date);
   }
 

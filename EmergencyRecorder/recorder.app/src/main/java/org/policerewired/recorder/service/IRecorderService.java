@@ -3,7 +3,8 @@ package org.policerewired.recorder.service;
 import android.location.Location;
 import android.net.Uri;
 
-import org.policerewired.recorder.db.entity.Recording;
+import org.jetbrains.annotations.NotNull;
+import org.policerewired.recorder.db.entity.AuditRecord;
 import org.policerewired.recorder.db.entity.Rule;
 
 import java.util.Date;
@@ -40,55 +41,64 @@ public interface IRecorderService {
   LiveData<List<Rule>> getRules();
 
   /**
-   * TODO: adapt this to fetch only recent logs (or logs in a timeframe)
    * @return a Live copy of all events recorded in the log so far.
    */
-  LiveData<List<Recording>> getRecordingLog();
+  LiveData<List<AuditRecord>> getAuditLog_live();
+
+  /**
+   * @return a static copy of all events recorded in the log so far.
+   */
+  List<AuditRecord> getAuditLog_static();
 
   /**
    * Removes a rule.
    */
-  void delete(Rule rule);
+  void delete(@NotNull Rule rule);
 
   /**
    * Stores a new rule.
    */
-  void insert(Rule rule);
+  void insert(@NotNull Rule rule);
 
   /**
    * Updates an existing rule.
    */
-  void update(Rule rule);
+  void update(@NotNull Rule rule);
+
+  /**
+   * Deletes all entries in the app's audit log.
+   */
+  void deleteEntireAuditLog();
 
   /**
    * Log that an outgoing call matching one of the app's rules was initiated.
    */
-  void recordCall(Date initiated, String number);
+  void recordCall(@NotNull Date initiated, @NotNull String number);
 
   /**
    * Log that a photo was taken, initiated by the user.
    */
-  void recordPhoto(Date taken, Uri uri);
+  void recordPhoto(@NotNull Date taken, @NotNull Uri uri);
 
   /**
    * Log that a photo was taken, as part of a hybrid collection.
    */
-  void recordHybridPhoto(Date taken, Uri uri);
+  void recordHybridPhoto(@NotNull Date taken, @NotNull Uri uri);
 
   /**
    * Log that a video was composed from photos taken as part of a hybrid collection.
    */
-  void recordHybridVideo(Date started, Uri uri);
+  void recordHybridVideo(@NotNull Date started, @NotNull Uri uri);
 
   /**
    * Log that an audio recording was completed.
    */
-  void recordAudio(Date started, Uri uri);
+  void recordAudio(@NotNull Date started, @NotNull Uri uri);
 
   /**
    * Log that a video recording was completed.
    */
-  void recordVideo(Date started, Uri uri);
+  void recordVideo(@NotNull Date started, @NotNull Uri uri);
 
   /**
    * Prepares the photo with visible annotations, and stores it.
@@ -99,7 +109,7 @@ public interface IRecorderService {
    * @param w3w what3words triplet (if avaialble)
    * @return uri of the stored photo
    */
-  Uri storeUserPhoto(byte[] data, Date taken, Location location, String geocode, String w3w);
+  Uri storeUserPhoto(@NotNull byte[] data, @NotNull Date taken, Location location, String geocode, String w3w);
 
   /**
    * Prepares the photo with visible annotations, and stores it.
@@ -111,6 +121,6 @@ public interface IRecorderService {
    * @param w3w what3words triplet (if avaialble)
    * @return uri of the stored photo
    */
-  Uri storeHybridPhoto(byte[] data, Date started, Date taken, Location location, String geocode, String w3w);
+  Uri storeHybridPhoto(@NotNull byte[] data, @NotNull Date started, @NotNull Date taken, Location location, String geocode, String w3w);
 
 }

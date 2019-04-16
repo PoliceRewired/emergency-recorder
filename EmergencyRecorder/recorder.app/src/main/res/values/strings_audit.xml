@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="menu_delete_entire_log">Delete log…</string>
+    <string name="menu_export_entire_log">Export log…</string>
+
+    <string name="event_record_outgoing_call">Outgoing call</string>
+    <string name="event_record_photo">Photo</string>
+    <string name="event_record_video_recording">Video recording</string>
+    <string name="event_record_burst_mode_photo">Burst mode photo</string>
+    <string name="event_record_burst_mode_video">Burst mode video</string>
+    <string name="event_record_audio_recording">Audio auditRecord</string>
+    <string name="event_record_audit">Audit</string>
+
+    <string name="event_audit_application_created">Application created.</string>
+    <string name="event_audit_prepopulate_database">Pre-populating blank database.</string>
+    <string name="event_audit_application_terminated">Application terminated.</string>
+    <string name="event_audit_intent_received">Intent received.</string>
+    <string name="event_audit_service_stopped">Service stopped naturally.</string>
+    <string name="event_audit_alarm_set_1_min">Alarm set for 1 minute.</string>
+
+    <string name="confirm_delete_log_title">Erase audit log?</string>
+    <string name="confirm_delete_log_message">Are you sure you want to delete all entries in the audit log?</string>
+    <string name="btn_delete_log">Erase log</string>
+
+    <string name="menu_view_media">View…</string>
+    <string name="menu_share_media">Share…</string>
+
+    <string name="share_title_audit_log">Emergency Recorder audit log</string>
+    <string name="share_text_audit_log">Please find my Emergency Recorder audit log attached.</string>
+    <string name="share_subject_media_TYPE">Emergency Recorder: %s</string>
+    <string name="share_description_media_TYPE_AT">%s created by Emergency Recorder at: %s</string>
+
+    <string name="chooser_title_share_audit_log">Share emergency audit log…</string>
+    <string name="chooser_title_view_media">View emergency media…</string>
+    <string name="chooser_title_share_media">Share emergency media…</string>
+
+    <string name="toast_warning_exception_during_media_file_share">Unexpected error whilst preparing media file for sharing.</string>
+    <string name="toast_warning_exception_during_audit_file_share">Unexpected error whilst preparing audit file for sharing.</string>
+
+</resources>

@@ -1,6 +1,10 @@
 package org.policerewired.recorder.ui;
 
+import android.app.Service;
 import android.content.Intent;
+import android.net.Uri;
+import android.os.PowerManager;
+import android.provider.Settings;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.Button;
@@ -21,13 +25,20 @@ public class ConfigActivity extends AbstractRecorderActivity {
 
   @BindView(R.id.icon_warn_permissions) ImageView icon_permissions;
   @BindView(R.id.icon_warn_overlay) ImageView icon_overlay;
+  @BindView(R.id.icon_warn_power) ImageView icon_power;
   @BindView(R.id.btn_permissions) Button btn_permissions;
   @BindView(R.id.btn_overlay) Button btn_overlay;
+  @BindView(R.id.btn_power) Button btn_power;
   @BindView(R.id.fab_record) FloatingActionButton fab_record;
 
   @Override
   protected int getLayoutId() {
     return R.layout.activity_config;
+  }
+
+  private boolean isFreeFromBatteryOptimisation() {
+    PowerManager power = (PowerManager)getSystemService(Service.POWER_SERVICE);
+    return power.isIgnoringBatteryOptimizations(getPackageName());
   }
 
   @Override
@@ -37,15 +48,20 @@ public class ConfigActivity extends AbstractRecorderActivity {
     boolean may_request_permissions = anyOutstandingPermissions();
     boolean may_request_overlay = !hasOverlayPermission();
     boolean may_record = !anyOutstandingPermissions() && hasOverlayPermission();
+    boolean should_request_power_change = !isFreeFromBatteryOptimisation();
+    boolean may_request_power_change = !anyOutstandingPermissions() && should_request_power_change;
 
     btn_permissions.setEnabled(may_request_permissions);
     btn_overlay.setEnabled(may_request_overlay);
+    btn_power.setEnabled(may_request_power_change);
 
     icon_permissions.setImageResource(may_request_permissions ? R.drawable.ic_warning_black_24dp : R.drawable.ic_check_circle_black_24dp);
     icon_overlay.setImageResource(may_request_overlay ? R.drawable.ic_warning_black_24dp : R.drawable.ic_check_circle_black_24dp);
+    icon_power.setImageResource(should_request_power_change ? R.drawable.ic_warning_black_24dp : R.drawable.ic_check_circle_black_24dp);
 
     icon_permissions.getDrawable().mutate().setTint(getColor(may_request_permissions ? R.color.colorWarning : R.color.colorAOK));
     icon_overlay.getDrawable().mutate().setTint(getColor(may_request_overlay ? R.color.colorWarning : R.color.colorAOK));
+    icon_power.getDrawable().mutate().setTint(getColor(should_request_power_change ? R.color.colorWarning : R.color.colorAOK));
 
     fab_record.setBackgroundColor(getColor(may_record ? R.color.colorVideo : R.color.colorDisabled));
     fab_record.setEnabled(may_record);
@@ -64,6 +80,14 @@ public class ConfigActivity extends AbstractRecorderActivity {
   @OnClick(R.id.fab_record)
   public void record_click() {
     service.showOverlay();
+  }
+
+  @OnClick(R.id.btn_power)
+  public void power_click() {
+    String data = "package:" + getPackageName();
+    Intent intent = new Intent(Settings.ACTION_REQUEST_IGNORE_BATTERY_OPTIMIZATIONS);
+    intent.setData(Uri.parse(data));
+    startActivityForResult(intent, 0);
   }
 
   @Override

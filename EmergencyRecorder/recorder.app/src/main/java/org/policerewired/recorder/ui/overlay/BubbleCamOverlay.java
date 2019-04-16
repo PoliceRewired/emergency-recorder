@@ -535,7 +535,7 @@ public class BubbleCamOverlay implements IBubbleCamOverlay {
    * <ul>
    *   <li>Hidden: not visible to the user</li>
    *   <li>Ready: now showing the camera, not recording</li>
-   *   <li>Recording: recording video</li>
+   *   <li>AuditRecord: recording video</li>
    *   <li>Hybrid: a process to take periodic photos, and record audio - referred to as "burst mode" in user land</li>
    * </ul>
    */

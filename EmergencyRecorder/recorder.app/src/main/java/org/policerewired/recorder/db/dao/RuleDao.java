@@ -2,6 +2,7 @@ package org.policerewired.recorder.db.dao;
 
 import org.policerewired.recorder.db.entity.Rule;
 
+import java.util.Date;
 import java.util.List;
 
 import androidx.lifecycle.LiveData;

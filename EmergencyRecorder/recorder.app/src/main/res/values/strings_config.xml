@@ -17,8 +17,14 @@
         use your camera on screen in a bubble.
     </string>
 
+    <string name="explanation_power">
+        Emergency Recorder needs to run in the background to detect emergency calls.
+        Please disable Battery Optimisation for Emergency Recorder.
+    </string>
+
     <string name="btn_grant_permissions">Grant permissions…</string>
     <string name="btn_grant_overlay">Grant overlay permission…</string>
+    <string name="btn_request_power">Disable battery optimisation…</string>
 
     <string name="menu_view_rules">Edit rules…</string>
     <string name="menu_view_log">View log…</string>

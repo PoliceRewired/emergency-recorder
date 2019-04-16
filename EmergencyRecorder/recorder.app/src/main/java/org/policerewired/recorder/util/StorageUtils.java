@@ -45,6 +45,13 @@ public class StorageUtils {
     return file;
   }
 
+  public File tempAuditFile(String suffix) throws IOException {
+    // TODO: confirm Android P still permits unfettered access to other apps to this file
+    File outputDir = context.getExternalCacheDir();
+    File file = File.createTempFile("log_temp", suffix, outputDir);
+    return file;
+  }
+
   public File externalAudioFile(Date date, String suffix) throws IOException {
     File dir = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PODCASTS);
     String filename = audioFile(date);

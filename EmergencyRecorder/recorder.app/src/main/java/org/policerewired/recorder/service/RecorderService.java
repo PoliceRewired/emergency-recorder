@@ -17,11 +17,13 @@ import android.widget.Toast;
 import com.flt.servicelib.AbstractBackgroundBindingService;
 import com.flt.servicelib.BackgroundServiceConfig;
 
+import org.jetbrains.annotations.NotNull;
+import org.policerewired.recorder.BuildConfig;
 import org.policerewired.recorder.EmergencyRecorderApp;
 import org.policerewired.recorder.R;
 import org.policerewired.recorder.constants.Behaviour;
-import org.policerewired.recorder.constants.RecordType;
-import org.policerewired.recorder.db.entity.Recording;
+import org.policerewired.recorder.constants.AuditRecordType;
+import org.policerewired.recorder.db.entity.AuditRecord;
 import org.policerewired.recorder.db.entity.Rule;
 import org.policerewired.recorder.receivers.OutgoingCallReceiver;
 import org.policerewired.recorder.receivers.ScreenReceiver;
@@ -46,6 +48,9 @@ import androidx.core.app.NotificationCompat;
 import androidx.core.app.NotificationManagerCompat;
 import androidx.lifecycle.LiveData;
 
+import static org.policerewired.recorder.EmergencyRecorderApp.recordAuditableEvent;
+import static org.policerewired.recorder.EmergencyRecorderApp.saveAuditRecord;
+
 /**
  * Core service for this app - responsible for managing the overlay, and app database.
  */
@@ -65,12 +70,12 @@ public class RecorderService extends AbstractBackgroundBindingService<IRecorderS
 
   @Override
   protected void restoreFrom(SharedPreferences prefs) {
-
+    // used for storing state (where long running tasks need to be resumed)
   }
 
   @Override
   protected void storeTo(SharedPreferences.Editor editor) {
-
+    // used for storing state (where long running tasks need to be resumed)
   }
 
   @Override
@@ -103,8 +108,12 @@ public class RecorderService extends AbstractBackgroundBindingService<IRecorderS
     super.onDestroy();
     unregisterReceiver(call_receiver);
 
+    // NB. onDestroy is not called for services that are disposed of by the system.
+    // This defensive code may not ever be reached - but if the Service voluntarily stops (perhaps
+    // because its Notification and UI are removed, or under other unexpected circumstances) then
+    // an Alarm will be set to reinitialise the service shortly afterwards.
+
     Log.w(TAG, "Service was stopped naturally. Scheduling a restart...");
-    // schedule an alarm to restart the service in 1 minute
     AlarmManager alarmManager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
     Intent serviceIntent = new Intent(this, RecorderService.class);
     PendingIntent alarmIntent = PendingIntent.getService(this, 1000, serviceIntent, 0);
@@ -112,6 +121,17 @@ public class RecorderService extends AbstractBackgroundBindingService<IRecorderS
       AlarmManager.ELAPSED_REALTIME_WAKEUP,
       SystemClock.elapsedRealtime() + (60*1000),
       alarmIntent);
+    Log.i(TAG, "Alarm scheduled for 1 minute.");
+    recordAuditableEvent(new Date(), getString(R.string.event_audit_service_stopped), getString(R.string.event_audit_alarm_set_1_min));
+  }
+
+  @Override
+  public int onStartCommand(Intent intent, int flags, int startId) {
+    Log.i(TAG, "Intent received" + (intent.getAction() != null ? ": action=" + intent.getAction() : " (null action)"));
+    if (BuildConfig.DEBUG) {
+      recordAuditableEvent(new Date(), getString(R.string.event_audit_intent_received), intent.getAction());
+    }
+    return super.onStartCommand(intent, flags, startId);
   }
 
   @Override
@@ -251,8 +271,8 @@ public class RecorderService extends AbstractBackgroundBindingService<IRecorderS
       ConfigActivity.class,
       getString(R.string.foreground_channel_name),
       getString(R.string.foreground_channel_description),
-      NotificationManagerCompat.IMPORTANCE_LOW,
-      NotificationCompat.PRIORITY_LOW);
+      NotificationManagerCompat.IMPORTANCE_MAX,
+      NotificationCompat.PRIORITY_MAX);
     return defaults;
   }
 
@@ -272,7 +292,7 @@ public class RecorderService extends AbstractBackgroundBindingService<IRecorderS
   }
 
   @Override
-  public Uri storeUserPhoto(byte[] data, Date taken, Location location, String geocode, String w3w) {
+  public Uri storeUserPhoto(@NotNull byte[] data, @NotNull Date taken, Location location, String geocode, String w3w) {
     Bitmap bmp = annotation.drawOnBitmap(
       BitmapFactory.decodeByteArray(data, 0, data.length),
       taken,
@@ -286,7 +306,7 @@ public class RecorderService extends AbstractBackgroundBindingService<IRecorderS
   }
 
   @Override
-  public Uri storeHybridPhoto(byte[] data, Date started, Date taken, Location location, String geocode, String w3w) {
+  public Uri storeHybridPhoto(@NotNull byte[] data, @NotNull Date started, @NotNull Date taken, Location location, String geocode, String w3w) {
     Bitmap bmp = annotation.drawOnBitmap(
       BitmapFactory.decodeByteArray(data, 0, data.length),
       taken,
@@ -300,72 +320,73 @@ public class RecorderService extends AbstractBackgroundBindingService<IRecorderS
   }
 
   @Override
-  public void recordCall(Date initiated, String number) {
-    Recording item = new Recording();
+  public void recordCall(@NotNull Date initiated,@NotNull String number) {
+    AuditRecord item = new AuditRecord();
     item.started = initiated;
-    item.type = RecordType.OutgoingCall;
+    item.type = AuditRecordType.OutgoingCall;
     item.data = number;
-    saveRecord(item);
+    saveAuditRecord(item);
   }
 
   @Override
-  public void recordPhoto(Date taken, Uri uri) {
-    Recording item = new Recording();
+  public void recordPhoto(@NotNull Date taken, @NotNull Uri uri) {
+    AuditRecord item = new AuditRecord();
     item.started = taken;
-    item.type = RecordType.Photo;
+    item.type = AuditRecordType.Photo;
     item.data = uri.toString();
-    saveRecord(item);
+    saveAuditRecord(item);
   }
 
   @Override
-  public void recordHybridPhoto(Date taken, Uri uri) {
-    Recording item = new Recording();
+  public void recordHybridPhoto(@NotNull Date taken, @NotNull Uri uri) {
+    AuditRecord item = new AuditRecord();
     item.started = taken;
-    item.type = RecordType.BurstModePhoto;
+    item.type = AuditRecordType.BurstModePhoto;
     item.data = uri.toString();
-    saveRecord(item);
+    saveAuditRecord(item);
   }
 
   @Override
-  public void recordHybridVideo(Date started, Uri uri) {
-    Recording item = new Recording();
+  public void recordHybridVideo(@NotNull Date started, @NotNull Uri uri) {
+    AuditRecord item = new AuditRecord();
     item.started = started;
-    item.type = RecordType.BurstModeVideo;
+    item.type = AuditRecordType.BurstModeVideo;
     item.data = uri.toString();
-    saveRecord(item);
+    saveAuditRecord(item);
   }
 
   @Override
-  public void recordAudio(Date started, Uri uri) {
-    Recording item = new Recording();
+  public void recordAudio(@NotNull Date started, @NotNull Uri uri) {
+    AuditRecord item = new AuditRecord();
     item.started = started;
-    item.type = RecordType.AudioRecording;
+    item.type = AuditRecordType.AudioRecording;
     item.data = uri.toString();
-    saveRecord(item);
+    saveAuditRecord(item);
   }
 
   @Override
-  public void recordVideo(Date started, Uri uri) {
-    Recording item = new Recording();
+  public void recordVideo(@NotNull Date started, @NotNull Uri uri) {
+    AuditRecord item = new AuditRecord();
     item.started = started;
-    item.type = RecordType.VideoRecording;
+    item.type = AuditRecordType.VideoRecording;
     item.data = uri.toString();
-    saveRecord(item);
+    saveAuditRecord(item);
   }
 
-  private void saveRecord(Recording item) {
-    Executors.newSingleThreadScheduledExecutor().execute(() -> {
+  @Override
+  public void deleteEntireAuditLog() {
+    Executors.newSingleThreadExecutor().execute(() -> {
       try {
-        EmergencyRecorderApp.db.getRecordingDao().insert(item);
+        EmergencyRecorderApp.db.getRecordingDao().deleteAll();
       } catch (Exception e) {
-        Log.e(TAG, "Unable to record new record of type: " + item.type.name(), e);
-        informUser(R.string.toast_warning_unable_to_create_record);
+        Log.e(TAG, "Unable to delete audit log.", e);
+        informUser(R.string.toast_warning_unable_to_delete_entire_audit_log);
       }
     });
   }
 
   @Override
-  public void delete(final Rule rule) {
+  public void delete(@NotNull final Rule rule) {
     if (rule.locked) {
       informUser(R.string.toast_warning_rule_locked_cannot_delete);
       return;
@@ -382,7 +403,7 @@ public class RecorderService extends AbstractBackgroundBindingService<IRecorderS
   }
 
   @Override
-  public void insert(final Rule rule) {
+  public void insert(@NotNull final Rule rule) {
     Executors.newSingleThreadScheduledExecutor().execute(() -> {
       try {
         EmergencyRecorderApp.db.getRuleDao().insert(rule);
@@ -394,7 +415,7 @@ public class RecorderService extends AbstractBackgroundBindingService<IRecorderS
   }
 
   @Override
-  public void update(final Rule rule) {
+  public void update(@NotNull final Rule rule) {
     Executors.newSingleThreadScheduledExecutor().execute(() -> {
       try {
         EmergencyRecorderApp.db.getRuleDao().update(rule);
@@ -411,8 +432,13 @@ public class RecorderService extends AbstractBackgroundBindingService<IRecorderS
   }
 
   @Override
-  public LiveData<List<Recording>> getRecordingLog() {
-    return EmergencyRecorderApp.db.getRecordingDao().getAll();
+  public LiveData<List<AuditRecord>> getAuditLog_live() {
+    return EmergencyRecorderApp.db.getRecordingDao().getAll_live();
+  }
+
+  @Override
+  public List<AuditRecord> getAuditLog_static() {
+    return EmergencyRecorderApp.db.getRecordingDao().getAll_static();
   }
 
   public List<Rule> getRulesFor(String number) {

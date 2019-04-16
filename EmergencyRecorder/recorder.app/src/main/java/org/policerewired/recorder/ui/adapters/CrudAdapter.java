@@ -20,10 +20,10 @@ import butterknife.ButterKnife;
  */
 public abstract class CrudAdapter<Item, VH extends CrudAdapter.ViewHolder> extends RecyclerView.Adapter<VH> {
 
-  private Listener<Item> listener;
-  private Context context;
-  private SortedList<Item> items;
-  private SortedListAdapterCallback<Item> list_callback;
+  protected Listener<Item> listener;
+  protected Context context;
+  protected SortedList<Item> items;
+  protected SortedListAdapterCallback<Item> list_callback;
 
   protected CrudAdapter(Context context, Listener<Item> listener) {
     super();
