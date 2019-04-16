@@ -24,7 +24,10 @@
 
     <string name="dialog_title_config">Configuration</string>
 
-    <string name="config_embedded_listener">Embedded listener: %s</string>
+    <string name="config_static_listener">Call receiver in manifest: %s</string>
+    <string name="config_embedded_listener">Call receiver in Service: %s</string>
+    <string name="config_hybrid_delay">Burst mode photo interval: %d ms</string>
+    <string name="config_location_delay">Location interval: %d ms</string>
 
     <string name="btn_grant_permissions">Grant permissions…</string>
     <string name="btn_grant_overlay">Grant overlay permission…</string>

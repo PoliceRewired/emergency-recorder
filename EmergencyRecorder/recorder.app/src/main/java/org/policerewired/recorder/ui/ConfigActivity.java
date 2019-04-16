@@ -130,7 +130,12 @@ public class ConfigActivity extends AbstractRecorderActivity {
   @SuppressWarnings("ToArrayCallWithZeroLengthArrayArgument")
   private void show_config() {
     List<String> lines = new LinkedList<>();
+
     lines.add(getString(R.string.config_embedded_listener, String.valueOf(getResources().getBoolean(R.bool.use_embedded_listener))));
+    lines.add(getString(R.string.config_static_listener, String.valueOf(true)));
+    lines.add(getString(R.string.config_hybrid_delay, getResources().getInteger(R.integer.hybrid_interval_ms)));
+    lines.add(getString(R.string.config_location_delay, getResources().getInteger(R.integer.location_interval_ms)));
+
     String[] lines_array = lines.toArray(new String[lines.size()]);
     String message = StringUtils.joinS(lines_array, "\n");
 
