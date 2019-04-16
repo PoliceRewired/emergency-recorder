@@ -90,7 +90,7 @@ public class RulesActivity extends AbstractRecorderActivity {
   }
 
   private RulesAdapter.Listener<Rule> edit_rule_listener = new CrudAdapter.Listener<Rule>() {
-    @Override public void onDeleteRequest(Rule rule) {
+    @Override public void onDeleteRequest(final Rule rule) {
       new AlertDialog.Builder(RulesActivity.this)
         .setTitle(R.string.alert_title_confirm_delete_rule)
         .setMessage(getString(R.string.alert_message_confirm_delete_rule_for, rule.match, rule.name))
