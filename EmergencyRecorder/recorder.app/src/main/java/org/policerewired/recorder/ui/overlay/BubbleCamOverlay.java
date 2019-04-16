@@ -268,10 +268,10 @@ public class BubbleCamOverlay implements IBubbleCamOverlay {
   private void startHybrid() {
     try {
       audio_recorder = new MediaRecorder();
-      audio_file = storage.tempAudioFile(".3gpp");
+      audio_file = storage.tempAudioFile(".m4a");
       audio_recorder.setAudioSource(MediaRecorder.AudioSource.DEFAULT); // should be ok?
-      audio_recorder.setOutputFormat(MediaRecorder.OutputFormat.THREE_GPP);
-      audio_recorder.setAudioEncoder(MediaRecorder.AudioEncoder.DEFAULT);
+      audio_recorder.setOutputFormat(MediaRecorder.OutputFormat.MPEG_4);
+      audio_recorder.setAudioEncoder(MediaRecorder.AudioEncoder.AAC);
       audio_recorder.setOutputFile(audio_file.getPath());
       audio_recorder.prepare();
       audio_recorder.start();

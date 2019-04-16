@@ -12,17 +12,15 @@ import android.location.Location;
 import android.net.Uri;
 import android.os.SystemClock;
 import android.util.Log;
-import android.widget.Toast;
 
 import com.flt.servicelib.AbstractBackgroundBindingService;
 import com.flt.servicelib.BackgroundServiceConfig;
 
 import org.jetbrains.annotations.NotNull;
-import org.policerewired.recorder.BuildConfig;
 import org.policerewired.recorder.EmergencyRecorderApp;
 import org.policerewired.recorder.R;
-import org.policerewired.recorder.constants.Behaviour;
 import org.policerewired.recorder.constants.AuditRecordType;
+import org.policerewired.recorder.constants.Behaviour;
 import org.policerewired.recorder.db.entity.AuditRecord;
 import org.policerewired.recorder.db.entity.Rule;
 import org.policerewired.recorder.receivers.EmbeddedOutgoingCallReceiver;

@@ -96,6 +96,8 @@ public class AuditRecordsAdapter extends CrudAdapter<AuditRecord, AuditRecordsAd
     protected void populateView() {
       record = (AuditRecord) item;
       icon.setImageResource(record.type.icon_id);
+      icon.getDrawable().setTint(context.getColor(record.type.colour_id));
+
       event.setText(record.type.description_id);
       detail.setText(record.data);
       date.setText(naming.getShortDate(record.started));

@@ -15,10 +15,12 @@ import org.jcodec.common.model.Picture;
 import org.jcodec.common.model.Rational;
 import org.jcodec.scale.BitmapUtil;
 import org.policerewired.recorder.R;
+import org.policerewired.recorder.constants.AuditRecordType;
 import org.policerewired.recorder.service.IRecorderService;
 import org.policerewired.recorder.service.RecorderService;
 import org.policerewired.recorder.util.CaptureAudioUtils;
 import org.policerewired.recorder.util.CaptureVideoUtils;
+import org.policerewired.recorder.util.MuxingUtils;
 import org.policerewired.recorder.util.NamingUtils;
 import org.policerewired.recorder.util.StorageUtils;
 
@@ -94,6 +96,7 @@ public class StitchHybridImagesTask extends AbstractNotifyingAsyncTask<StitchHyb
           naming.generate_video_title(result.started),
           naming.generate_video_description(result.started, result.images, result.duration_ms()),
           result.started,
+          AuditRecordType.BurstModeVideo.mime_type,
           result.duration_ms());
 
         service.recordHybridVideo(result.started, uri);
@@ -107,7 +110,7 @@ public class StitchHybridImagesTask extends AbstractNotifyingAsyncTask<StitchHyb
       Uri uri = CaptureAudioUtils.insertAudio(
         context.getContentResolver(),
         result.audio,
-        storage.externalAudioFile(result.started, ".3gpp"),
+        storage.externalAudioFile(result.started, ".m4a"),
         naming.generate_audio_title(result.started),
         naming.generate_audio_description(result.started, result.duration_ms()),
         naming.generate_audio_album(result.started),
@@ -143,12 +146,12 @@ public class StitchHybridImagesTask extends AbstractNotifyingAsyncTask<StitchHyb
 
     try {
 
-      File video_file = storage.tempVideoFile(".mp4");
+      File video_file = storage.tempVideoFile(".mov");
 
       SeekableByteChannel channel = NIOUtils.writableChannel(video_file);
 
       Rational fps = new Rational(1000, (int)param.collection.ms_per_blob);
-      SequenceEncoder encoder = new AndroidSequenceEncoder(channel, fps);
+      SequenceEncoder encoder = new AndroidSequenceEncoder(channel, fps); // Format.MOV, Codec.H264
 
       BitmapFactory.Options opts = new BitmapFactory.Options();
       opts.inJustDecodeBounds = true;
@@ -174,14 +177,34 @@ public class StitchHybridImagesTask extends AbstractNotifyingAsyncTask<StitchHyb
         byte[] blob = pair.second;
         Bitmap bmp = BitmapFactory.decodeByteArray(blob, 0, blob.length, rescale);
         Picture pic = BitmapUtil.fromBitmap(bmp);
-        bmp.recycle();
         encoder.encodeNativeFrame(pic);
+        bmp.recycle();
       }
 
       encoder.finish();
       channel.close();
 
-      return new Result(true, video_file, param.collection.audio_file, param.collection.started, param.collection.blobs.size(), param.collection.ms_per_blob);
+      File output_video_file = storage.tempVideoFile(".mp4");
+      MuxingUtils.mux(video_file, param.collection.audio_file, output_video_file);
+
+      /*
+      // video file is in: video_file
+      H264TrackImpl h264_video = new H264TrackImpl(new FileDataSourceImpl(video_file));
+
+      // audio file is in: param.collection.audio_file
+      AACTrackImpl aac_audio = new AACTrackImpl(new FileDataSourceImpl(param.collection.audio_file));
+
+      // merge the two tracks into a single mp4
+      Movie movie = new Movie();
+      movie.addTrack(h264_video);
+      movie.addTrack(aac_audio);
+      Container mp4file = new DefaultMp4Builder().build(movie);
+      FileChannel fc = new FileOutputStream(output_video_file).getChannel();
+      mp4file.writeContainer(fc);
+      fc.close();
+      */
+
+      return new Result(true, output_video_file, param.collection.audio_file, param.collection.started, param.collection.blobs.size(), param.collection.ms_per_blob);
 
     } catch (Exception e) {
       Log.e(TAG, "Failed to stitch hybrid images together.", e);
