@@ -16,6 +16,7 @@ import org.policerewired.recorder.constants.AuditRecordType;
 import org.policerewired.recorder.constants.BaseData;
 import org.policerewired.recorder.db.RecordingDb;
 import org.policerewired.recorder.db.entity.AuditRecord;
+import org.policerewired.recorder.receivers.RestartRequestReceiver;
 import org.policerewired.recorder.service.RecorderService;
 
 import java.util.Date;
@@ -25,6 +26,10 @@ import androidx.annotation.NonNull;
 import androidx.room.Room;
 import androidx.room.RoomDatabase;
 import androidx.sqlite.db.SupportSQLiteDatabase;
+
+import static android.app.PendingIntent.FLAG_UPDATE_CURRENT;
+import static org.policerewired.recorder.receivers.RestartRequestReceiver.REQUEST_CODE_ONE_OFF_RESTART;
+import static org.policerewired.recorder.receivers.RestartRequestReceiver.REQUEST_CODE_REPEATING_CHECKUP;
 
 /**
  * Application class for the Emergency Recorder. This class initialises a single instance of
@@ -44,17 +49,11 @@ public class EmergencyRecorderApp extends Application {
     Log.d(TAG, "Initialising app database.");
     db = createDb();
 
-    Intent intent = new Intent(this, RecorderService.class);
-    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-      Log.d(TAG, "Calling startForegroundService from Application class.");
-      startForegroundService(intent);
-    } else {
-      Log.d(TAG, "Calling startService from Application class.");
-      startService(intent);
-    }
+    Log.d(TAG, "Starting service from Application.");
+    startRecorderService(this);
 
     Log.d(TAG, "Scheduling alarm from application class.");
-    scheduleAlarm(this);
+    scheduleRepeatingCheckup(this);
 
     recordAuditableEvent(new Date(), getString(R.string.event_audit_application_created), null, false);
   }
@@ -63,6 +62,7 @@ public class EmergencyRecorderApp extends Application {
   public void onTerminate() {
     super.onTerminate();
     Log.i(TAG, "Emergency Recorder: onTerminate");
+    scheduleServiceStart(this);
     recordAuditableEvent(new Date(), getString(R.string.event_audit_application_terminated), null, false);
   }
 
@@ -78,6 +78,10 @@ public class EmergencyRecorderApp extends Application {
     Log.d(TAG, "Emergency Recorder: onTrimMemory");
   }
 
+  /**
+   * Creates or retrieves the app database. If creating the database for the first time, adds a
+   * callback to execute the prepopulate Runnable.
+   */
   private RecordingDb createDb() {
     return Room.databaseBuilder(getApplicationContext(), RecordingDb.class, db_name)
       .allowMainThreadQueries()
@@ -91,29 +95,88 @@ public class EmergencyRecorderApp extends Application {
       .build();
   }
 
+  /**
+   * Task to pre-populate the database with standard rules. See: BaseData.getRules(Context);
+   */
   private Runnable prepopulate = () -> {
     Log.d(TAG, "Inserting default Rules into blank database.");
     recordAuditableEvent(new Date(), getString(R.string.event_audit_prepopulate_database), null, false);
     db.getRuleDao().insert(BaseData.getRules(EmergencyRecorderApp.this));
   };
 
-  public static void scheduleAlarm(Context context) {
+  /**
+   * Uses the context provided to start the RecorderService (with a preference for calling
+   * startForegroundService over startService).
+   */
+  public static void startRecorderService(Context context) {
+    Intent intent = new Intent(context, RecorderService.class);
+    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+      Log.v(TAG, "Calling startForegroundService from Application class.");
+      context.startForegroundService(intent);
+    } else {
+      Log.v(TAG, "Calling startService from Application class.");
+      context.startService(intent);
+    }
+  }
+
+  /**
+   * Creates an intent to restart the service.
+   * @param context context required to create the intent
+   * @param requestCode request code for the alarm - important to distinguish pending intents
+   * @return a PendingIntent containing an explicit Intent for the RestartRequestReceiver.
+   */
+  public static PendingIntent createRestartIntent(Context context, int requestCode) {
+    Intent restartIntent = new Intent(context, RestartRequestReceiver.class);
+    restartIntent.setAction(RestartRequestReceiver.ACTION_RESTART_SERVICE);
+    restartIntent.setFlags(Intent.FLAG_RECEIVER_FOREGROUND); // permits the receiver to run in foreground
+    restartIntent.setFlags(Intent.FLAG_INCLUDE_STOPPED_PACKAGES); // also for fully stopped packages
+    return PendingIntent.getBroadcast(context, requestCode, restartIntent, FLAG_UPDATE_CURRENT);
+  }
+
+  /**
+   * Schedules a service restart after 60 seconds.
+   */
+  public static void scheduleServiceStart(Context context) {
+    try {
+      Log.d(TAG, "Scheduling restart alarm.");
+      PendingIntent alarmIntent = createRestartIntent(context, REQUEST_CODE_ONE_OFF_RESTART);
+
+      AlarmManager alarmManager = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
+      alarmManager.setAndAllowWhileIdle(
+        AlarmManager.ELAPSED_REALTIME_WAKEUP,
+        SystemClock.elapsedRealtime() + (60 * 1000),
+        alarmIntent);
+
+      Log.i(TAG, "Alarm scheduled for 1 minute.");
+    } catch (Exception e) {
+      Log.e(TAG, "Unable to schedule restart alarm.", e);
+    }
+  }
+
+  /**
+   * Schedules a repeating checkup for the RecorderService.
+   */
+  public static void scheduleRepeatingCheckup(Context context) {
     if (!alarm_set) {
       try {
-        Log.d(TAG, "Scheduling alarm.");
+        Log.d(TAG, "Scheduling repeat alarm.");
+        PendingIntent alarmIntent = createRestartIntent(context, REQUEST_CODE_REPEATING_CHECKUP);
+
         AlarmManager alarmManager = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
-        Intent serviceIntent = new Intent(context, RecorderService.class);
-        PendingIntent alarmIntent = PendingIntent.getService(context, 1000, serviceIntent, 0);
         alarmManager.setInexactRepeating(
           AlarmManager.ELAPSED_REALTIME_WAKEUP,
-          SystemClock.elapsedRealtime() + AlarmManager.INTERVAL_FIFTEEN_MINUTES,
+          SystemClock.elapsedRealtime() + (60*1000),
           AlarmManager.INTERVAL_FIFTEEN_MINUTES,
           alarmIntent);
-        Log.i(TAG, "Scheduled repeating checkup for background service.");
+
+        Log.i(TAG, "Scheduled repeating checkup for service.");
         alarm_set = true;
+
       } catch (Exception e) {
         Log.e(TAG, "Unable to schedule repeating checkup.", e);
       }
+    } else {
+      Log.d(TAG, "Not setting alarm - already marked set.");
     }
   }
 
@@ -136,10 +199,10 @@ public class EmergencyRecorderApp extends Application {
    * Stores a record for the auditing 'records' log.
    * @param item the record to store
    */
-  public static void saveAuditRecord(@NotNull AuditRecord item) {
+  public static void saveAuditRecord(@NotNull final AuditRecord item) {
     Executors.newSingleThreadScheduledExecutor().execute(() -> {
       try {
-        Log.d(TAG, String.format("Logging: {0}, {1}", item.type.name(), item.data));
+        Log.d(TAG, String.format("Audit: %s, %s", item.type.name(), item.data));
         db.getRecordingDao().insert(item);
       } catch (Exception e) {
         Log.e(TAG, "Unable to record new record of type: " + item.type.name(), e);

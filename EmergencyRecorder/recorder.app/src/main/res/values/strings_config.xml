@@ -22,6 +22,15 @@
         Please disable Battery Optimisation for Emergency Recorder.
     </string>
 
+    <string name="dialog_title_about">About Emergency Recorder</string>
+    <string name="dialog_message_about">
+        The Emergency Recorder is developed by Police Rewired,
+        a group of volunteer professionals building tools to
+        improve public safety and fight crime. Visit our site
+        to find out more:\n\nhttps://policerewired.org
+    </string>
+    <string name="btn_visit_police_rewired">Visit…</string>
+
     <string name="dialog_title_config">Configuration</string>
 
     <string name="config_static_listener">Call receiver in manifest: %s</string>

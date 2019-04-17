@@ -12,14 +12,14 @@ import org.policerewired.recorder.service.RecorderService;
 /**
  * Responsible for receiving notification when the system starts.
  */
-public class BootReceiever extends AbstractBootReceiver<RecorderService> {
-  private static final String TAG = BootReceiever.class.getSimpleName();
+public class BootReceiver extends AbstractBootReceiver<RecorderService> {
+  private static final String TAG = BootReceiver.class.getSimpleName();
 
   @Override
   public void onReceive(Context context, Intent intent) {
     super.onReceive(context, intent);
     Log.i(TAG, "Received boot intent, scheduling alarm.");
-    EmergencyRecorderApp.scheduleAlarm(context);
+    EmergencyRecorderApp.scheduleRepeatingCheckup(context);
   }
 
   @Override

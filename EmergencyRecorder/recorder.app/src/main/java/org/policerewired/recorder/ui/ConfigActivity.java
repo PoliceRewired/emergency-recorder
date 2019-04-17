@@ -1,6 +1,7 @@
 package org.policerewired.recorder.ui;
 
 import android.app.Service;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.PowerManager;
@@ -120,7 +121,9 @@ public class ConfigActivity extends AbstractRecorderActivity {
         startActivity(new Intent(this, RulesActivity.class));
         return true;
 
-        // TODO: implement about box
+      case R.string.menu_view_about:
+        show_about();
+        return true;
 
       default:
         return super.onOptionsItemSelected(item);
@@ -145,4 +148,18 @@ public class ConfigActivity extends AbstractRecorderActivity {
       .setPositiveButton(R.string.btn_ok, (dialog, which) -> dialog.dismiss())
       .show();
   }
+
+  private void show_about() {
+    new AlertDialog.Builder(this)
+      .setTitle(R.string.dialog_title_about)
+      .setMessage(R.string.dialog_message_about)
+      .setNeutralButton(R.string.btn_visit_police_rewired, (dialog, which) -> {
+        Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(getString(R.string.url_police_rewired)));
+        startActivity(browserIntent);
+        dialog.dismiss();
+      })
+      .setPositiveButton(R.string.btn_ok, (dialog, which) -> dialog.dismiss())
+      .show();
+  }
+
 }

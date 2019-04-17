@@ -46,10 +46,9 @@ public class StorageUtils {
   }
 
   public File tempAuditFile(String suffix) throws IOException {
-    // TODO: confirm Android P still permits unfettered access to other apps to this file
+    // TODO: confirm Android P still permits unfettered access to this file from other apps
     File outputDir = context.getExternalCacheDir();
-    File file = File.createTempFile("log_temp", suffix, outputDir);
-    return file;
+    return File.createTempFile("log_temp", suffix, outputDir);
   }
 
   public File externalAudioFile(Date date, String suffix) throws IOException {

@@ -119,14 +119,7 @@ public class RecorderService extends AbstractBackgroundBindingService<IRecorderS
     // an Alarm will be set to reinitialise the service shortly afterwards.
 
     Log.w(TAG, "Service was stopped naturally. Scheduling a restart...");
-    AlarmManager alarmManager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
-    Intent serviceIntent = new Intent(this, RecorderService.class);
-    PendingIntent alarmIntent = PendingIntent.getService(this, 1000, serviceIntent, 0);
-    alarmManager.setAndAllowWhileIdle(
-      AlarmManager.ELAPSED_REALTIME_WAKEUP,
-      SystemClock.elapsedRealtime() + (60*1000),
-      alarmIntent);
-    Log.i(TAG, "Alarm scheduled for 1 minute.");
+    EmergencyRecorderApp.scheduleServiceStart(this);
     recordAuditableEvent(new Date(), getString(R.string.event_audit_service_stopped), getString(R.string.event_audit_alarm_set_1_min), true);
   }
 
@@ -143,6 +136,14 @@ public class RecorderService extends AbstractBackgroundBindingService<IRecorderS
     }
 
     return super.onStartCommand(intent, flags, startId); // START_STICKY
+  }
+
+  @Override
+  public void onTaskRemoved(Intent rootIntent) {
+    Log.w(TAG, "Initial task is being removed. Scheduling a restart...");
+    EmergencyRecorderApp.scheduleServiceStart(this);
+    recordAuditableEvent(new Date(), getString(R.string.event_audit_task_stopped), getString(R.string.event_audit_alarm_set_1_min), true);
+    super.onTaskRemoved(rootIntent);
   }
 
   @Override
@@ -256,13 +257,7 @@ public class RecorderService extends AbstractBackgroundBindingService<IRecorderS
     }
   };
 
-  @SuppressWarnings("Convert2Lambda")
-  private EmbeddedOutgoingCallReceiver.Listener call_listener = new EmbeddedOutgoingCallReceiver.Listener() {
-    @Override
-    public void onCall(String number) {
-      onOutgoingCall(number);
-    }
-  };
+  private EmbeddedOutgoingCallReceiver.Listener call_listener = this::onOutgoingCall;
 
   @Override
   public void showOverlay() {

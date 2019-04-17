@@ -53,17 +53,17 @@
             />
 
         <receiver
-            android:name=".receivers.BootReceiever"
+            android:name="org.policerewired.recorder.receivers.BootReceiver"
             android:enabled="true">
             <intent-filter>
                 <action android:name="android.intent.action.BOOT_COMPLETED" />
-                <action android:name="android.intent.action.QUICKBOOT_POWERON" />
-                <action android:name="android.intent.action.LOCKED_BOOT_COMPLETED" />
-                <category android:name="android.intent.category.DEFAULT" />
+                <action android:name="android.intent.action.QUICKBOOT_POWERON"/>
+                <action android:name="com.htc.intent.action.QUICKBOOT_POWERON"/>
+                <action android:name="android.intent.action.REBOOT"/>
             </intent-filter>
         </receiver>
 
-        <!-- the NEW_OUTGOING_CALL intent is still permitted for static receivers -->
+        <!-- the NEW_OUTGOING_CALL intent action is still permitted for manifest receivers -->
         <receiver
             android:name=".receivers.StandaloneOutgoingCallReceiver"
             android:enabled="true">
@@ -72,6 +72,12 @@
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </receiver>
+
+        <receiver
+            android:name=".receivers.RestartRequestReceiver"
+            android:enabled="true"
+            android:exported="true"
+            />
 
         <provider
             android:name="androidx.core.content.FileProvider"

@@ -6,4 +6,6 @@
     <string name="btn_save">Save</string>
     <string name="btn_ok">Ok</string>
 
+    <string name="url_police_rewired">https://policerewired.org</string>
+
 </resources>
