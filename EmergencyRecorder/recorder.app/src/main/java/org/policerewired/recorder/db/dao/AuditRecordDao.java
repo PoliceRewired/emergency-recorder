@@ -17,20 +17,35 @@ import androidx.room.Update;
 @Dao
 public interface AuditRecordDao {
 
-  @Query("SELECT * FROM audit")
+  @Query("SELECT * FROM audit ORDER BY started")
   LiveData<List<AuditRecord>> getUnlimitedAll_live();
 
-  @Query("SELECT * FROM audit WHERE type != :exclusion")
+  @Query("SELECT * FROM audit WHERE type != :exclusion ORDER BY started")
   LiveData<List<AuditRecord>> getNearlyAll_live(AuditRecordType exclusion);
 
-  @Query("SELECT * FROM audit WHERE started >= :since")
+  @Query("SELECT * FROM audit WHERE started >= :since ORDER BY started")
   LiveData<List<AuditRecord>> getAllAfter_live(Date since);
 
-  @Query("SELECT * FROM audit WHERE started >= :since AND started <= :until")
+  @Query("SELECT * FROM audit WHERE started >= :since AND started <= :until ORDER BY started")
   LiveData<List<AuditRecord>> getAllBetween_live(Date since, Date until);
 
-  @Query("SELECT * FROM audit")
+  @Query("SELECT * FROM audit ORDER BY started")
   List<AuditRecord> getAll_static();
+
+  @Query("SELECT * FROM audit WHERE started >= :since AND started <= :until ORDER BY started")
+  List<AuditRecord> getAllBetween_static(Date since, Date until);
+
+  @Query("SELECT * FROM audit ORDER BY started LIMIT 1")
+  AuditRecord getEarliest();
+
+  @Query("SELECT * FROM audit ORDER BY started DESC LIMIT 1")
+  AuditRecord getLatest();
+
+  @Query("SELECT COUNT(*) FROM audit")
+  long count();
+
+  @Query("SELECT COUNT(*) FROM audit WHERE started >= :since AND started <= :until")
+  long countBetween(Date since, Date until);
 
   @Update
   void update(AuditRecord... auditRecords);

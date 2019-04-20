@@ -15,6 +15,7 @@
     <string name="behaviour_OpenBubbleCam_StartVideo">Start video recording</string>
 
     <string name="dialog_title_edit_rule">Edit rule</string>
+    <string name="label_action">Action</string>
 
     <string name="hint_input_number">Telephone number to match.</string>
     <string name="hint_input_name">Name of this rule.</string>

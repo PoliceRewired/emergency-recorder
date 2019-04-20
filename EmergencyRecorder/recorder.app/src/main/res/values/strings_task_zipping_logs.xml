@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="task_title_zipping">Preparing to share</string>
+    <string name="task_content_zipping">Creating a zip file to share…</string>
+
+    <string name="task_toast_complete_zipping">Zip file ready to share</string>
+    <string name="task_toast_errors_occurred">An errors occurred preparing files to share.</string>
+
+    <string name="share_subject_audit_log">Audit logs from Emergency Recorder</string>
+    <string name="share_description_audit_log">Please find attached logs and media from the Emergency Recorder.</string>
+
+</resources>

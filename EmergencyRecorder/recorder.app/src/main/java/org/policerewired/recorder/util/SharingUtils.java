@@ -27,6 +27,14 @@ public class SharingUtils {
     return path;
   }
 
+  public File generate_audit_log_file(Date date) {
+    return new File(getSharingPath(), generate_audit_log_filename(date));
+  }
+
+  public File generate_export_zip_file(Date date) {
+    return new File(getSharingPath(), generate_export_zip_filename(date));
+  }
+
   public File generate_photo_file(Date date) {
     return new File(getSharingPath(), generate_photo_filename(date));
   }
@@ -45,6 +53,14 @@ public class SharingUtils {
 
   public File generate_video_file(Date date) {
     return new File(getSharingPath(), generate_video_filename(date));
+  }
+
+  public String generate_audit_log_filename(Date date) {
+    return context.getString(R.string.export_log_filename, getFilenameDate(date));
+  }
+
+  public String generate_export_zip_filename(Date date) {
+    return context.getString(R.string.export_zip_filename, getFilenameDate(date));
   }
 
   public String generate_photo_filename(Date date) {

@@ -1,8 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <string name="menu_delete_entire_log">Delete log…</string>
-    <string name="menu_export_entire_log">Export log…</string>
+    <string name="menu_delete_entire_log">Delete entire log…</string>
+    <string name="menu_export_log_text">Export log text…</string>
+    <string name="menu_export_log_and_media">Export log and media…</string>
 
     <string name="event_record_outgoing_call">Outgoing call</string>
     <string name="event_record_photo">Photo</string>
@@ -16,7 +17,7 @@
     <string name="event_audit_application_created">Application created.</string>
     <string name="event_audit_prepopulate_database">Pre-populating blank database.</string>
     <string name="event_audit_application_terminated">Application terminated.</string>
-    <string name="event_audit_intent_received">Intent received.</string>
+    <string name="event_audit_intent_received">Intent received</string>
     <string name="event_audit_intent_received_ACTION">Intent received: %s</string>
     <string name="event_audit_service_stopped">Service stopped naturally.</string>
     <string name="event_audit_task_stopped">Task stopped.</string>

@@ -7,6 +7,8 @@ import org.jetbrains.annotations.NotNull;
 import org.policerewired.recorder.db.entity.AuditRecord;
 import org.policerewired.recorder.db.entity.Rule;
 
+import java.io.File;
+import java.io.IOException;
 import java.util.Date;
 import java.util.List;
 
@@ -36,9 +38,22 @@ public interface IRecorderService {
   void hideOverlay();
 
   /**
+   * Generates a CSV edition of the audit log, stores it in the temporary cache
+   * @return a File pointing to the stored audit log
+   * @throws IOException if there's an issue creating the file
+   */
+  File createAuditLogFile() throws IOException;
+
+  /**
    * @return a Live copy of all rules contained by the app.
    */
   LiveData<List<Rule>> getRules();
+
+  /**
+   * @param number phone number to query
+   * @return all rules for the given number
+   */
+  List<Rule> getRulesFor(String number);
 
   /**
    * @return a Live copy of all events recorded in the log so far (excluding Debug events).
@@ -49,6 +64,36 @@ public interface IRecorderService {
    * @return a static copy of all events recorded in the log so far (including Debug events).
    */
   List<AuditRecord> getAuditLog_static();
+
+  /**
+   * @return a static copy of all events recorded in the log so far (including Debug events).
+   */
+  List<AuditRecord> getAuditLog_static(Date from, Date until);
+
+  /**
+   * @return the number of entries in the audit log
+   */
+  long countAuditLog();
+
+  /**
+   * @return the number of entries in the audit log
+   */
+  long countAuditLog(Date from, Date until);
+
+  /**
+   * @return the earliest log record
+   */
+  AuditRecord getEarliestLog();
+
+  /**
+   * @return the latest log record
+   */
+  AuditRecord getLatestLog();
+
+  /**
+   * Zip up the audit log between the specified dates, and then share it.
+   */
+  void zipAndShareAuditLog(Date from, Date to);
 
   /**
    * Removes a rule.

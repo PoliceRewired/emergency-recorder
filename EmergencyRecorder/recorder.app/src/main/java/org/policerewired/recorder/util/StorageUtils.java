@@ -27,6 +27,13 @@ public class StorageUtils {
     return context.getString(R.string.audio_filename, naming.getConciseDate(date));
   }
 
+  public File tempAuditLogZipFile() throws IOException {
+    // TODO: confirm Android P still permits unfettered access to this file from other apps
+    File outputDir = context.getExternalCacheDir();
+    File file = File.createTempFile("log_", ".zip", outputDir);
+    return file;
+  }
+
   public File tempPhotoFile(String suffix) throws IOException {
     File outputDir = context.getCacheDir();
     File file = File.createTempFile("photo_temp", suffix, outputDir);

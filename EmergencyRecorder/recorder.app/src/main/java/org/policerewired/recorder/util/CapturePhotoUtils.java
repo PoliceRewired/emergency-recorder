@@ -60,7 +60,7 @@ public class CapturePhotoUtils {
     values.put(Images.Media.DISPLAY_NAME, title);
     values.put(Images.Media.DESCRIPTION, description);
     values.put(Images.Media.MIME_TYPE, "image/jpeg");
-    // Add the date meta data to ensure the image is added at the front of the gallery
+    // Add the date meta data to ensure the image is processed at the front of the gallery
     values.put(Images.Media.DATE_ADDED, System.currentTimeMillis() / 1000);
     values.put(Images.Media.DATE_TAKEN, taken.getTime());
 

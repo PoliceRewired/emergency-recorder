@@ -41,7 +41,7 @@ public class CaptureVideoUtils {
     values.put(MediaStore.Video.Media.DISPLAY_NAME, title);
     values.put(MediaStore.Video.Media.DESCRIPTION, description);
     values.put(MediaStore.Video.Media.MIME_TYPE, mime);
-    // Add the date meta data to ensure the image is added at the front of the gallery
+    // Add the date meta data to ensure the image is processed at the front of the gallery
     values.put(MediaStore.Video.Media.DATE_ADDED, System.currentTimeMillis() / 1000);
     values.put(MediaStore.Video.Media.DATE_TAKEN, started.getTime());
     values.put(MediaStore.Video.Media.DURATION, duration_ms);

@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="dialog_title_export_range">Export emergency recordings</string>
+
+    <string name="instruction_choose_export_range">Please select what you\'d like to export.</string>
+
+    <string name="radio_export_past_24h">The passed 24 hours.</string>
+    <string name="radio_export_past_48h">The passed 48 hours.</string>
+    <string name="radio_export_past_week">Back to this time last week.</string>
+    <string name="radio_export_past_month">Back to this time last month.</string>
+    <string name="radio_export_all_time">The entire history.</string>
+    <string name="radio_export_custom_range">A custom range.</string>
+
+    <string name="hint_input_from_datetime">From</string>
+    <string name="hint_input_to_datetime">Until</string>
+
+    <string name="picker_title_from_date">From…</string>
+    <string name="picker_title_to_date">Until…</string>
+
+    <string name="toast_warn_from_not_before_to">Your \'from date\' must be before your \'to date\'.</string>
+    <string name="toast_warning_no_entries_in_log_to_export">Your audit log is empty - there\'s nothing to export.</string>
+    <string name="toast_warning_nothing_in_range">There are no log entries in the range you specified.</string>
+
+</resources>

@@ -20,6 +20,9 @@
     <string name="audio_title">emergency audio %s</string>
     <string name="audio_description">Audio recorded by the Emergency Recorder, %s. Duration: %d ms.</string>
 
+    <string name="export_zip_filename">export_log_%s.zip</string>
+    <string name="export_log_filename">audit_log_%s.csv</string>
+
     <string name="location_description">Lat: %1$.5f, Lng: %2$.5f</string>
     <string name="geocode_description">%s</string>
     <string name="w3w_description">///%s</string>

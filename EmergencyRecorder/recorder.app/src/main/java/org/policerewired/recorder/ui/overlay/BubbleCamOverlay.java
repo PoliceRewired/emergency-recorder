@@ -354,7 +354,7 @@ public class BubbleCamOverlay implements IBubbleCamOverlay {
 
   /**
    * Receives a video initiated by the user, stores it, and notifies the listener.
-   * TODO: when CameraKit supports video, return and update this method to store the video
+   * TODO(v2): when CameraKit supports video, return and update this method to store the video
    */
   @SuppressWarnings("Convert2Lambda")
   private CameraKitView.VideoCallback video_callback = new CameraKitView.VideoCallback() {

@@ -14,7 +14,9 @@ import org.jcodec.common.io.IOUtils;
 import org.policerewired.recorder.BuildConfig;
 import org.policerewired.recorder.R;
 import org.policerewired.recorder.db.entity.AuditRecord;
+import org.policerewired.recorder.service.RecorderService;
 import org.policerewired.recorder.ui.adapters.AuditRecordsAdapter;
+import org.policerewired.recorder.ui.dialogs.SelectRangeDialog;
 import org.policerewired.recorder.util.NamingUtils;
 import org.policerewired.recorder.util.SharingUtils;
 import org.policerewired.recorder.util.StorageUtils;
@@ -23,6 +25,8 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -34,6 +38,7 @@ import butterknife.BindView;
 import butterknife.OnClick;
 
 import static androidx.core.content.FileProvider.getUriForFile;
+import static java.util.Calendar.HOUR;
 
 /**
  * Activity to display the audit log - allows a user to view and share media, or the log itself.
@@ -46,6 +51,8 @@ public class LogActivity extends AbstractRecorderActivity {
 
   private LiveData<List<AuditRecord>> live_recordings;
   private AuditRecordsAdapter recordings_adapter;
+
+  private SelectRangeDialog range_dialog;
 
   private NamingUtils naming;
   private StorageUtils storage;
@@ -97,7 +104,8 @@ public class LogActivity extends AbstractRecorderActivity {
     if (BuildConfig.DEBUG) {
       menu.add(Menu.NONE, R.string.menu_delete_entire_log, 0, R.string.menu_delete_entire_log);
     }
-    menu.add(Menu.NONE, R.string.menu_export_entire_log, 0, R.string.menu_export_entire_log);
+    menu.add(Menu.NONE, R.string.menu_export_log_text, 0, R.string.menu_export_log_text);
+    menu.add(Menu.NONE, R.string.menu_export_log_and_media, 0, R.string.menu_export_log_and_media);
 
     return super.onCreateOptionsMenu(menu);
   }
@@ -109,8 +117,12 @@ public class LogActivity extends AbstractRecorderActivity {
         confirmDeleteLog();
         return true;
 
-      case R.string.menu_export_entire_log:
-        shareLog();
+      case R.string.menu_export_log_and_media:
+        selectRangeToShare();
+        return true;
+
+      case R.string.menu_export_log_text:
+        shareLogText();
         return true;
 
       case android.R.id.home:
@@ -140,23 +152,52 @@ public class LogActivity extends AbstractRecorderActivity {
 
   @OnClick(R.id.fab_share)
   public void share_click() {
-    shareLog();
+    selectRangeToShare();
+  }
+
+  private void selectRangeToShare() {
+    range_dialog = new SelectRangeDialog(this, service, new SelectRangeDialog.Listener() {
+      @Override public void cancelled() { }
+      @Override
+      public void done(Date from, Date to) {
+        service.zipAndShareAuditLog(from, to);
+      }
+    });
+
+    if (service.countAuditLog() > 0) {
+      Date earliest = service.getEarliestLog().started;
+      Date latest = service.getLatestLog().started;
+
+      range_dialog.show(
+        earliest,
+        latest,
+        earliest,
+        latest);
+
+    } else {
+      informUser(R.string.toast_warning_no_entries_in_log_to_export);
+    }
   }
 
   /**
    * Initiates sharing of the audit log file as a CSV email attachment.
    */
-  private void shareLog() {
+  private void shareLogText() {
     try {
-      File file = createAuditLogFile();
+      File file = service.createAuditLogFile();
+      Uri contentUri = Uri.fromFile(file);
 
       Intent intent = new Intent(Intent.ACTION_SENDTO);
       intent.setData(Uri.parse("mailto:"));
       intent.putExtra(android.content.Intent.EXTRA_TITLE, getString(R.string.share_title_audit_log));
       intent.putExtra(android.content.Intent.EXTRA_SUBJECT, getString(R.string.share_title_audit_log));
       intent.putExtra(android.content.Intent.EXTRA_TEXT, getString(R.string.share_text_audit_log));
-      intent.putExtra(Intent.EXTRA_STREAM, Uri.fromFile(file));
+
+      intent.putExtra(Intent.EXTRA_STREAM, contentUri);
+      intent.setFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+
       startActivity(Intent.createChooser(intent, getResources().getString(R.string.chooser_title_share_audit_log)));
+
     } catch (Exception e) {
       Log.e(TAG, "Exception during preparation of audit file.", e);
       informUser(R.string.toast_warning_exception_during_audit_file_share);
@@ -244,31 +285,4 @@ public class LogActivity extends AbstractRecorderActivity {
     return outFile;
   }
 
-  /**
-   * Generates a CSV edition of the audit log, stores it in the temporary cache
-   * @return a File pointing to the stored audit log
-   * @throws IOException if there's an issue creating the file
-   */
-  private File createAuditLogFile() throws IOException {
-    File file = storage.tempAuditFile(".csv");
-    List<AuditRecord> records = service.getAuditLog_static();
-
-    List<String> entries = new LinkedList<>();
-    String csv_entry = "\"%s\"";
-
-    for (AuditRecord record : records) {
-      String time = String.format(csv_entry, String.valueOf(record.started.getTime()));
-      String date = String.format(csv_entry, naming.getShortDate(record.started));
-      String type = String.format(csv_entry, getString(record.type.description_id));
-      String data = String.format(csv_entry, record.data);
-      String row = StringUtils.join2(new String[] { time,date,type,data } , ',');
-      entries.add(row);
-    }
-
-    String[] entries_array = entries.toArray(new String[entries.size()]);
-    String log_final = StringUtils.join2(entries_array, '\n');
-    IOUtils.writeStringToFile(file, log_final);
-
-    return file;
-  }
 }

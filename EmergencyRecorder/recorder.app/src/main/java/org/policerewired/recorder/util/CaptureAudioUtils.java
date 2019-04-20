@@ -56,7 +56,7 @@ public class CaptureAudioUtils {
       values.put(MediaStore.Audio.Media.IS_MUSIC, true);
       values.put(MediaStore.Audio.Media.IS_NOTIFICATION, false);
       values.put(MediaStore.Audio.Media.IS_RINGTONE, false);
-      // Add the date meta data to ensure the image is added at the front of the gallery
+      // Add the date meta data to ensure the image is processed at the front of the gallery
       values.put(MediaStore.Audio.Media.DATE_MODIFIED, started.getTime());
       values.put(MediaStore.Audio.Media.DATE_ADDED, System.currentTimeMillis() / 1000);
       values.put(MediaStore.Audio.Media.DURATION, duration_ms);

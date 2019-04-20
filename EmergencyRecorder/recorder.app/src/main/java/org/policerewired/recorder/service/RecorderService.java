@@ -1,8 +1,6 @@
 package org.policerewired.recorder.service;
 
-import android.app.AlarmManager;
-import android.app.PendingIntent;
-import android.content.Context;
+import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
@@ -10,12 +8,13 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.location.Location;
 import android.net.Uri;
-import android.os.SystemClock;
 import android.util.Log;
 
 import com.flt.servicelib.AbstractBackgroundBindingService;
 import com.flt.servicelib.BackgroundServiceConfig;
 
+import org.jcodec.common.StringUtils;
+import org.jcodec.common.io.IOUtils;
 import org.jetbrains.annotations.NotNull;
 import org.policerewired.recorder.EmergencyRecorderApp;
 import org.policerewired.recorder.R;
@@ -25,9 +24,11 @@ import org.policerewired.recorder.db.entity.AuditRecord;
 import org.policerewired.recorder.db.entity.Rule;
 import org.policerewired.recorder.receivers.EmbeddedOutgoingCallReceiver;
 import org.policerewired.recorder.receivers.ScreenReceiver;
+import org.policerewired.recorder.tasks.ZippingTask;
 import org.policerewired.recorder.tasks.HybridCollection;
 import org.policerewired.recorder.tasks.StitchHybridImagesTask;
 import org.policerewired.recorder.ui.ConfigActivity;
+import org.policerewired.recorder.ui.LogActivity;
 import org.policerewired.recorder.ui.overlay.BubbleCamConfig;
 import org.policerewired.recorder.ui.overlay.BubbleCamOverlay;
 import org.policerewired.recorder.ui.overlay.IBubbleCamOverlay;
@@ -37,8 +38,14 @@ import org.policerewired.recorder.ui.overlay.LauncherOverlay;
 import org.policerewired.recorder.util.CapturePhotoUtils;
 import org.policerewired.recorder.util.NamingUtils;
 import org.policerewired.recorder.util.PhotoAnnotationUtils;
+import org.policerewired.recorder.util.SharingUtils;
+import org.policerewired.recorder.util.StorageUtils;
+import org.policerewired.recorder.util.Zipper;
 
+import java.io.File;
+import java.io.IOException;
 import java.util.Date;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.concurrent.Executors;
 
@@ -46,6 +53,7 @@ import androidx.core.app.NotificationCompat;
 import androidx.core.app.NotificationManagerCompat;
 import androidx.lifecycle.LiveData;
 
+import static androidx.core.content.FileProvider.getUriForFile;
 import static org.policerewired.recorder.EmergencyRecorderApp.recordAuditableEvent;
 import static org.policerewired.recorder.EmergencyRecorderApp.saveAuditRecord;
 
@@ -66,6 +74,8 @@ public class RecorderService extends AbstractBackgroundBindingService<IRecorderS
 
   private NamingUtils naming;
   private PhotoAnnotationUtils annotation;
+  private SharingUtils sharing;
+  private StorageUtils storage;
 
   public RecorderService() { }
 
@@ -85,6 +95,8 @@ public class RecorderService extends AbstractBackgroundBindingService<IRecorderS
 
     naming = new NamingUtils(this);
     annotation = new PhotoAnnotationUtils(this);
+    sharing = new SharingUtils(this);
+    storage = new StorageUtils(this);
 
     call_receiver = new EmbeddedOutgoingCallReceiver(call_listener);
     IntentFilter call_filter = new IntentFilter();
@@ -125,7 +137,7 @@ public class RecorderService extends AbstractBackgroundBindingService<IRecorderS
 
   @Override
   public int onStartCommand(Intent intent, int flags, int startId) {
-    String detail = intent.getAction() != null ? ": action=" + intent.getAction() : " (null action)";
+    String detail = intent == null ? "(ull intent)" : intent.getAction() != null ? ": action=" + intent.getAction() : " (null action)";
     Log.i(TAG, getString(R.string.event_audit_intent_received_ACTION, detail));
     recordAuditableEvent(new Date(), getString(R.string.event_audit_intent_received), detail,true);
 
@@ -449,7 +461,109 @@ public class RecorderService extends AbstractBackgroundBindingService<IRecorderS
     return EmergencyRecorderApp.db.getRecordingDao().getAll_static();
   }
 
+  @Override
+  public List<AuditRecord> getAuditLog_static(Date from, Date until) {
+    return EmergencyRecorderApp.db.getRecordingDao().getAllBetween_static(from, until);
+  }
+
+  @Override
+  public long countAuditLog() {
+    return EmergencyRecorderApp.db.getRecordingDao().count();
+  }
+
+  @Override
+  public long countAuditLog(Date from, Date until) {
+    return EmergencyRecorderApp.db.getRecordingDao().countBetween(from, until);
+  }
+
+  @Override
+  public AuditRecord getEarliestLog() {
+    return EmergencyRecorderApp.db.getRecordingDao().getEarliest();
+  }
+
+  @Override
+  public AuditRecord getLatestLog() {
+    return EmergencyRecorderApp.db.getRecordingDao().getLatest();
+  }
+
+  @Override
   public List<Rule> getRulesFor(String number) {
     return EmergencyRecorderApp.db.getRuleDao().getMatchingRules(number);
   }
+
+  @Override
+  public void zipAndShareAuditLog(Date from, Date to) {
+    try {
+
+      @SuppressLint("StaticFieldLeak")
+      ZippingTask task = new ZippingTask(this, foreground_channel) {
+        @Override
+        protected void onPostExecute(Result result) {
+          super.onPostExecute(result);
+
+          if (result.areAnySuccessful()) {
+            String subject = getString(R.string.share_subject_audit_log);
+            String description = getString(R.string.share_description_audit_log);
+
+            //Uri contentUri = getUriForFile(RecorderService.this, sharing.getFileProviderAuthority(), result.target_zip);
+            Uri contentUri = Uri.fromFile(result.target_zip);
+
+            Intent intent = new Intent();
+            intent.setAction(Intent.ACTION_SENDTO);
+            intent.setData(Uri.parse("mailto:"));
+            intent.putExtra(Intent.EXTRA_SUBJECT, subject);
+            intent.putExtra(Intent.EXTRA_TITLE, subject);
+            intent.putExtra(Intent.EXTRA_TEXT, description);
+
+            // attachment
+            intent.putExtra(Intent.EXTRA_STREAM, contentUri);
+            intent.setFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+
+            startActivity(Intent.createChooser(intent, getString(R.string.chooser_title_share_audit_log)));
+          }
+
+        }
+      };
+
+      //File zipFile = sharing.generate_export_zip_file(new Date());
+      File zipFile = storage.tempAuditLogZipFile();
+      File logFile = createAuditLogFile();
+
+      ZippingTask.Params param = new ZippingTask.Params();
+      param.source_records = getAuditLog_static(from, to);
+      param.log_file = logFile;
+      param.target_zip = zipFile;
+
+      task.execute(param);
+
+    } catch (Exception e) {
+      Log.e(TAG, "Unable to share zip file.");
+    }
+  }
+
+  @Override
+  public File createAuditLogFile() throws IOException {
+    File file = storage.tempAuditFile(".csv");
+
+    List<AuditRecord> records = getAuditLog_static();
+
+    List<String> entries = new LinkedList<>();
+    String csv_entry = "\"%s\"";
+
+    for (AuditRecord record : records) {
+      String time = String.format(csv_entry, String.valueOf(record.started.getTime()));
+      String date = String.format(csv_entry, naming.getShortDate(record.started));
+      String type = String.format(csv_entry, getString(record.type.description_id));
+      String data = String.format(csv_entry, record.data);
+      String row = StringUtils.join2(new String[] { time,date,type,data } , ',');
+      entries.add(row);
+    }
+
+    String[] entries_array = entries.toArray(new String[entries.size()]);
+    String log_final = StringUtils.join2(entries_array, '\n');
+    IOUtils.writeStringToFile(file, log_final);
+
+    return file;
+  }
+
 }
