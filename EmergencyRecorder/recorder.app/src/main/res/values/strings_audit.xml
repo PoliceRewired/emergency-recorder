@@ -1,6 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
+    <string name="activity_log">History</string>
+
     <string name="menu_delete_entire_log">Delete entire log…</string>
     <string name="menu_export_log_text">Export log text…</string>
     <string name="menu_export_log_and_media">Export log and media…</string>

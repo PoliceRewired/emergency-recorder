@@ -240,11 +240,11 @@ public class EmergencyRecorderApp extends Application {
     Manifest.permission.CAMERA,
     Manifest.permission.RECORD_AUDIO,
     Manifest.permission.WRITE_EXTERNAL_STORAGE,
-    Manifest.permission.READ_PHONE_STATE,
-    Manifest.permission.READ_CALL_LOG, // required for Android 9 and above
-    Manifest.permission.PROCESS_OUTGOING_CALLS,
     Manifest.permission.ACCESS_FINE_LOCATION,
     Manifest.permission.INTERNET,
-    Manifest.permission.REQUEST_IGNORE_BATTERY_OPTIMIZATIONS
+    Manifest.permission.REQUEST_IGNORE_BATTERY_OPTIMIZATIONS,
+    Manifest.permission.PROCESS_OUTGOING_CALLS,
+    // Manifest.permission.READ_PHONE_STATE,
+    // Manifest.permission.READ_CALL_LOG, // required for Android 9 and above
   };
 }
