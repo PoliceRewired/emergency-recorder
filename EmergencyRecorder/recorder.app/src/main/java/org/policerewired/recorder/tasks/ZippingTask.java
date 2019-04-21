@@ -57,7 +57,7 @@ public class ZippingTask extends AbstractNotifyingAsyncTask<ZippingTask.Params, 
 
   @Override
   protected int getNotificationIcon() {
-    return R.drawable.ic_launcher_foreground;
+    return R.mipmap.ic_launcher_foreground;
   }
 
   @Override

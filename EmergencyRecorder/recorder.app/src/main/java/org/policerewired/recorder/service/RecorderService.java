@@ -287,7 +287,7 @@ public class RecorderService extends AbstractBackgroundBindingService<IRecorderS
       getString(R.string.recording_service_notification_title),
       getString(R.string.recording_service_notification_content),
       null, // no ticker
-      R.drawable.ic_launcher_foreground,
+      R.mipmap.ic_launcher_foreground,
       ConfigActivity.class,
       getString(R.string.foreground_channel_name),
       getString(R.string.foreground_channel_description),
