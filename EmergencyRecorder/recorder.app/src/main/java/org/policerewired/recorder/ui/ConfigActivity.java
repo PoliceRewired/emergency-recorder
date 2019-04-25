@@ -12,6 +12,8 @@ import android.widget.Button;
 import android.widget.ImageView;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.microsoft.appcenter.analytics.Analytics;
+import com.microsoft.appcenter.distribute.Distribute;
 
 import org.jcodec.common.StringUtils;
 import org.policerewired.recorder.R;
@@ -138,6 +140,8 @@ public class ConfigActivity extends AbstractRecorderActivity {
     lines.add(getString(R.string.config_static_listener, String.valueOf(true)));
     lines.add(getString(R.string.config_hybrid_delay, getResources().getInteger(R.integer.hybrid_interval_ms)));
     lines.add(getString(R.string.config_location_delay, getResources().getInteger(R.integer.location_interval_ms)));
+    lines.add(getString(R.string.config_appcenter_analytics_enabled, String.valueOf(Analytics.isEnabled().get())));
+    lines.add(getString(R.string.config_appcenter_distribute_enabled, String.valueOf(Distribute.isEnabled().get())));
 
     String[] lines_array = lines.toArray(new String[lines.size()]);
     String message = StringUtils.joinS(lines_array, "\n");

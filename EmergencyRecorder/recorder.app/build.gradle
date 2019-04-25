@@ -6,8 +6,8 @@ android {
         applicationId "org.policerewired.recorder"
         minSdkVersion 23
         targetSdkVersion 28
-        versionCode 2
-        versionName "0.2"
+        versionCode 3
+        versionName "0.3"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
     buildTypes {
@@ -19,6 +19,17 @@ android {
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_1_8
         targetCompatibility JavaVersion.VERSION_1_8
+    }
+    flavorDimensions 'distribution'
+    productFlavors {
+        vanilla {
+            dimension = 'distribution'
+            applicationIdSuffix = '.vanilla'
+        }
+        appcenter {
+            dimension = 'distribution'
+            applicationIdSuffix = '.appcenter'
+        }
     }
 
     /* jcodec also */
@@ -41,8 +52,8 @@ dependencies {
     implementation 'com.google.android.material:material:1.1.0-alpha05'
     implementation "androidx.work:work-runtime:2.0.1"
     testImplementation 'junit:junit:4.12'
-    androidTestImplementation 'androidx.test:runner:1.2.0-alpha03'
-    androidTestImplementation 'androidx.test.espresso:espresso-core:3.2.0-alpha03'
+    androidTestImplementation 'androidx.test:runner:1.2.0-alpha04'
+    androidTestImplementation 'androidx.test.espresso:espresso-core:3.2.0-alpha04'
 
     /* ui components */
     implementation 'com.github.Kunzisoft:Android-SwitchDateTimePicker:2.0'
@@ -78,4 +89,9 @@ dependencies {
     /* location libraries */
     implementation "com.google.android.gms:play-services-location:16.0.0"
     implementation "com.what3words:w3w-java-wrapper:3.0.1"
+
+    def appCenterSdkVersion = '1.11.4'
+    implementation "com.microsoft.appcenter:appcenter-analytics:${appCenterSdkVersion}"
+    implementation "com.microsoft.appcenter:appcenter-crashes:${appCenterSdkVersion}"
+    implementation "com.microsoft.appcenter:appcenter-distribute:${appCenterSdkVersion}"
 }
