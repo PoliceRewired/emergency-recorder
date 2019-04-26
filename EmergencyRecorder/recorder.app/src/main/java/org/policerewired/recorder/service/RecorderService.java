@@ -329,7 +329,7 @@ public class RecorderService extends AbstractBackgroundBindingService<IRecorderS
 
   @Override
   protected String[] getRequiredPermissions() {
-    return EmergencyRecorderApp.permissions;
+    return EmergencyRecorderApp.get_permissions();
   }
 
   @Override

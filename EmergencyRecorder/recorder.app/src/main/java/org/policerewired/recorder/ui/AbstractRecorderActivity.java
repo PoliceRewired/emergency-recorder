@@ -42,7 +42,7 @@ public abstract class AbstractRecorderActivity extends AbstractServiceBoundAppCo
 
   @Override
   protected String[] getRequiredPermissions() {
-    return EmergencyRecorderApp.permissions;
+    return EmergencyRecorderApp.get_permissions();
   }
 
   @Override protected void onPermissionsGranted() {
