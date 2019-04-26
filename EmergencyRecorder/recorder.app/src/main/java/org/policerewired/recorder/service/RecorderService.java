@@ -10,6 +10,10 @@ import android.location.Location;
 import android.net.Uri;
 import android.util.Log;
 
+import androidx.core.app.NotificationCompat;
+import androidx.core.app.NotificationManagerCompat;
+import androidx.lifecycle.LiveData;
+
 import com.flt.servicelib.AbstractBackgroundBindingService;
 import com.flt.servicelib.BackgroundServiceConfig;
 
@@ -24,11 +28,10 @@ import org.policerewired.recorder.db.entity.AuditRecord;
 import org.policerewired.recorder.db.entity.Rule;
 import org.policerewired.recorder.receivers.EmbeddedOutgoingCallReceiver;
 import org.policerewired.recorder.receivers.ScreenReceiver;
-import org.policerewired.recorder.tasks.ZippingTask;
 import org.policerewired.recorder.tasks.HybridCollection;
 import org.policerewired.recorder.tasks.StitchHybridImagesTask;
+import org.policerewired.recorder.tasks.ZippingTask;
 import org.policerewired.recorder.ui.ConfigActivity;
-import org.policerewired.recorder.ui.LogActivity;
 import org.policerewired.recorder.ui.overlay.BubbleCamConfig;
 import org.policerewired.recorder.ui.overlay.BubbleCamOverlay;
 import org.policerewired.recorder.ui.overlay.IBubbleCamOverlay;
@@ -40,7 +43,6 @@ import org.policerewired.recorder.util.NamingUtils;
 import org.policerewired.recorder.util.PhotoAnnotationUtils;
 import org.policerewired.recorder.util.SharingUtils;
 import org.policerewired.recorder.util.StorageUtils;
-import org.policerewired.recorder.util.Zipper;
 
 import java.io.File;
 import java.io.IOException;
@@ -49,11 +51,6 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.concurrent.Executors;
 
-import androidx.core.app.NotificationCompat;
-import androidx.core.app.NotificationManagerCompat;
-import androidx.lifecycle.LiveData;
-
-import static androidx.core.content.FileProvider.getUriForFile;
 import static org.policerewired.recorder.EmergencyRecorderApp.recordAuditableEvent;
 import static org.policerewired.recorder.EmergencyRecorderApp.saveAuditRecord;
 
@@ -69,6 +66,9 @@ public class RecorderService extends AbstractBackgroundBindingService<IRecorderS
   private EmbeddedOutgoingCallReceiver call_receiver;
   private ScreenReceiver screen_receiver;
 
+  private boolean embedded_call_receiver_registered;
+  private boolean embedded_screen_receiver_registered;
+
   private BubbleCamOverlay bubblecam;
   private LauncherOverlay launcher;
 
@@ -76,8 +76,6 @@ public class RecorderService extends AbstractBackgroundBindingService<IRecorderS
   private PhotoAnnotationUtils annotation;
   private SharingUtils sharing;
   private StorageUtils storage;
-
-  public RecorderService() { }
 
   @Override
   protected void restoreFrom(SharedPreferences prefs) {
@@ -93,6 +91,7 @@ public class RecorderService extends AbstractBackgroundBindingService<IRecorderS
   public void onCreate() {
     super.onCreate();
 
+    // TODO(v2) move to injection for all helpers
     naming = new NamingUtils(this);
     annotation = new PhotoAnnotationUtils(this);
     sharing = new SharingUtils(this);
@@ -104,6 +103,7 @@ public class RecorderService extends AbstractBackgroundBindingService<IRecorderS
     call_filter.addCategory(Intent.CATEGORY_DEFAULT);
     if (getResources().getBoolean(R.bool.use_embedded_listener)) {
       registerReceiver(call_receiver, call_filter);
+      embedded_call_receiver_registered = true;
     }
 
     screen_receiver = new ScreenReceiver(screen_listener);
@@ -111,6 +111,7 @@ public class RecorderService extends AbstractBackgroundBindingService<IRecorderS
     screen_filter.addAction(Intent.ACTION_SCREEN_ON);
     screen_filter.addAction(Intent.ACTION_SCREEN_OFF);
     registerReceiver(screen_receiver, screen_filter);
+    embedded_screen_receiver_registered = true;
 
     bubblecam = new BubbleCamOverlay(this, bubble_cam_listener, BubbleCamConfig.defaults(this));
     launcher = new LauncherOverlay(this, launcher_listener, LauncherConfig.defaults(this));
@@ -123,12 +124,31 @@ public class RecorderService extends AbstractBackgroundBindingService<IRecorderS
   @Override
   public void onDestroy() {
     super.onDestroy();
-    unregisterReceiver(call_receiver);
 
     // NB. onDestroy is not called for services that are disposed of by the system.
     // This defensive code may not ever be reached - but if the Service voluntarily stops (perhaps
     // because its Notification and UI are removed, or under other unexpected circumstances) then
     // an Alarm will be set to reinitialise the service shortly afterwards.
+
+    // unregister call receiver (if embedded version is enabled)
+    if (embedded_call_receiver_registered) {
+      try {
+        unregisterReceiver(call_receiver);
+        embedded_call_receiver_registered = false;
+      } catch (Exception e) {
+        Log.w(TAG, "Failed to unregister call_receiver", e);
+      }
+    }
+
+    // unregister screen receiver
+    if (embedded_screen_receiver_registered) {
+      try {
+        unregisterReceiver(screen_receiver);
+        embedded_screen_receiver_registered = false;
+      } catch (Exception e) {
+        Log.w(TAG, "Failed to unregister screen_receiver", e);
+      }
+    }
 
     Log.w(TAG, "Service was stopped naturally. Scheduling a restart...");
     EmergencyRecorderApp.scheduleServiceStart(this);
@@ -137,11 +157,22 @@ public class RecorderService extends AbstractBackgroundBindingService<IRecorderS
 
   @Override
   public int onStartCommand(Intent intent, int flags, int startId) {
-    String detail = intent == null ? "(ull intent)" : intent.getAction() != null ? ": action=" + intent.getAction() : " (null action)";
-    Log.i(TAG, getString(R.string.event_audit_intent_received_ACTION, detail));
-    recordAuditableEvent(new Date(), getString(R.string.event_audit_intent_received), detail,true);
 
-    if (ACTION_CALL_RECEIVED.equals(intent.getAction())) {
+    String detail;
+    if (intent == null) {
+      detail = "(null intent)";
+    } else {
+      if (intent.getAction() == null) {
+        detail = "(null action)";
+      } else {
+        detail = "action = " + intent.getAction();
+      }
+    }
+
+    Log.i(TAG, getString(R.string.event_audit_intent_received_ACTION, detail));
+    recordAuditableEvent(new Date(), getString(R.string.event_audit_intent_received), detail, true);
+
+    if (intent != null && ACTION_CALL_RECEIVED.equals(intent.getAction())) {
       Log.d(TAG, "Initiating call handling...");
       String number = intent.getStringExtra(EXTRA_NUMBER);
       onOutgoingCall(number);
