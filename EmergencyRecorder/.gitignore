@@ -12,3 +12,5 @@
 /captures
 .externalNativeBuild
 values_api_keys.xml
+*.apk
+output.json
