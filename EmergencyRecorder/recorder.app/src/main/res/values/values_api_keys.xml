@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources xmlns:tools="http://schemas.android.com/tools">
+    <string name="api_key_w3w">8F2QYSEX</string>
+    <string name="api_key_appcenter" tools:ignore="TypographyDashes">9948ba26-0913-4837-8fb4-87560eb19253</string>
+</resources>

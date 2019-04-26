@@ -11,5 +11,4 @@
 /build
 /captures
 .externalNativeBuild
-strings_w3w.xml
-strings_appcenter.xml
+values_api_keys.xml
