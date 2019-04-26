@@ -18,6 +18,7 @@ import butterknife.ButterKnife;
  * Abstract adapter that can easily represent a collection of Items, with listener and callbacks
  * for basic CRUD manipulations (create/update/delete).
  */
+@SuppressWarnings("unchecked")
 public abstract class CrudAdapter<Item, VH extends CrudAdapter.ViewHolder> extends RecyclerView.Adapter<VH> {
 
   protected Listener<Item> listener;

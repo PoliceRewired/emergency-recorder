@@ -20,12 +20,16 @@ import org.policerewired.recorder.receivers.RestartRequestReceiver;
 import org.policerewired.recorder.service.RecorderService;
 import org.policerewired.recorder.util.NamingUtils;
 
+import java.util.Arrays;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.Map;
 import java.util.concurrent.Executors;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.RequiresApi;
 import androidx.room.Room;
 import androidx.room.RoomDatabase;
 import androidx.sqlite.db.SupportSQLiteDatabase;
@@ -261,18 +265,30 @@ public class EmergencyRecorderApp extends Application {
    *   by case basis. As we are an 'automation' app, we may qualify for Play Store whitelisting.
    * </p>
    */
-  public static String[] permissions = new String[] {
-    Manifest.permission.RECEIVE_BOOT_COMPLETED,
-    Manifest.permission.CAMERA,
-    Manifest.permission.RECORD_AUDIO,
-    Manifest.permission.WRITE_EXTERNAL_STORAGE,
-    Manifest.permission.ACCESS_FINE_LOCATION,
-    Manifest.permission.INTERNET,
-    Manifest.permission.REQUEST_IGNORE_BATTERY_OPTIMIZATIONS,
-    Manifest.permission.PROCESS_OUTGOING_CALLS,
-    Manifest.permission.FOREGROUND_SERVICE
-    // Manifest.permission.READ_PHONE_STATE,
-    // Manifest.permission.READ_CALL_LOG, // required for Android 9 and above
-  };
+  public static String[] get_permissions() {
 
+    String[] universal_permissions = new String[]{
+      Manifest.permission.RECEIVE_BOOT_COMPLETED,
+      Manifest.permission.CAMERA,
+      Manifest.permission.RECORD_AUDIO,
+      Manifest.permission.WRITE_EXTERNAL_STORAGE,
+      Manifest.permission.ACCESS_FINE_LOCATION,
+      Manifest.permission.INTERNET,
+      Manifest.permission.REQUEST_IGNORE_BATTERY_OPTIMIZATIONS,
+      Manifest.permission.PROCESS_OUTGOING_CALLS
+    };
+
+    List<String> permissions = new LinkedList<>(Arrays.asList(universal_permissions));
+
+    // from Android P onwards, we need the FOREGROUND_SERVICE permission
+    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
+      permissions.add(Manifest.permission.FOREGROUND_SERVICE);
+    }
+
+    // required for Android 9 and above
+    // Manifest.permission.READ_PHONE_STATE
+    // Manifest.permission.READ_CALL_LOG
+
+    return permissions.toArray(new String[0]);
+  }
 }
