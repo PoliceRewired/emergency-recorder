@@ -19,6 +19,7 @@
     </string-array>
 
     <!-- hybrid processing -->
+    <integer name="default_picture_max_width">2000</integer>
     <integer name="default_hybrid_video_max_width">960</integer>
 
     <!-- video processing -->

@@ -486,6 +486,7 @@ public class BubbleCamOverlay implements IBubbleCamOverlay {
         if (locationResult.getLastLocation() != null) {
           Log.d(TAG, "Location update received.");
           lastLocation = locationResult.getLastLocation();
+          camera.setLocation(lastLocation);
           locationUpdated = new Date();
         }
         if (isShowing()) {
