@@ -2,7 +2,7 @@
 <resources>
 
     <!-- supported modes -->
-    <bool name="supports_video_mode">false</bool>
+    <bool name="supports_video_mode">true</bool>
     <bool name="supports_photo_mode">true</bool>
     <bool name="supports_hybrid_mode">true</bool>
 
@@ -20,6 +20,10 @@
 
     <!-- hybrid processing -->
     <integer name="default_hybrid_video_max_width">960</integer>
+
+    <!-- video processing -->
+    <integer name="default_video_max_width">1000</integer>
+    <integer name="default_video_bps">1500000</integer>
 
     <!-- intervals -->
     <integer name="location_interval_ms">5000</integer>

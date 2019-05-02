@@ -7,7 +7,7 @@
 
     <string name="video_filename">emergency_video_%s.mp4</string>
     <string name="video_title">emergency video %s</string>
-    <string name="video_description">Video taken by the Emergency Recorder, %s. Contains %d frames. Duration: %d ms.</string>
+    <string name="video_description">Video taken by the Emergency Recorder, %s. Duration: %d ms.</string>
 
     <string name="hybrid_photo_filename">emergency_burst_photo_%s.jpg</string>
     <string name="hybrid_photo_title">emergency burst photo %s</string>

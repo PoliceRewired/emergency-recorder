@@ -39,6 +39,7 @@ import org.policerewired.recorder.ui.overlay.ILauncherOverlay;
 import org.policerewired.recorder.ui.overlay.LauncherConfig;
 import org.policerewired.recorder.ui.overlay.LauncherOverlay;
 import org.policerewired.recorder.util.CapturePhotoUtils;
+import org.policerewired.recorder.util.CaptureVideoUtils;
 import org.policerewired.recorder.util.NamingUtils;
 import org.policerewired.recorder.util.PhotoAnnotationUtils;
 import org.policerewired.recorder.util.SharingUtils;
@@ -367,6 +368,15 @@ public class RecorderService extends AbstractBackgroundBindingService<IRecorderS
     String title = naming.generate_hybrid_photo_title(taken);
     String description = naming.generate_hybrid_photo_description(taken, started);
     Uri uri = CapturePhotoUtils.insertImage(this, bmp, title, description, taken, location);
+    return uri;
+  }
+
+  @Override
+  public Uri storeVideo(@NotNull File source, @NotNull Date started, @NotNull Date completed, Location location, String geocode, String w3w) {
+    long duration_ms = completed.getTime() - started.getTime();
+    String title = naming.generate_video_title(started);
+    String description = naming.generate_video_description(started, duration_ms);
+    Uri uri = CaptureVideoUtils.insertVideo(getContentResolver(), source, title, description, started, AuditRecordType.VideoRecording.mime_type, duration_ms);
     return uri;
   }
 
