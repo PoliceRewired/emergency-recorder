@@ -80,6 +80,7 @@ dependencies {
 
     /* camera view */
     implementation 'com.otaliastudios:cameraview:2.0.0-beta04'
+    implementation 'androidx.exifinterface:exifinterface:1.0.0'
 
     /* jcodec - for creating a video from separate photos, see: http://jcodec.org/ */
     implementation 'org.jcodec:jcodec:0.2.3'

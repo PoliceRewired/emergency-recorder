@@ -41,6 +41,7 @@
     <string name="config_appcenter_analytics_enabled">AppCenter analytics enabled: %s</string>
     <string name="config_appcenter_distribute_enabled">AppCenter distribution enabled: %s</string>
     <string name="config_photo_mode_supported">Photos enabled: %s</string>
+    <string name="config_photo_max_width">Picture max width: %d</string>
     <string name="config_hybrid_mode_supported">Bursts enabled: %s</string>
     <string name="config_video_mode_supported">Videos enabled: %s</string>
     <string name="config_hybrid_video_max_width">Hybrid video max width: %d</string>

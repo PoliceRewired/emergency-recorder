@@ -31,6 +31,8 @@
                 app:cameraVideoCodec="h264"
                 app:cameraVideoSizeMaxWidth="@integer/default_video_max_width"
                 app:cameraVideoBitRate="@integer/default_video_bps"
+                app:cameraPictureSizeMaxWidth="@integer/default_picture_max_width"
+                app:cameraPlaySounds="false"
                 />
 
             <TextView

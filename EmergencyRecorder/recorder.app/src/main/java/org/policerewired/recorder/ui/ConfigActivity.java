@@ -142,6 +142,7 @@ public class ConfigActivity extends AbstractRecorderActivity {
     lines.add(getString(R.string.config_appcenter_analytics_enabled, String.valueOf(Analytics.isEnabled().get())));
     lines.add(getString(R.string.config_appcenter_distribute_enabled, String.valueOf(Distribute.isEnabled().get())));
     lines.add(getString(R.string.config_photo_mode_supported, String.valueOf(getResources().getBoolean(R.bool.supports_photo_mode))));
+    lines.add(getString(R.string.config_photo_max_width, getResources().getInteger(R.integer.default_picture_max_width)));
     lines.add(getString(R.string.config_hybrid_mode_supported, String.valueOf(getResources().getBoolean(R.bool.supports_hybrid_mode))));
     lines.add(getString(R.string.config_video_mode_supported, String.valueOf(getResources().getBoolean(R.bool.supports_video_mode))));
     lines.add(getString(R.string.config_hybrid_video_max_width, getResources().getInteger(R.integer.default_hybrid_video_max_width)));
