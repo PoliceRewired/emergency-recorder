@@ -95,7 +95,7 @@ public class StitchHybridImagesTask extends AbstractNotifyingAsyncTask<StitchHyb
           context.getContentResolver(),
           result.video,
           naming.generate_video_title(result.started),
-          naming.generate_video_description(result.started, result.images, result.duration_ms()),
+          naming.generate_video_description(result.started, result.duration_ms()),
           result.started,
           AuditRecordType.BurstModeVideo.mime_type,
           result.duration_ms());

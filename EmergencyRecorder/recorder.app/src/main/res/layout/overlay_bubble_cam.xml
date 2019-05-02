@@ -18,34 +18,20 @@
             android:layout_height="wrap_content"
             android:padding="@dimen/card_padding">
 
-            <com.camerakit.CameraKitView
-                android:id="@+id/camera_kit"
+            <com.otaliastudios.cameraview.CameraView
+                android:id="@+id/camera_view"
                 android:layout_width="150dp"
                 android:layout_height="150dp"
                 android:adjustViewBounds="true"
                 android:keepScreenOn="true"
-                app:camera_flash="auto"
-                app:camera_facing="back"
-                app:camera_focus="continuous"
-                app:camera_permissions="camera" />
-
-            <!--
-            <com.wonderkiln.camerakit.CameraView
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:adjustViewBounds="true"
-                android:keepScreenOn="true"
-                android:id="@+id/camera_kit"
-                app:ckFacing="back"
-                app:ckFlash="off"
-                app:ckFocus="continuous"
-                app:ckMethod="standard"
-                app:ckPermissions="strict"
-                app:ckCropOutput="true"
-                app:ckJpegQuality="100"
-                app:ckVideoQuality="highest"
+                app:cameraFacing="back"
+                app:cameraFlash="off"
+                app:cameraWhiteBalance="auto"
+                app:cameraAudio="on"
+                app:cameraVideoCodec="h264"
+                app:cameraVideoSizeMaxWidth="@integer/default_video_max_width"
+                app:cameraVideoBitRate="@integer/default_video_bps"
                 />
-                -->
 
             <TextView
                 android:id="@+id/text_state"
@@ -55,8 +41,8 @@
                 android:text="@string/state_ready"
                 android:background="@color/colorDisabled"
                 android:textColor="@android:color/white"
-                android:layout_alignStart="@id/camera_kit"
-                android:layout_alignTop="@id/camera_kit"
+                android:layout_alignStart="@id/camera_view"
+                android:layout_alignTop="@id/camera_view"
                 android:paddingTop="2dp"
                 android:paddingBottom="2dp"
                 android:paddingLeft="4dp"
@@ -67,9 +53,9 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:gravity="center_horizontal"
-                android:layout_alignStart="@id/camera_kit"
-                android:layout_alignEnd="@id/camera_kit"
-                android:layout_alignBottom="@id/camera_kit"
+                android:layout_alignStart="@id/camera_view"
+                android:layout_alignEnd="@id/camera_view"
+                android:layout_alignBottom="@id/camera_view"
                 android:orientation="horizontal">
 
                 <com.google.android.material.floatingactionbutton.FloatingActionButton
@@ -108,8 +94,8 @@
                 android:id="@+id/icon_close"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_alignTop="@id/camera_kit"
-                android:layout_alignEnd="@id/camera_kit"
+                android:layout_alignTop="@id/camera_view"
+                android:layout_alignEnd="@id/camera_view"
                 android:src="@drawable/ic_close_black_24dp"
                 android:tint="@android:color/white"
                 android:background="@color/colorDisabled"
@@ -122,9 +108,9 @@
                 android:text="@string/text_blank_location"
                 android:textSize="10sp"
                 android:textStyle="bold"
-                android:layout_below="@id/camera_kit"
-                android:layout_alignStart="@id/camera_kit"
-                android:layout_alignEnd="@id/camera_kit"
+                android:layout_below="@id/camera_view"
+                android:layout_alignStart="@id/camera_view"
+                android:layout_alignEnd="@id/camera_view"
                 android:textColor="#B71C1C"
                 />
 
@@ -136,8 +122,8 @@
                 android:textSize="10sp"
                 android:textStyle="bold"
                 android:layout_below="@id/text_location"
-                android:layout_alignStart="@id/camera_kit"
-                android:layout_alignEnd="@id/camera_kit"
+                android:layout_alignStart="@id/camera_view"
+                android:layout_alignEnd="@id/camera_view"
                 android:textColor="#1A237E"
                 />
 

@@ -1,7 +1,6 @@
 package org.policerewired.recorder.ui;
 
 import android.app.Service;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.PowerManager;
@@ -142,6 +141,12 @@ public class ConfigActivity extends AbstractRecorderActivity {
     lines.add(getString(R.string.config_location_delay, getResources().getInteger(R.integer.location_interval_ms)));
     lines.add(getString(R.string.config_appcenter_analytics_enabled, String.valueOf(Analytics.isEnabled().get())));
     lines.add(getString(R.string.config_appcenter_distribute_enabled, String.valueOf(Distribute.isEnabled().get())));
+    lines.add(getString(R.string.config_photo_mode_supported, String.valueOf(getResources().getBoolean(R.bool.supports_photo_mode))));
+    lines.add(getString(R.string.config_hybrid_mode_supported, String.valueOf(getResources().getBoolean(R.bool.supports_hybrid_mode))));
+    lines.add(getString(R.string.config_video_mode_supported, String.valueOf(getResources().getBoolean(R.bool.supports_video_mode))));
+    lines.add(getString(R.string.config_hybrid_video_max_width, getResources().getInteger(R.integer.default_hybrid_video_max_width)));
+    lines.add(getString(R.string.config_video_max_width, getResources().getInteger(R.integer.default_video_max_width)));
+    lines.add(getString(R.string.config_video_bps, getResources().getInteger(R.integer.default_video_bps)));
 
     String[] lines_array = lines.toArray(new String[lines.size()]);
     String message = StringUtils.joinS(lines_array, "\n");

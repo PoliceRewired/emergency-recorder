@@ -157,7 +157,7 @@ public interface IRecorderService {
   Uri storeUserPhoto(@NotNull byte[] data, @NotNull Date taken, Location location, String geocode, String w3w);
 
   /**
-   * Prepares the photo with visible annotations, and stores it.
+   * Prepares and stores the photo.
    * @param data raw bytes of the photo, from the camera
    * @param started time the hybrid collection was begun
    * @param taken time the photo was taken
@@ -168,4 +168,15 @@ public interface IRecorderService {
    */
   Uri storeHybridPhoto(@NotNull byte[] data, @NotNull Date started, @NotNull Date taken, Location location, String geocode, String w3w);
 
+  /**
+   * Stores the video.
+   * @param source file where the video is stored
+   * @param started time the video recording began
+   * @param completed very shortly after the video recording finished
+   * @param location location (if available)
+   * @param geocode geocoded address (if available)
+   * @param w3w what3words triplet (if avaialble)
+   * @return uri of the stored photo
+   */
+  Uri storeVideo(@NotNull File source, @NotNull Date started, @NotNull Date completed, Location location, String geocode, String w3w);
 }

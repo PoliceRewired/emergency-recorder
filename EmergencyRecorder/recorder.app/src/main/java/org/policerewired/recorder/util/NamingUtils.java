@@ -39,8 +39,8 @@ public class NamingUtils {
     return context.getString(R.string.video_title, getConciseDate(date));
   }
 
-  public String generate_video_description(Date date, int images, long duration_ms) {
-    return context.getString(R.string.video_description, getLongFormatDate(date), images, duration_ms);
+  public String generate_video_description(Date date, long duration_ms) {
+    return context.getString(R.string.video_description, getLongFormatDate(date), duration_ms);
   }
 
   public String generate_audio_album(Date date) {
