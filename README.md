@@ -12,7 +12,7 @@ The Emergency Recorder Toolkit is aimed at people encountering emergencies, who 
 When capture begins, the app offers 3 modes:
 * Photography (allow the user to point and click to take photos). No audio.
 * Burst mode (takes a series of photos, and stitches them together afterwards into a video). Audio recorded separately.
-* Full video (not yet supported - see dependencies, below). Audio recorded with video.
+* Full video. Audio recorded with video.
 
 <br clear="right" />
 <img align="right" src="https://github.com/PoliceRewired/emergency-recorder/raw/master/Screenshots/007_2019-03-28-outgoing-call.png" width="320px" />
@@ -63,8 +63,8 @@ Bubble camera
 - [x] Audio recording accompanies the burst mode photography.
 - [x] The new audio appears in an album called 'Emergency Audio' in the user's music app immediately.
 - [x] A record of each recording made is stored in the app's internal database.
-- [ ] User can take a standard video using the overlay. (See dependencies, below.)
-- [ ] The new video appears in the user's phone gallery immediately.
+- [x] User can take a standard video using the overlay. (See dependencies, below.)
+- [x] The new video appears in the user's phone gallery immediately.
 
 Receive outgoing calls
 
@@ -88,7 +88,7 @@ Location
 
 User information
 
-- [ ] Users can view a log showing a record of each recording made by the app.
+- [x] Users can view a log showing a record of each recording made by the app.
 - [ ] Users can view an About page detailing information about the app, and find out more about Police Rewired.
 - [ ] App features a HOWTO video, showing how it works and how it can be helpful.
 - [ ] App links to a website with info about how to be helpful and safe. (eg. What makes a good witness? What makes good evidence?)
@@ -96,6 +96,7 @@ User information
 ### Dependencies
 
 * [CameraKit](https://camerakit.io/) is superb, but the version 1.0.0 beta series does not yet support video recording. This is coming soon.
+* [CameraView](https://natario1.github.io/CameraView/) replaces CameraKit in v0.5 onwards of the app.
 * Keeping services and intent listeners alive on Android is an ongoing arms-race/battle with Google's definition of 'best practises'. We are using [background-service-lib](https://github.com/front-line-tech/background-service-lib), an open source background service toolkit library from [Front-Line Tech Ltd](http://front-line-tech.com).
 * We use Google Play Services to provide location facilities, and Android provides geocoding facilities.
 * We also use [What3Words](https://docs.what3words.com/wrapper/android/) to provide a short, easily pronounceable location description.
