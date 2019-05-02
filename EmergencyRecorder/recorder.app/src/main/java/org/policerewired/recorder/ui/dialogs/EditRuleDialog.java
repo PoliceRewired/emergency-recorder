@@ -2,7 +2,6 @@ package org.policerewired.recorder.ui.dialogs;
 
 import android.app.Dialog;
 import android.content.Context;
-import android.widget.ArrayAdapter;
 
 import com.google.android.gms.common.util.Strings;
 import com.google.android.material.textfield.TextInputLayout;
@@ -10,6 +9,7 @@ import com.google.android.material.textfield.TextInputLayout;
 import org.policerewired.recorder.R;
 import org.policerewired.recorder.constants.Behaviour;
 import org.policerewired.recorder.db.entity.Rule;
+import org.policerewired.recorder.ui.adapters.BehaviourSpinnerAdapter;
 
 import java.util.Arrays;
 
@@ -65,8 +65,7 @@ public class EditRuleDialog {
   }
 
   private void createSpinnerAdapter() {
-    ArrayAdapter<Behaviour> spinner_adapter = new ArrayAdapter<>(context, android.R.layout.simple_spinner_item, Behaviour.values());
-    spinner_adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+    BehaviourSpinnerAdapter spinner_adapter = new BehaviourSpinnerAdapter(context);
     spinner_behaviour.setAdapter(spinner_adapter);
   }
 
