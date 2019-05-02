@@ -1,5 +1,7 @@
 package org.policerewired.recorder.constants;
 
+import android.app.Application;
+
 import org.policerewired.recorder.R;
 
 import androidx.annotation.StringRes;
@@ -16,7 +18,8 @@ public enum Behaviour {
   @StringRes
   public int descriptionId;
 
-  private Behaviour(@StringRes  int descriptionId) {
+  Behaviour(@StringRes  int descriptionId) {
     this.descriptionId = descriptionId;
   }
+
 }
