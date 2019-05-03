@@ -52,6 +52,7 @@
     <string name="btn_grant_overlay">Grant overlay permission…</string>
     <string name="btn_request_power">Disable battery optimisation…</string>
 
+    <string name="menu_show_oss_licenses">Show open source licenses…</string>
     <string name="menu_view_config">View configuration…</string>
     <string name="menu_view_rules">Edit rules…</string>
     <string name="menu_view_log">View log…</string>

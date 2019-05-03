@@ -10,6 +10,7 @@ import android.view.MenuItem;
 import android.widget.Button;
 import android.widget.ImageView;
 
+import com.google.android.gms.oss.licenses.OssLicensesMenuActivity;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.microsoft.appcenter.analytics.Analytics;
 import com.microsoft.appcenter.distribute.Distribute;
@@ -28,7 +29,7 @@ import butterknife.OnClick;
  * Main activity - show's the app's permissions and allows the user to launch the bubble cam overlay
  * or the rules activity.
  */
-public class ConfigActivity extends AbstractRecorderActivity {
+public class MainActivity extends AbstractRecorderActivity {
 
   @BindView(R.id.icon_warn_permissions) ImageView icon_permissions;
   @BindView(R.id.icon_warn_overlay) ImageView icon_overlay;
@@ -99,6 +100,7 @@ public class ConfigActivity extends AbstractRecorderActivity {
 
   @Override
   public boolean onCreateOptionsMenu(Menu menu) {
+    menu.add(Menu.NONE, R.string.menu_show_oss_licenses, 0, R.string.menu_show_oss_licenses);
     menu.add(Menu.NONE, R.string.menu_view_config, 0, R.string.menu_view_config);
     menu.add(Menu.NONE, R.string.menu_view_rules, 0, R.string.menu_view_rules);
     menu.add(Menu.NONE, R.string.menu_view_log, 0, R.string.menu_view_log);
@@ -109,6 +111,10 @@ public class ConfigActivity extends AbstractRecorderActivity {
   @Override
   public boolean onOptionsItemSelected(MenuItem item) {
     switch (item.getItemId()) {
+
+      case R.string.menu_show_oss_licenses:
+        show_oss_licenses();
+        return true;
 
       case R.string.menu_view_config:
         show_config();
@@ -129,6 +135,11 @@ public class ConfigActivity extends AbstractRecorderActivity {
       default:
         return super.onOptionsItemSelected(item);
     }
+  }
+
+  private void show_oss_licenses() {
+    OssLicensesMenuActivity.setActivityTitle(getString(R.string.oss_license_title));
+    startActivity(new Intent(this, OssLicensesMenuActivity.class));
   }
 
   @SuppressWarnings("ToArrayCallWithZeroLengthArrayArgument")
