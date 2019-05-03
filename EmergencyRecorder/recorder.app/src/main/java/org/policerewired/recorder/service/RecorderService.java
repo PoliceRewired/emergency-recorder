@@ -31,7 +31,7 @@ import org.policerewired.recorder.receivers.ScreenReceiver;
 import org.policerewired.recorder.tasks.HybridCollection;
 import org.policerewired.recorder.tasks.StitchHybridImagesTask;
 import org.policerewired.recorder.tasks.ZippingTask;
-import org.policerewired.recorder.ui.ConfigActivity;
+import org.policerewired.recorder.ui.MainActivity;
 import org.policerewired.recorder.ui.overlay.BubbleCamConfig;
 import org.policerewired.recorder.ui.overlay.BubbleCamOverlay;
 import org.policerewired.recorder.ui.overlay.IBubbleCamOverlay;
@@ -320,7 +320,7 @@ public class RecorderService extends AbstractBackgroundBindingService<IRecorderS
       getString(R.string.recording_service_notification_content),
       null, // no ticker
       R.mipmap.ic_launcher_foreground,
-      ConfigActivity.class,
+      MainActivity.class,
       getString(R.string.foreground_channel_name),
       getString(R.string.foreground_channel_description),
       NotificationManagerCompat.IMPORTANCE_MAX,
