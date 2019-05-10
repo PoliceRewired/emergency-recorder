@@ -1,16 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-
-    <string name="dialog_title_about">About Emergency Recorder</string>
-    <string name="dialog_message_about">
-        The Emergency Recorder is developed by Police Rewired,
-        a group of volunteer professionals building tools to
-        improve public safety and fight crime. Visit our site
-        to find out more:\n\nhttps://policerewired.org
-    </string>
-    <string name="btn_visit_police_rewired">Visit…</string>
-
     <string name="dialog_title_config">Configuration</string>
 
     <!-- configuration dialog lines -->
@@ -28,6 +18,7 @@
     <string name="config_video_max_width">Video max width: %d</string>
     <string name="config_video_bps">Video bitrate: %d bps</string>
 
+    <string name="menu_show_new_home_activity">Experimental home activity…</string>
     <string name="menu_show_new_permissions_slides">Experimental welcome screens…</string>
     <string name="menu_show_oss_licenses">Show open source licenses…</string>
     <string name="menu_view_config">View configuration…</string>
