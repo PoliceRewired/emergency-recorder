@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="activity_setup">Emergency Recorder Setup</string>
+
+    <string name="intro_welcome_title">Welcome</string>
+    <string name="intro_welcome_description">
+        The next few screens will help you to set up the Emergency Recorder
+        to make video recordings of your environment during emergency calls.
+    </string>
+
+    <string name="explanation_permissions">
+        Emergency Recorder needs a few permissions in order to be able
+        to detect your emergency call, to initiate the camera, and to
+        store the video footage you record on your phone.
+    </string>
+
+    <string name="disclaimer_permissions">
+        Emergency Recorder will never share any footage you take
+        without your consent.
+    </string>
+
+    <string name="btn_grant_permissions">Grant permissions…</string>
+
+    <string name="explanation_overlay">
+        Emergency Recorder needs an extra permissions to be able to
+        use your camera on screen in a bubble.
+    </string>
+
+    <string name="btn_grant_overlay">Grant overlay permission…</string>
+
+    <string name="explanation_power">
+        Emergency Recorder needs to run in the background to detect emergency calls.
+        Please disable Battery Optimisation for Emergency Recorder.
+    </string>
+
+    <string name="btn_request_power">Disable battery optimisation…</string>
+
+    <string name="intro_finished_title">Congratulations</string>
+    <string name="intro_finished_description">
+        The Emergency Recorder is now ready to record should you ever find yourself making an emergency call.
+    </string>
+
+</resources>

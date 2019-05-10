@@ -15,12 +15,6 @@
     <uses-permission android:name="android.permission.PROCESS_OUTGOING_CALLS" />
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
 
-    <!--
-    <uses-permission android:name="android.permission.READ_PHONE_STATE" />
-    <uses-permission android:name="android.permission.READ_CALL_LOG" />
-    -->
-    <!-- NB. READ_CALL_LOG may be required for Android 9 for the PROCESS_OUTGOING_CALLS permission -->
-
     <application
         android:name=".EmergencyRecorderApp"
         android:allowBackup="true"
@@ -31,59 +25,58 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         tools:ignore="AllowBackup,GoogleAppIndexingWarning">
+        <activity
+            android:name=".ui.SetupActivity"
+            android:label="@string/activity_setup"
+            >
 
+        </activity>
         <activity
             android:name=".ui.LogActivity"
-            android:launchMode="singleTop"
             android:label="@string/activity_log"
-            />
+            android:launchMode="singleTop" />
 
         <service
             android:name=".service.RecorderService"
-            android:enabled="true"
-            />
+            android:enabled="true" />
 
         <activity
             android:name=".ui.MainActivity"
             android:launchMode="singleTop">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
+
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-
         <activity
             android:name=".ui.RulesActivity"
             android:label="@string/activity_rules"
-            android:launchMode="singleTop"
-            />
+            android:launchMode="singleTop" />
 
         <receiver
-            android:name="org.policerewired.recorder.receivers.BootReceiver"
+            android:name=".receivers.BootReceiver"
             android:enabled="true">
             <intent-filter>
                 <action android:name="android.intent.action.BOOT_COMPLETED" />
-                <action android:name="android.intent.action.QUICKBOOT_POWERON"/>
-                <action android:name="com.htc.intent.action.QUICKBOOT_POWERON"/>
-                <action android:name="android.intent.action.REBOOT"/>
+                <action android:name="android.intent.action.QUICKBOOT_POWERON" />
+                <action android:name="com.htc.intent.action.QUICKBOOT_POWERON" />
+                <action android:name="android.intent.action.REBOOT" />
             </intent-filter>
-        </receiver>
-
-        <!-- the NEW_OUTGOING_CALL intent action is still permitted for manifest receivers -->
+        </receiver> <!-- the NEW_OUTGOING_CALL intent action is still permitted for manifest receivers -->
         <receiver
             android:name=".receivers.StandaloneOutgoingCallReceiver"
             android:enabled="true">
             <intent-filter>
                 <action android:name="android.intent.action.NEW_OUTGOING_CALL" />
+
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </receiver>
-
         <receiver
             android:name=".receivers.RestartRequestReceiver"
             android:enabled="true"
-            android:exported="true"
-            />
+            android:exported="true" />
 
         <provider
             android:name="androidx.core.content.FileProvider"
@@ -92,10 +85,8 @@
             android:grantUriPermissions="true">
             <meta-data
                 android:name="android.support.FILE_PROVIDER_PATHS"
-                android:resource="@xml/fileshare_paths"
-                />
+                android:resource="@xml/fileshare_paths" />
         </provider>
-
     </application>
 
 </manifest>
