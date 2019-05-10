@@ -1,0 +1,221 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.coordinatorlayout.widget.CoordinatorLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginBottom="55dp">
+
+        <TextView
+            android:id="@+id/textView"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="8dp"
+            android:layout_marginEnd="8dp"
+            android:text="@string/home_title"
+            android:textAlignment="center"
+            android:textAppearance="@style/TextAppearance.AppCompat.Large"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            />
+
+        <androidx.cardview.widget.CardView
+            android:id="@+id/card_indicators"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:layout_marginEnd="8dp"
+            android:layout_marginTop="8dp"
+            app:contentPadding="@dimen/card_padding"
+            app:cardUseCompatPadding="true"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/textView">
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+
+                <ImageView
+                    android:id="@+id/icon_warn_permissions"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:src="@drawable/ic_warning_black_24dp"
+                    android:layout_alignParentStart="true"
+                    android:layout_alignTop="@id/text_indicator_permissions"
+                    android:layout_alignBottom="@id/text_indicator_permissions"
+                    />
+
+                <ImageView
+                    android:id="@+id/icon_warn_overlay"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:src="@drawable/ic_warning_black_24dp"
+                    android:layout_alignParentStart="true"
+                    android:layout_alignTop="@id/text_indicator_overlay"
+                    android:layout_alignBottom="@id/text_indicator_overlay"
+                    />
+
+                <ImageView
+                    android:id="@+id/icon_warn_power"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:src="@drawable/ic_warning_black_24dp"
+                    android:layout_alignParentStart="true"
+                    android:layout_alignTop="@id/text_indicator_power"
+                    android:layout_alignBottom="@id/text_indicator_power"
+                    />
+
+                <TextView
+                    android:id="@+id/text_indicator_permissions"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_toEndOf="@id/icon_warn_permissions"
+                    android:layout_alignParentTop="true"
+                    android:text="@string/text_indicator_permissions"
+                    android:textSize="14sp"
+                    />
+
+                <TextView
+                    android:id="@+id/text_indicator_overlay"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_toEndOf="@id/icon_warn_overlay"
+                    android:layout_below="@id/text_indicator_permissions"
+                    android:text="@string/text_indicator_overlay"
+                    android:textSize="14sp"
+                    />
+
+                <TextView
+                    android:id="@+id/text_indicator_power"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_toEndOf="@id/icon_warn_power"
+                    android:layout_below="@id/text_indicator_overlay"
+                    android:text="@string/text_indicator_power"
+                    android:textSize="14sp"
+                    />
+
+            </RelativeLayout>
+
+        </androidx.cardview.widget.CardView>
+
+        <androidx.cardview.widget.CardView
+            android:id="@+id/card_twitter"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="8dp"
+            app:cardUseCompatPadding="true"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/card_indicators"
+            app:layout_constraintWidth_percent="0.48"
+            app:layout_constraintHeight_percent="0.6"
+            />
+
+        <androidx.cardview.widget.CardView
+            android:id="@+id/card_history"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="8dp"
+            android:layout_marginEnd="8dp"
+            app:cardUseCompatPadding="true"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/card_indicators"
+            app:layout_constraintStart_toEndOf="@+id/card_twitter"
+            app:layout_constraintHeight_percent="0.6"
+            />
+
+        <androidx.cardview.widget.CardView
+            android:id="@+id/card_howto"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="8dp"
+            android:layout_marginEnd="8dp"
+            android:layout_marginBottom="8dp"
+            app:cardUseCompatPadding="true"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/card_twitter"
+            app:layout_constraintBottom_toBottomOf="parent"
+            />
+
+        <androidx.cardview.widget.CardView
+            android:id="@+id/card_request_permissions"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            app:contentPadding="@dimen/card_padding"
+            app:cardUseCompatPadding="true"
+            app:cardElevation="4dp"
+            app:layout_constraintWidth_percent="0.6"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent">
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <TextView
+                    android:id="@+id/text_card_title_request_setup"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/card_title_request_setup"
+                    android:layout_alignParentTop="true"
+                    android:textStyle="bold"
+                    android:layout_marginBottom="@dimen/card_padding"
+                    />
+
+                <TextView
+                    android:id="@+id/text_card_info_request_setup"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/card_info_request_setup"
+                    android:layout_below="@id/text_card_title_request_setup"
+                    android:layout_marginBottom="@dimen/card_padding"
+                    />
+
+                <Button
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/btn_request_setup"
+                    android:text="@string/btn_request_setup"
+                    android:layout_below="@+id/text_card_info_request_setup"
+                    android:layout_alignParentEnd="true"
+                    />
+
+            </RelativeLayout>
+        </androidx.cardview.widget.CardView>
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <com.google.android.material.bottomappbar.BottomAppBar
+        android:id="@+id/bottom_app_bar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom"
+        app:backgroundTint="@color/colorPrimary"
+        app:fabAlignmentMode="end"
+        app:navigationIcon="@drawable/ic_menu_black_24dp"
+        />
+
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/fab_record"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@drawable/ic_videocam_black_24dp"
+        app:tint="@android:color/white"
+        app:backgroundTint="@color/colorAccent"
+        app:useCompatPadding="true"
+        app:layout_anchor="@id/bottom_app_bar" />
+
+</androidx.coordinatorlayout.widget.CoordinatorLayout>

@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="home_title">Emergency Recorder</string>
+
+    <string name="text_indicator_permissions">Regular permissions granted.</string>
+    <string name="text_indicator_overlay">Overlay permission granted.</string>
+    <string name="text_indicator_power">Power-saving exemptions granted.</string>
+
+    <string name="card_title_request_setup">Setup</string>
+    <string name="card_info_request_setup">
+        Emergency Recorder is not yet set up to make emergency recordings.
+        To enable this, you\'ll need to grant a few simple permissions.
+    </string>
+    <string name="btn_request_setup">Setup…</string>
+
+    <string name="dialog_title_about">About Emergency Recorder</string>
+    <string name="dialog_message_about">
+        The Emergency Recorder is developed by Police Rewired,
+        a group of volunteer professionals building tools to
+        improve public safety and fight crime. Visit our site
+        to find out more:\n\nhttps://policerewired.org
+    </string>
+    <string name="btn_visit_police_rewired">Visit…</string>
+
+
+</resources>

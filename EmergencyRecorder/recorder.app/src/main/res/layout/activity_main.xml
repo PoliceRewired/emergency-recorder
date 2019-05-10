@@ -167,7 +167,9 @@
         android:layout_alignParentEnd="true"
         android:layout_margin="@dimen/fab_margin"
         android:src="@drawable/ic_videocam_black_24dp"
-        android:tint="@android:color/white"
+        app:tint="@android:color/white"
+        app:backgroundTint="@color/colorAccent"
+        app:useCompatPadding="true"
         />
 
 </RelativeLayout>
