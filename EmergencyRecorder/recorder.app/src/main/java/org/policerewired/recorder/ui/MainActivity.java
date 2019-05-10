@@ -41,7 +41,7 @@ public class MainActivity extends AbstractRecorderActivity {
 
   @Override
   protected int getLayoutId() {
-    return R.layout.activity_config;
+    return R.layout.activity_main;
   }
 
   private boolean isFreeFromBatteryOptimisation() {
@@ -100,6 +100,7 @@ public class MainActivity extends AbstractRecorderActivity {
 
   @Override
   public boolean onCreateOptionsMenu(Menu menu) {
+    menu.add(Menu.NONE, R.string.menu_show_new_permissions_slides, 0, R.string.menu_show_new_permissions_slides);
     menu.add(Menu.NONE, R.string.menu_show_oss_licenses, 0, R.string.menu_show_oss_licenses);
     menu.add(Menu.NONE, R.string.menu_view_config, 0, R.string.menu_view_config);
     menu.add(Menu.NONE, R.string.menu_view_rules, 0, R.string.menu_view_rules);
@@ -111,6 +112,11 @@ public class MainActivity extends AbstractRecorderActivity {
   @Override
   public boolean onOptionsItemSelected(MenuItem item) {
     switch (item.getItemId()) {
+
+      case R.string.menu_show_new_permissions_slides:
+        Intent i = new Intent(this, SetupActivity.class);
+        startActivity(i);
+        return true;
 
       case R.string.menu_show_oss_licenses:
         show_oss_licenses();
