@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:paddingBottom="@dimen/card_padding">
+
+    <androidx.cardview.widget.CardView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:cardUseCompatPadding="true">
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="@dimen/card_padding">
+
+            <ImageView
+                android:id="@+id/icon_rule"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/ic_settings_black_24dp"
+                android:layout_marginEnd="@dimen/card_padding"
+                android:layout_alignParentTop="true"
+                android:layout_alignParentStart="true"
+                />
+
+            <TextView
+                android:id="@+id/text_number"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="number"
+                android:textSize="18sp"
+                android:textStyle="bold"
+                android:layout_toEndOf="@id/icon_rule"
+                android:layout_alignParentTop="true"
+                />
+
+            <TextView
+                android:id="@+id/text_name"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_toEndOf="@id/text_number"
+                android:layout_alignBaseline="@id/text_number"
+                android:textSize="14sp"
+                android:text="name"
+                android:textStyle="bold"
+                android:textColor="@android:color/darker_gray"
+                android:layout_marginStart="@dimen/card_padding"
+                />
+
+            <TextView
+                android:id="@+id/text_behaviour"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="behaviour"
+                android:textSize="18sp"
+                android:layout_toEndOf="@id/icon_rule"
+                android:layout_below="@id/text_number"
+                />
+
+        </RelativeLayout>
+    </androidx.cardview.widget.CardView>
+
+</FrameLayout>

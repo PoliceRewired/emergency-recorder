@@ -57,7 +57,7 @@ public class RulesActivity extends AbstractRecorderActivity {
 
     if (bound) {
       if (live_rules == null) {
-        live_rules = service.getRules();
+        live_rules = service.getRules_live();
       }
 
       live_rules.observe(this, rules -> rules_adapter.updateFrom(rules));

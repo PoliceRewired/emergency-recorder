@@ -201,7 +201,7 @@ public class RecorderService extends AbstractBackgroundBindingService<IRecorderS
     // NB. this has to be quick - if the receiver takes too long, Android will kill it.
     // If not, this could be the issue. We should schedule the bubblecam.show() with a Handler.
 
-    List<Rule> rules = getRulesFor(number);
+    List<Rule> rules = getRulesFor_static(number);
     for (Rule rule : rules) {
       if (rule.matches(number)) {
         informUser(getString(R.string.toast_info_call_detected, number));
@@ -488,13 +488,23 @@ public class RecorderService extends AbstractBackgroundBindingService<IRecorderS
   }
 
   @Override
-  public LiveData<List<Rule>> getRules() {
-    return EmergencyRecorderApp.db.getRuleDao().getAll();
+  public LiveData<List<Rule>> getRules_live() {
+    return EmergencyRecorderApp.db.getRuleDao().getAll_live();
+  }
+
+  @Override
+  public List<Rule> getRules_static() {
+    return EmergencyRecorderApp.db.getRuleDao().getAll_static();
   }
 
   @Override
   public LiveData<List<AuditRecord>> getAuditLog_live() {
     return EmergencyRecorderApp.db.getRecordingDao().getNearlyAll_live(AuditRecordType.Debug);
+  }
+
+  @Override
+  public LiveData<List<AuditRecord>> getMediaLog_live_mostRecent(AuditRecordType[] chosen_media, int max) {
+    return EmergencyRecorderApp.db.getRecordingDao().getSpecifically_live_limited(chosen_media, max);
   }
 
   @Override
@@ -528,8 +538,8 @@ public class RecorderService extends AbstractBackgroundBindingService<IRecorderS
   }
 
   @Override
-  public List<Rule> getRulesFor(String number) {
-    return EmergencyRecorderApp.db.getRuleDao().getMatchingRules(number);
+  public List<Rule> getRulesFor_static(String number) {
+    return EmergencyRecorderApp.db.getRuleDao().getMatchingRules_static(number);
   }
 
   @Override

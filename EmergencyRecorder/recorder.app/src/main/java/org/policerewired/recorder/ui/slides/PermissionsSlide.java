@@ -8,6 +8,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -89,7 +90,7 @@ public class PermissionsSlide extends Fragment implements ISlidePolicy {
 
   @Override
   public void onUserIllegallyRequestedNextPage() {
-    // TODO: warn user about permissions
+    Toast.makeText(getContext(), R.string.toast_warning_please_grant_regular_permissions, Toast.LENGTH_SHORT).show();
   }
 
   /**

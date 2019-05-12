@@ -3,9 +3,26 @@
 
     <string name="home_title">Emergency Recorder</string>
 
+    <string name="twitter_screenname">policerewired</string>
+
     <string name="text_indicator_permissions">Regular permissions granted.</string>
     <string name="text_indicator_overlay">Overlay permission granted.</string>
     <string name="text_indicator_power">Power-saving exemptions granted.</string>
+
+    <string name="btn_history">History…</string>
+    <string name="text_empty_history">
+        You have not yet recorded any emergencies. Why not give it a test now?
+    </string>
+    <string name="text_summary_recent_history_of_X">
+        Your most recent %d recordings…
+    </string>
+
+    <integer name="home_max_media_items">10</integer>
+
+    <string name="btn_rules">Rules…</string>
+    <string name="text_rules">
+        Control how the app behaves when you make an emergency call…
+    </string>
 
     <string name="card_title_request_setup">Setup</string>
     <string name="card_info_request_setup">

@@ -4,6 +4,7 @@ import android.location.Location;
 import android.net.Uri;
 
 import org.jetbrains.annotations.NotNull;
+import org.policerewired.recorder.constants.AuditRecordType;
 import org.policerewired.recorder.db.entity.AuditRecord;
 import org.policerewired.recorder.db.entity.Rule;
 
@@ -47,18 +48,30 @@ public interface IRecorderService {
   /**
    * @return a Live copy of all rules contained by the app.
    */
-  LiveData<List<Rule>> getRules();
+  LiveData<List<Rule>> getRules_live();
+
+  /**
+   * @return a static copy of all rules contained by the app.
+   */
+  List<Rule> getRules_static();
 
   /**
    * @param number phone number to query
    * @return all rules for the given number
    */
-  List<Rule> getRulesFor(String number);
+  List<Rule> getRulesFor_static(String number);
 
   /**
    * @return a Live copy of all events recorded in the log so far (excluding Debug events).
    */
   LiveData<List<AuditRecord>> getAuditLog_live();
+
+  /**
+   * @param chosen_media the media types to select for return
+   * @param max the maximum number of events to return
+   * @return a Live copy of the most recent MEDIA events recorded in the log so far (excluding Debug events).
+   */
+  LiveData<List<AuditRecord>> getMediaLog_live_mostRecent(AuditRecordType[] chosen_media, int max);
 
   /**
    * @return a static copy of all events recorded in the log so far (including Debug events).

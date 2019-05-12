@@ -23,6 +23,9 @@ public interface AuditRecordDao {
   @Query("SELECT * FROM audit WHERE type != :exclusion ORDER BY started")
   LiveData<List<AuditRecord>> getNearlyAll_live(AuditRecordType exclusion);
 
+  @Query("SELECT * FROM audit WHERE type in (:inclusion) ORDER BY started DESC LIMIT :max")
+  LiveData<List<AuditRecord>> getSpecifically_live_limited(AuditRecordType[] inclusion, int max);
+
   @Query("SELECT * FROM audit WHERE started >= :since ORDER BY started")
   LiveData<List<AuditRecord>> getAllAfter_live(Date since);
 
