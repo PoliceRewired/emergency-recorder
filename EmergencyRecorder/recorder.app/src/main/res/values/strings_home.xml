@@ -14,7 +14,7 @@
         You have not yet recorded any emergencies. Why not give it a test now?
     </string>
     <string name="text_summary_recent_history_of_X">
-        Your most recent %d recordings…
+        Last %d recordings…
     </string>
 
     <integer name="home_max_media_items">10</integer>

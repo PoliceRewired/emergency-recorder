@@ -5,7 +5,7 @@
     <string name="foreground_channel_description">Notifications from the emergency recorder.</string>
 
     <string name="recording_service_notification_title">Emergency Recorder</string>
-    <string name="recording_service_notification_content">The Emergency Recorder will initiate recording during emergency calls.</string>
+    <string name="recording_service_notification_content">The Emergency Recorder is running in the background.</string>
     <string name="recording_service_notification_ticker">Emergency Recorder has started.</string>
 
     <string name="toast_info_call_detected">Call detected: %s</string>
