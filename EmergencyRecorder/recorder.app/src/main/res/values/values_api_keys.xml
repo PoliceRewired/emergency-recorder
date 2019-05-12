@@ -2,4 +2,6 @@
 <resources xmlns:tools="http://schemas.android.com/tools">
     <string name="api_key_w3w">8F2QYSEX</string>
     <string name="api_key_appcenter" tools:ignore="TypographyDashes">9948ba26-0913-4837-8fb4-87560eb19253</string>
+    <string name="com.twitter.sdk.android.CONSUMER_KEY" tools:ignore="ExtraTranslation">BNuhpEhF3zIHPihqvf9fsxAT6</string>
+    <string name="com.twitter.sdk.android.CONSUMER_SECRET" tools:ignore="ExtraTranslation">GatFgfYCSpuJ8UGGsmACJp6MxyZWbXcNU5iUC1acboRtqO8B39</string>
 </resources>

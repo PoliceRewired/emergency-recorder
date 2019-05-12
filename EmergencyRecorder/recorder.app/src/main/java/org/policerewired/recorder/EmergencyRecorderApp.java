@@ -115,7 +115,7 @@ public class EmergencyRecorderApp extends Application {
   }
 
   /**
-   * Task to pre-populate the database with standard rules. See: BaseData.getRules(Context);
+   * Task to pre-populate the database with standard rules. See: BaseData.getRules_live(Context);
    */
   private Runnable prepopulate = () -> {
     Log.d(TAG, "Inserting default Rules into blank database.");

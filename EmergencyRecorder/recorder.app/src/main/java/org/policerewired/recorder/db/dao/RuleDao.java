@@ -15,10 +15,13 @@ import androidx.room.Update;
 public interface RuleDao {
 
   @Query("SELECT * FROM rule")
-  LiveData<List<Rule>> getAll();
+  LiveData<List<Rule>> getAll_live();
+
+  @Query("SELECT * FROM rule")
+  List<Rule> getAll_static();
 
   @Query("SELECT * FROM rule WHERE `match` LIKE :number")
-  List<Rule> getMatchingRules(String number);
+  List<Rule> getMatchingRules_static(String number);
 
   @Update
   void update(Rule... rules);

@@ -11,6 +11,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.Toast;
 
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
@@ -101,6 +102,6 @@ public class BatteryOptimisationSlide extends Fragment implements ISlidePolicy {
 
   @Override
   public void onUserIllegallyRequestedNextPage() {
-    // TODO: warn user about permissions
+    Toast.makeText(getContext(), R.string.toast_warning_please_ignore_battery_optimisations, Toast.LENGTH_SHORT).show();
   }
 }

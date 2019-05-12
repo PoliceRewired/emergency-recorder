@@ -41,4 +41,8 @@
         The Emergency Recorder is now ready to record should you ever find yourself making an emergency call.
     </string>
 
+    <string name="toast_warning_please_grant_regular_permissions">Please grant the requested permissions to allow this app to take and record video during emergency calls.</string>
+    <string name="toast_warning_please_grant_overlay_permission">Please grant overlay permissions for this app.</string>
+    <string name="toast_warning_please_ignore_battery_optimisations">Please disable battery optimisations for this app.</string>
+
 </resources>

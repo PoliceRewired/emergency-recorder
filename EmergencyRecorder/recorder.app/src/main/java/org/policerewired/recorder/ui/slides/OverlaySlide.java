@@ -15,6 +15,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.Toast;
 
 import com.github.paolorotolo.appintro.ISlidePolicy;
 
@@ -106,6 +107,6 @@ public class OverlaySlide extends Fragment implements ISlidePolicy {
 
   @Override
   public void onUserIllegallyRequestedNextPage() {
-    // TODO: warn user about permissions
+    Toast.makeText(getContext(), R.string.toast_warning_please_grant_overlay_permission, Toast.LENGTH_SHORT).show();
   }
 }
