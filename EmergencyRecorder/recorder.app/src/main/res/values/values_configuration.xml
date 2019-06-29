@@ -3,8 +3,8 @@
 
     <!-- supported modes -->
     <bool name="supports_video_mode">true</bool>
-    <bool name="supports_photo_mode">true</bool>
-    <bool name="supports_hybrid_mode">true</bool>
+    <bool name="supports_photo_mode">false</bool>
+    <bool name="supports_hybrid_mode">false</bool>
 
     <!-- listener configuration -->
     <bool name="use_embedded_listener">false</bool>

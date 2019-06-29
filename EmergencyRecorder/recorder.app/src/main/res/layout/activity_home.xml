@@ -15,7 +15,7 @@
             android:id="@+id/title_feature"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:scaleType="fitCenter"
+            android:scaleType="centerCrop"
             android:adjustViewBounds="true"
             android:src="@drawable/feature_graphic"
             />

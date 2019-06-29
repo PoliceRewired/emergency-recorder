@@ -12,6 +12,8 @@ import org.policerewired.recorder.db.entity.Rule;
 import org.policerewired.recorder.ui.adapters.BehaviourSpinnerAdapter;
 
 import java.util.Arrays;
+import java.util.LinkedList;
+import java.util.List;
 
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.widget.AppCompatSpinner;
@@ -28,6 +30,8 @@ public class EditRuleDialog {
 
   private Rule rule;
   private Listener listener;
+
+  private List<Behaviour> active_behaviours;
 
   @BindView(R.id.input_number) TextInputLayout input_number;
   @BindView(R.id.input_name) TextInputLayout input_name;
@@ -65,7 +69,20 @@ public class EditRuleDialog {
   }
 
   private void createSpinnerAdapter() {
-    BehaviourSpinnerAdapter spinner_adapter = new BehaviourSpinnerAdapter(context);
+    active_behaviours = new LinkedList<>();
+
+    if (context.getResources().getBoolean(R.bool.supports_video_mode)) {
+      active_behaviours.add(Behaviour.OpenBubbleCamStartVideoMode);
+    }
+
+    if (context.getResources().getBoolean(R.bool.supports_hybrid_mode)) {
+      active_behaviours.add(Behaviour.OpenBubbleCamStartBurstMode);
+    }
+
+    active_behaviours.add(Behaviour.OpenBubbleCam);
+    active_behaviours.add(Behaviour.Nothing);
+
+    BehaviourSpinnerAdapter spinner_adapter = new BehaviourSpinnerAdapter(context, active_behaviours);
     spinner_behaviour.setAdapter(spinner_adapter);
   }
 
@@ -98,7 +115,7 @@ public class EditRuleDialog {
   private void updateDialogFromRule() {
     input_name.getEditText().setText(rule.name);
     input_number.getEditText().setText(rule.match);
-    spinner_behaviour.setSelection(Arrays.asList(Behaviour.values()).indexOf(rule.behaviour));
+    spinner_behaviour.setSelection(active_behaviours.indexOf(rule.behaviour));
     input_name.setEnabled(!rule.locked);   // only editable if the rule isn't locked
     input_number.setEnabled(!rule.locked); // only editable if the rule isn't locked
   }

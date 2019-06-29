@@ -501,9 +501,18 @@ public class BubbleCamOverlay implements IBubbleCamOverlay {
     request.setInterval(config.location_interval_ms);
 
     if (context.checkSelfPermission(Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
+      Log.d(TAG, "Initiating location updates.");
       fusedLocationClient.requestLocationUpdates(request, locationCallback, null /* Looper */);
+      text_location.setVisibility(VISIBLE);
+      text_w3w.setVisibility(VISIBLE);
+      text_location.setText(R.string.text_blank_location);
+      text_w3w.setText(R.string.text_blank_w3w);
     } else {
       Log.w(TAG, "Location permission was not granted.");
+      text_location.setText(R.string.text_blank_location);
+      text_w3w.setText(R.string.text_blank_w3w);
+      text_location.setVisibility(GONE);
+      text_w3w.setVisibility(GONE);
     }
   }
 
@@ -566,6 +575,10 @@ public class BubbleCamOverlay implements IBubbleCamOverlay {
   private void stopLocationUpdates() {
     if (locationCallback != null) {
       fusedLocationClient.removeLocationUpdates(locationCallback);
+      this.locationUpdated = null;
+      this.lastGeocode = null;
+      this.lastLocation = null;
+      this.lastW3W = null;
     }
   }
 

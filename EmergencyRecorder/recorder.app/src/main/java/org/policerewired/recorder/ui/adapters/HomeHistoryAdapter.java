@@ -2,6 +2,7 @@ package org.policerewired.recorder.ui.adapters;
 
 import android.content.Context;
 import android.net.Uri;
+import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
 
@@ -24,6 +25,7 @@ import static android.view.View.VISIBLE;
  * Adapter for a collection of Recordings, allowing the user view simple media from a RecyclerView.
  */
 public class HomeHistoryAdapter extends CrudAdapter<AuditRecord, HomeHistoryAdapter.ViewHolder> {
+  private static final String TAG = HomeHistoryAdapter.class.getSimpleName();
 
   private NamingUtils naming;
   private Listener audit_record_listener;
@@ -93,21 +95,26 @@ public class HomeHistoryAdapter extends CrudAdapter<AuditRecord, HomeHistoryAdap
 
       preview.setVisibility(record.type.is_media ? INVISIBLE : GONE);
       preview.post(() -> {
-        switch (record.type) {
-          case BurstModePhoto:
-          case Photo:
-            preview.setImageBitmap(ThumbnailHelper.getImageThumbnail(context, Uri.parse(record.data)));
-            break;
-          case BurstModeVideo:
-          case VideoRecording:
-            preview.setImageBitmap(ThumbnailHelper.getVideoThumbnail(context, Uri.parse(record.data)));
-            break;
-          case AudioRecording:
-            preview.setImageResource(R.drawable.ic_record_voice_over_black_24dp);
-            break;
-          default:
-            preview.setImageResource(R.drawable.ic_error_outline_black_24dp);
-            break;
+        try {
+          switch (record.type) {
+            case BurstModePhoto:
+            case Photo:
+              preview.setImageBitmap(ThumbnailHelper.getImageThumbnail(context, Uri.parse(record.data)));
+              break;
+            case BurstModeVideo:
+            case VideoRecording:
+              preview.setImageBitmap(ThumbnailHelper.getVideoThumbnail(context, Uri.parse(record.data)));
+              break;
+            case AudioRecording:
+              preview.setImageResource(R.drawable.ic_record_voice_over_black_24dp);
+              break;
+            default:
+              preview.setImageResource(R.drawable.ic_error_outline_black_24dp);
+              break;
+          }
+        } catch (Exception e) {
+          Log.w(TAG, "Unable to determine thumbnail for item.", e);
+          preview.setImageResource(R.drawable.ic_error_outline_black_24dp);
         }
         preview.setVisibility(record.type.is_media ? VISIBLE : GONE);
       });

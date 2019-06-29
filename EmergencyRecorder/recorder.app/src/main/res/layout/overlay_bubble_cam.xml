@@ -58,6 +58,7 @@
                 android:layout_alignStart="@id/camera_view"
                 android:layout_alignEnd="@id/camera_view"
                 android:layout_alignBottom="@id/camera_view"
+                android:layout_marginBottom="@dimen/activity_margin"
                 android:orientation="horizontal">
 
                 <com.google.android.material.floatingactionbutton.FloatingActionButton

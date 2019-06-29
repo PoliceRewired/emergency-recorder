@@ -261,34 +261,43 @@ public class EmergencyRecorderApp extends Application {
    * </p>
    *
    * <p>
-   *   Requesting permission to ignore battery permissions also requires whitelisting on a case
-   *   by case basis. As we are an 'automation' app, we may qualify for Play Store whitelisting.
+   *   Requesting permission to ignore battery saving (and so allow the app to run in the background)
+   *   also requires whitelisting on a case by case basis. Our use case does not fit neatly into any
+   *   of the previously established 'legitimate' uses acknowledged by Google.
    * </p>
    */
   public static String[] get_permissions() {
+    if (_universal_permissions == null) {
+      String[] universal_permissions = new String[]{
+        Manifest.permission.RECEIVE_BOOT_COMPLETED,
+        Manifest.permission.CAMERA,
+        Manifest.permission.RECORD_AUDIO,
+        Manifest.permission.WRITE_EXTERNAL_STORAGE,
+        Manifest.permission.ACCESS_FINE_LOCATION,
+        Manifest.permission.INTERNET,
+        Manifest.permission.REQUEST_IGNORE_BATTERY_OPTIMIZATIONS,
+        Manifest.permission.PROCESS_OUTGOING_CALLS
+      };
 
-    String[] universal_permissions = new String[]{
-      Manifest.permission.RECEIVE_BOOT_COMPLETED,
-      Manifest.permission.CAMERA,
-      Manifest.permission.RECORD_AUDIO,
-      Manifest.permission.WRITE_EXTERNAL_STORAGE,
-      Manifest.permission.ACCESS_FINE_LOCATION,
-      Manifest.permission.INTERNET,
-      Manifest.permission.REQUEST_IGNORE_BATTERY_OPTIMIZATIONS,
-      Manifest.permission.PROCESS_OUTGOING_CALLS
-    };
+      // NB. SYSTEM_ALERT_WINDOW is not included in the list above.
+      // This must be granted through an alternate dialog.
+      // See: OverlaySlide.requestOverlayPermission
 
-    List<String> permissions = new LinkedList<>(Arrays.asList(universal_permissions));
+      List<String> permissions = new LinkedList<>(Arrays.asList(universal_permissions));
 
-    // from Android P onwards, we need the FOREGROUND_SERVICE permission
-    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
-      permissions.add(Manifest.permission.FOREGROUND_SERVICE);
+      // from Android P onwards, we need the following additional permissions:
+      // FOREGROUND_SERVICE (to hold our service in the foreground with a notification)
+      // READ_PHONE_STATE, READ_CALL_LOG (to support PROCESS_OUTGOING_CALLS)
+      if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
+        permissions.add(Manifest.permission.FOREGROUND_SERVICE);
+        //permissions.add(Manifest.permission.READ_PHONE_STATE);
+        //permissions.add(Manifest.permission.READ_CALL_LOG);
+      }
+
+      _universal_permissions = permissions.toArray(new String[0]);
     }
-
-    // required for Android 9 and above
-    // Manifest.permission.READ_PHONE_STATE
-    // Manifest.permission.READ_CALL_LOG
-
-    return permissions.toArray(new String[0]);
+    return _universal_permissions;
   }
+
+  private static String[] _universal_permissions;
 }

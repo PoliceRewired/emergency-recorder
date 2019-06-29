@@ -90,13 +90,15 @@ public class HomeActivity extends AbstractRecorderActivity {
     public void run() {
       Twitter.initialize(HomeActivity.this);
       UserTimeline userTimeline = new UserTimeline.Builder().screenName(getString(R.string.twitter_screenname)).build();
-      recycler_twitter.setLayoutManager(new LinearLayoutManager(HomeActivity.this));
       final TweetTimelineRecyclerViewAdapter adapter =
         new TweetTimelineRecyclerViewAdapter.Builder(HomeActivity.this)
           .setTimeline(userTimeline)
           .setViewStyle(R.style.tw__TweetLightWithActionsStyle)
           .build();
-      runOnUiThread(() -> recycler_twitter.setAdapter(adapter));
+      runOnUiThread(() -> {
+        recycler_twitter.setLayoutManager(new LinearLayoutManager(HomeActivity.this));
+        recycler_twitter.setAdapter(adapter);
+      });
     }
   };
 

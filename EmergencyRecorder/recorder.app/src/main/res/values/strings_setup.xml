@@ -9,6 +9,7 @@
         to make video recordings of your environment during emergency calls.
     </string>
 
+    <string name="heading_permissions">Grant permissions</string>
     <string name="explanation_permissions">
         Emergency Recorder needs a few permissions in order to be able
         to detect your emergency call, to initiate the camera, and to
@@ -22,6 +23,7 @@
 
     <string name="btn_grant_permissions">Grant permissions…</string>
 
+    <string name="heading_overlay">Draw over other apps</string>
     <string name="explanation_overlay">
         Emergency Recorder needs an extra permissions to be able to
         use your camera on screen in a bubble.
@@ -29,6 +31,7 @@
 
     <string name="btn_grant_overlay">Grant overlay permission…</string>
 
+    <string name="heading_power">Run in the background</string>
     <string name="explanation_power">
         Emergency Recorder needs to run in the background to detect emergency calls.
         Please disable Battery Optimisation for Emergency Recorder.

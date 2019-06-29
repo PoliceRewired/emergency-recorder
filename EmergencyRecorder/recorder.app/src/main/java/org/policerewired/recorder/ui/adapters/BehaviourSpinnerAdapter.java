@@ -12,12 +12,14 @@ import androidx.annotation.Nullable;
 
 import org.policerewired.recorder.constants.Behaviour;
 
+import java.util.List;
+
 public class BehaviourSpinnerAdapter extends ArrayAdapter<Behaviour> {
 
   private Context context;
 
-  public BehaviourSpinnerAdapter(@NonNull Context context) {
-    super(context, android.R.layout.simple_spinner_item, Behaviour.values());
+  public BehaviourSpinnerAdapter(@NonNull Context context, @NonNull List<Behaviour> behaviours) {
+    super(context, android.R.layout.simple_spinner_item, behaviours);
     this.context = context;
     setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
   }
