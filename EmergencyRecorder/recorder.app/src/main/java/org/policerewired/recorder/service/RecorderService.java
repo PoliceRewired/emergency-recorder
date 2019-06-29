@@ -569,9 +569,12 @@ public class RecorderService extends AbstractBackgroundBindingService<IRecorderS
 
             // attachment
             intent.putExtra(Intent.EXTRA_STREAM, contentUri);
-            intent.setFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+            intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
 
-            startActivity(Intent.createChooser(intent, getString(R.string.chooser_title_share_audit_log)));
+            Intent chooserIntent = Intent.createChooser(intent, getString(R.string.chooser_title_share_audit_log));
+            chooserIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+            startActivity(chooserIntent);
           }
 
         }
