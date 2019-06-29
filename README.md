@@ -97,7 +97,7 @@ User information
 
 * [CameraKit](https://camerakit.io/) is superb, but the version 1.0.0 beta series does not yet support video recording. This is coming soon.
 * [CameraView](https://natario1.github.io/CameraView/) replaces CameraKit in v0.5 onwards of the app.
-* Keeping services and intent listeners alive on Android is an ongoing arms-race/battle with Google's definition of 'best practises'. We are using [background-service-lib](https://github.com/front-line-tech/background-service-lib), an open source background service toolkit library from [Front-Line Tech Ltd](http://front-line-tech.com).
+* Keeping services and intent listeners alive on Android is non-trivial, particularly as some manufacturers' versions of Android seem to have different rules about when to halt long-running processes. We are using [background-service-lib](https://github.com/front-line-tech/background-service-lib), an open source background service toolkit library from [Front-Line Tech Ltd](http://front-line-tech.com).
 * We use Google Play Services to provide location facilities, and Android provides geocoding facilities.
 * We also use [What3Words](https://docs.what3words.com/wrapper/android/) to provide a short, easily pronounceable location description.
 * We use [jcodec](http://jcodec.org/) to stitch photos into video.
