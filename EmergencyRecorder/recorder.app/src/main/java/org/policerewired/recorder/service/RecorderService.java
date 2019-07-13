@@ -32,7 +32,6 @@ import org.policerewired.recorder.tasks.HybridCollection;
 import org.policerewired.recorder.tasks.StitchHybridImagesTask;
 import org.policerewired.recorder.tasks.ZippingTask;
 import org.policerewired.recorder.ui.HomeActivity;
-import org.policerewired.recorder.ui.MainActivity;
 import org.policerewired.recorder.ui.overlay.BubbleCamConfig;
 import org.policerewired.recorder.ui.overlay.BubbleCamOverlay;
 import org.policerewired.recorder.ui.overlay.IBubbleCamOverlay;
@@ -428,11 +427,16 @@ public class RecorderService extends AbstractBackgroundBindingService<IRecorderS
 
   @Override
   public void recordVideo(@NotNull Date started, @NotNull Uri uri) {
-    AuditRecord item = new AuditRecord();
-    item.started = started;
-    item.type = AuditRecordType.VideoRecording;
-    item.data = uri.toString();
-    saveAuditRecord(item);
+    try {
+      AuditRecord item = new AuditRecord();
+      item.started = started;
+      item.type = AuditRecordType.VideoRecording;
+      item.data = uri.toString();
+      saveAuditRecord(item);
+    } catch (Exception e) {
+      Log.e(TAG, "Could not store video.", e);
+      informUser(R.string.toast_warning_exception_during_video_store);
+    }
   }
 
   @Override

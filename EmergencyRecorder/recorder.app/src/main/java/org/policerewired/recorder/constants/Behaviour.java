@@ -1,10 +1,8 @@
 package org.policerewired.recorder.constants;
 
-import android.app.Application;
+import androidx.annotation.StringRes;
 
 import org.policerewired.recorder.R;
-
-import androidx.annotation.StringRes;
 
 /**
  * Representing an action to take when an outgoing call is detected and matched.

@@ -9,11 +9,12 @@ import android.widget.ImageView;
 import android.widget.PopupMenu;
 import android.widget.TextView;
 
+import androidx.annotation.NonNull;
+import androidx.recyclerview.widget.SortedListAdapterCallback;
+
 import org.policerewired.recorder.R;
 import org.policerewired.recorder.db.entity.Rule;
 
-import androidx.annotation.NonNull;
-import androidx.recyclerview.widget.SortedListAdapterCallback;
 import butterknife.BindView;
 import butterknife.OnClick;
 

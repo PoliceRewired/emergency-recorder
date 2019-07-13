@@ -1,8 +1,8 @@
 package org.policerewired.recorder.db.converter;
 
-import org.policerewired.recorder.constants.AuditRecordType;
-
 import androidx.room.TypeConverter;
+
+import org.policerewired.recorder.constants.AuditRecordType;
 
 public class RecordTypeConverter {
 

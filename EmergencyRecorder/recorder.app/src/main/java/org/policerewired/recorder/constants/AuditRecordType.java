@@ -1,10 +1,10 @@
 package org.policerewired.recorder.constants;
 
-import org.policerewired.recorder.R;
-
 import androidx.annotation.ColorRes;
 import androidx.annotation.DrawableRes;
 import androidx.annotation.StringRes;
+
+import org.policerewired.recorder.R;
 
 /**
  * Various types of audit record that can appear in the app's audit log.

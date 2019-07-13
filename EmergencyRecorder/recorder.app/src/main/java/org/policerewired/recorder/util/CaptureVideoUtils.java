@@ -11,6 +11,7 @@ import android.provider.MediaStore;
 import android.util.Log;
 
 import org.jcodec.common.io.IOUtils;
+import org.policerewired.recorder.EmergencyRecorderApp;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -28,13 +29,13 @@ public class CaptureVideoUtils {
    * meta data with DATE_ADDED and DATE_TAKEN. This fixes a common problem where media
    * that is inserted manually gets saved at the end of the gallery (because date is not populated).
    */
-  public static final Uri insertVideo(ContentResolver cr,
-                                         File source,
-                                         String title,
-                                         String description,
-                                         Date started,
-                                         String mime,
-                                         long duration_ms) {
+  public static Uri insertVideo(ContentResolver cr,
+                                File source,
+                                String title,
+                                String description,
+                                Date started,
+                                String mime,
+                                long duration_ms) {
 
     ContentValues values = new ContentValues();
     values.put(MediaStore.Video.Media.TITLE, title);
@@ -58,8 +59,11 @@ public class CaptureVideoUtils {
           IOUtils.copy(videoIn, videoOut);
         } catch (Exception e) {
           Log.e(TAG, "Failed to copy video.", e);
+          EmergencyRecorderApp.recordAnalyticsException(e);
+
         } finally {
-          videoOut.close();
+          // cannot, must not, throw during a finally
+          try { videoOut.close(); } catch (Exception e) { EmergencyRecorderApp.recordAnalyticsException(e); }
         }
 
         long id = ContentUris.parseId(url);
@@ -68,11 +72,13 @@ public class CaptureVideoUtils {
         // This is for backward compatibility.
         storeThumbnail(cr, miniThumb, id, 50F, 50F, MediaStore.Video.Thumbnails.MICRO_KIND);
       } else {
+        EmergencyRecorderApp.recordAnalyticsIssue("No video source File provided for storage.");
         cr.delete(url, null, null);
         url = null;
       }
     } catch (Exception e) {
       Log.e(TAG, "Unable to store video.", e);
+      EmergencyRecorderApp.recordAnalyticsException(e);
       if (url != null) {
         cr.delete(url, null, null);
         url = null;
@@ -88,7 +94,7 @@ public class CaptureVideoUtils {
    * meta data. The StoreThumbnail method is private so it must be duplicated here.
    * @see android.provider.MediaStore.Video.Media (StoreThumbnail private method)
    */
-  private static final Bitmap storeThumbnail(
+  private static Bitmap storeThumbnail(
     ContentResolver cr,
     Bitmap source,
     long id,

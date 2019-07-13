@@ -1,13 +1,13 @@
 package org.policerewired.recorder.db.entity;
 
-import org.policerewired.recorder.constants.Behaviour;
-
-import java.util.UUID;
-
 import androidx.annotation.NonNull;
 import androidx.room.Entity;
 import androidx.room.Ignore;
 import androidx.room.PrimaryKey;
+
+import org.policerewired.recorder.constants.Behaviour;
+
+import java.util.UUID;
 
 /**
  * Represents a rule that the app should follow when deciding which action to take on detection of

@@ -3,6 +3,11 @@ package org.policerewired.recorder.ui;
 import android.os.Bundle;
 import android.view.MenuItem;
 
+import androidx.appcompat.app.AlertDialog;
+import androidx.lifecycle.LiveData;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import org.policerewired.recorder.R;
@@ -14,10 +19,6 @@ import org.policerewired.recorder.ui.dialogs.EditRuleDialog;
 
 import java.util.List;
 
-import androidx.appcompat.app.AlertDialog;
-import androidx.lifecycle.LiveData;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
 import butterknife.BindView;
 import butterknife.OnClick;
 

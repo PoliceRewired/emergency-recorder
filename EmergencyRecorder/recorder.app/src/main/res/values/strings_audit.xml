@@ -45,4 +45,6 @@
     <string name="toast_warning_exception_during_media_file_share">Unexpected error whilst preparing media file for sharing.</string>
     <string name="toast_warning_exception_during_audit_file_share">Unexpected error whilst preparing audit file for sharing.</string>
 
+    <string name="toast_warning_exception_during_video_store">Unexpected error storing your video.</string>
+    <string name="toast_warning_null_video_returned_for_storage">Unexpectedly the camera did not make your video available.</string>
 </resources>

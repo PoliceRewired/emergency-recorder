@@ -1,8 +1,8 @@
 package org.policerewired.recorder.db.converter;
 
-import java.util.UUID;
-
 import androidx.room.TypeConverter;
+
+import java.util.UUID;
 
 public class UUIDConverter {
 

@@ -7,14 +7,17 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 
+import androidx.appcompat.app.AlertDialog;
+import androidx.lifecycle.LiveData;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
-import org.jcodec.common.StringUtils;
 import org.jcodec.common.io.IOUtils;
 import org.policerewired.recorder.BuildConfig;
 import org.policerewired.recorder.R;
 import org.policerewired.recorder.db.entity.AuditRecord;
-import org.policerewired.recorder.service.RecorderService;
 import org.policerewired.recorder.ui.adapters.AuditRecordsAdapter;
 import org.policerewired.recorder.ui.dialogs.SelectRangeDialog;
 import org.policerewired.recorder.util.NamingUtils;
@@ -23,22 +26,14 @@ import org.policerewired.recorder.util.StorageUtils;
 
 import java.io.File;
 import java.io.FileOutputStream;
-import java.io.IOException;
 import java.io.InputStream;
-import java.util.Calendar;
 import java.util.Date;
-import java.util.LinkedList;
 import java.util.List;
 
-import androidx.appcompat.app.AlertDialog;
-import androidx.lifecycle.LiveData;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
 import butterknife.BindView;
 import butterknife.OnClick;
 
 import static androidx.core.content.FileProvider.getUriForFile;
-import static java.util.Calendar.HOUR;
 
 /**
  * Activity to display the audit log - allows a user to view and share media, or the log itself.

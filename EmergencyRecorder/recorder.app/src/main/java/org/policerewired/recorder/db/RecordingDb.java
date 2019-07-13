@@ -1,5 +1,9 @@
 package org.policerewired.recorder.db;
 
+import androidx.room.Database;
+import androidx.room.RoomDatabase;
+import androidx.room.TypeConverters;
+
 import org.policerewired.recorder.db.converter.BehaviourConverter;
 import org.policerewired.recorder.db.converter.DateConverter;
 import org.policerewired.recorder.db.converter.RecordTypeConverter;
@@ -9,10 +13,6 @@ import org.policerewired.recorder.db.dao.AuditRecordDao;
 import org.policerewired.recorder.db.dao.RuleDao;
 import org.policerewired.recorder.db.entity.AuditRecord;
 import org.policerewired.recorder.db.entity.Rule;
-
-import androidx.room.Database;
-import androidx.room.RoomDatabase;
-import androidx.room.TypeConverters;
 
 /**
  * Main database for the app - hold information about rules (behaviours to taken when outgoing

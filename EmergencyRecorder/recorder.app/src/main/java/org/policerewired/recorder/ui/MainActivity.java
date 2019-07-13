@@ -10,6 +10,8 @@ import android.view.MenuItem;
 import android.widget.Button;
 import android.widget.ImageView;
 
+import androidx.appcompat.app.AlertDialog;
+
 import com.google.android.gms.oss.licenses.OssLicensesMenuActivity;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.microsoft.appcenter.analytics.Analytics;
@@ -21,7 +23,6 @@ import org.policerewired.recorder.R;
 import java.util.LinkedList;
 import java.util.List;
 
-import androidx.appcompat.app.AlertDialog;
 import butterknife.BindView;
 import butterknife.OnClick;
 

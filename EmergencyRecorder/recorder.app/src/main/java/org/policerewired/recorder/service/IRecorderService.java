@@ -3,6 +3,8 @@ package org.policerewired.recorder.service;
 import android.location.Location;
 import android.net.Uri;
 
+import androidx.lifecycle.LiveData;
+
 import org.jetbrains.annotations.NotNull;
 import org.policerewired.recorder.constants.AuditRecordType;
 import org.policerewired.recorder.db.entity.AuditRecord;
@@ -12,8 +14,6 @@ import java.io.File;
 import java.io.IOException;
 import java.util.Date;
 import java.util.List;
-
-import androidx.lifecycle.LiveData;
 
 /**
  * Core interface to the Recorder Service - these methods are available to bound activities.

@@ -10,6 +10,18 @@ import android.os.Build;
 import android.os.SystemClock;
 import android.util.Log;
 
+import androidx.annotation.NonNull;
+import androidx.room.Room;
+import androidx.room.RoomDatabase;
+import androidx.sqlite.db.SupportSQLiteDatabase;
+
+import com.google.gson.Gson;
+import com.microsoft.appcenter.AppCenter;
+import com.microsoft.appcenter.Flags;
+import com.microsoft.appcenter.analytics.Analytics;
+import com.microsoft.appcenter.crashes.Crashes;
+import com.microsoft.appcenter.distribute.Distribute;
+
 import org.jcodec.common.StringUtils;
 import org.jetbrains.annotations.NotNull;
 import org.policerewired.recorder.constants.AuditRecordType;
@@ -18,7 +30,6 @@ import org.policerewired.recorder.db.RecordingDb;
 import org.policerewired.recorder.db.entity.AuditRecord;
 import org.policerewired.recorder.receivers.RestartRequestReceiver;
 import org.policerewired.recorder.service.RecorderService;
-import org.policerewired.recorder.util.NamingUtils;
 
 import java.util.Arrays;
 import java.util.Date;
@@ -27,18 +38,6 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.Executors;
-
-import androidx.annotation.NonNull;
-import androidx.annotation.RequiresApi;
-import androidx.room.Room;
-import androidx.room.RoomDatabase;
-import androidx.sqlite.db.SupportSQLiteDatabase;
-
-import com.microsoft.appcenter.AppCenter;
-import com.microsoft.appcenter.Flags;
-import com.microsoft.appcenter.analytics.Analytics;
-import com.microsoft.appcenter.crashes.Crashes;
-import com.microsoft.appcenter.distribute.Distribute;
 
 import static android.app.PendingIntent.FLAG_UPDATE_CURRENT;
 import static org.policerewired.recorder.receivers.RestartRequestReceiver.REQUEST_CODE_ONE_OFF_RESTART;
@@ -232,12 +231,56 @@ public class EmergencyRecorderApp extends Application {
         properties.put("type", item.type.name());
         properties.put("data", item.data);
         properties.put("started", item.started.toString());
-        Analytics.trackEvent(item.type.name(), properties, Flags.PERSISTENCE_NORMAL);
+        Analytics.trackEvent(item.getClass().getSimpleName(), properties, Flags.PERSISTENCE_NORMAL);
 
       } catch (Exception e) {
         Log.e(TAG, "Unable to record new record of type: " + item.type.name(), e);
       }
     });
+  }
+
+  public static void recordAnalyticsIssue(String message, Object... details) {
+    Map<String, String> properties = new HashMap<>();
+    properties.put("occurred", new Date().toString());
+    properties.put("message", message);
+
+    int i = 0;
+    for (Object detail : details) {
+      ++i;
+      properties.put("detail-" + i + "-class", detail.getClass().getSimpleName());
+      if (detail instanceof String) {
+        properties.put("detail-" + i + "-string", (String)detail);
+      } else {
+        properties.put("detail-" + i + "-json", new Gson().toJson(detail));
+      }
+    }
+
+    Analytics.trackEvent("Issue", properties, Flags.PERSISTENCE_CRITICAL);
+  }
+
+  public static void recordAnalyticsException(Exception e) {
+    Map<String, String> properties = new HashMap<>();
+    properties.put("thrown", new Date().toString());
+
+    properties.put("exception", e.getClass().getSimpleName());
+    properties.put("exception-message", e.getMessage());
+    properties.put("exception-stacktrace", parseStackTrace(e.getStackTrace()));
+
+    if (e.getCause() != null) {
+      properties.put("cause", e.getCause().getClass().getSimpleName());
+      properties.put("cause-message", e.getCause().getMessage());
+      properties.put("cause-stacktrace", parseStackTrace(e.getCause().getStackTrace()));
+    }
+
+    Analytics.trackEvent("Exception", properties, Flags.PERSISTENCE_CRITICAL);
+  }
+
+  private static String parseStackTrace(StackTraceElement[] elements) {
+    List<String> items = new LinkedList<>();
+    for (StackTraceElement element : elements) {
+      items.add(element.toString());
+    }
+    return StringUtils.join2(items.toArray(), '\n');
   }
 
   /**

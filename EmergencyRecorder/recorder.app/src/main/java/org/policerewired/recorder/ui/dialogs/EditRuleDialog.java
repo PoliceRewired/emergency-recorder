@@ -3,6 +3,9 @@ package org.policerewired.recorder.ui.dialogs;
 import android.app.Dialog;
 import android.content.Context;
 
+import androidx.appcompat.app.AlertDialog;
+import androidx.appcompat.widget.AppCompatSpinner;
+
 import com.google.android.gms.common.util.Strings;
 import com.google.android.material.textfield.TextInputLayout;
 
@@ -11,12 +14,9 @@ import org.policerewired.recorder.constants.Behaviour;
 import org.policerewired.recorder.db.entity.Rule;
 import org.policerewired.recorder.ui.adapters.BehaviourSpinnerAdapter;
 
-import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
 
-import androidx.appcompat.app.AlertDialog;
-import androidx.appcompat.widget.AppCompatSpinner;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 

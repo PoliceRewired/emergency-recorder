@@ -22,6 +22,9 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
+import androidx.cardview.widget.CardView;
+
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationCallback;
 import com.google.android.gms.location.LocationRequest;
@@ -31,11 +34,12 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.otaliastudios.cameraview.CameraException;
 import com.otaliastudios.cameraview.CameraListener;
 import com.otaliastudios.cameraview.CameraView;
-import com.otaliastudios.cameraview.Mode;
 import com.otaliastudios.cameraview.PictureResult;
 import com.otaliastudios.cameraview.VideoResult;
+import com.otaliastudios.cameraview.controls.Mode;
 
 import org.jcodec.common.StringUtils;
+import org.policerewired.recorder.EmergencyRecorderApp;
 import org.policerewired.recorder.R;
 import org.policerewired.recorder.service.IRecorderService;
 import org.policerewired.recorder.service.RecorderService;
@@ -50,8 +54,6 @@ import java.io.File;
 import java.io.IOException;
 import java.util.Date;
 
-import androidx.annotation.NonNull;
-import androidx.cardview.widget.CardView;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
@@ -258,6 +260,16 @@ public class BubbleCamOverlay implements IBubbleCamOverlay {
     @Override
     public void onVideoTaken(@NonNull VideoResult result) {
       super.onVideoTaken(result);
+      if (result == null) {
+        Log.w(TAG, "Null result returned through onVideoTaken.");
+        EmergencyRecorderApp.recordAnalyticsIssue("Null result returned through onVideoTaken.", result);
+        Toast.makeText(context, R.string.toast_warning_null_video_returned_for_storage, Toast.LENGTH_LONG).show();
+      }
+      if (result.getFile() == null) {
+        Log.w(TAG, "Null file returned through onVideoTaken.");
+        EmergencyRecorderApp.recordAnalyticsIssue("Null video file returned through onVideoTaken.", result);
+        Toast.makeText(context, R.string.toast_warning_null_video_returned_for_storage, Toast.LENGTH_LONG).show();
+      }
       Date video_completed = new Date();
       Uri uri = service.storeVideo(result.getFile(), video_started, video_completed, lastLocation, lastGeocode, lastW3W);
       listener.videoCaptured(video_started, uri);

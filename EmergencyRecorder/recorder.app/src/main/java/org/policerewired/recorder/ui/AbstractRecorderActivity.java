@@ -2,13 +2,14 @@ package org.policerewired.recorder.ui;
 
 import android.os.Bundle;
 
+import androidx.annotation.LayoutRes;
+
 import com.flt.servicelib.AbstractServiceBoundAppCompatActivity;
 
 import org.policerewired.recorder.EmergencyRecorderApp;
 import org.policerewired.recorder.service.IRecorderService;
 import org.policerewired.recorder.service.RecorderService;
 
-import androidx.annotation.LayoutRes;
 import butterknife.ButterKnife;
 
 /**

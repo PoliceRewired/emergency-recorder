@@ -1,8 +1,8 @@
 package org.policerewired.recorder.db.converter;
 
-import java.util.Date;
-
 import androidx.room.TypeConverter;
+
+import java.util.Date;
 
 public class DateConverter {
 

@@ -8,6 +8,8 @@ import android.util.Log;
 import android.util.Pair;
 import android.widget.Toast;
 
+import androidx.core.app.NotificationCompat;
+
 import org.jcodec.api.SequenceEncoder;
 import org.jcodec.api.android.AndroidSequenceEncoder;
 import org.jcodec.common.io.NIOUtils;
@@ -27,8 +29,6 @@ import org.policerewired.recorder.util.StorageUtils;
 
 import java.io.File;
 import java.util.Date;
-
-import androidx.core.app.NotificationCompat;
 
 /**
  * Takes all images from a HybridCollection (burst mode), and combines them into a video.

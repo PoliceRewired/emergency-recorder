@@ -7,14 +7,15 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import androidx.annotation.NonNull;
+import androidx.appcompat.widget.PopupMenu;
+import androidx.recyclerview.widget.SortedListAdapterCallback;
+
 import org.policerewired.recorder.R;
 import org.policerewired.recorder.db.entity.AuditRecord;
 import org.policerewired.recorder.util.NamingUtils;
 import org.policerewired.recorder.util.ThumbnailHelper;
 
-import androidx.annotation.NonNull;
-import androidx.appcompat.widget.PopupMenu;
-import androidx.recyclerview.widget.SortedListAdapterCallback;
 import butterknife.BindView;
 import butterknife.OnClick;
 

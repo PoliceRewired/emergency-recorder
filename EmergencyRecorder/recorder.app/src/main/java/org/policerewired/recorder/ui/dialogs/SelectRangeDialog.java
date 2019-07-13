@@ -1,7 +1,6 @@
 package org.policerewired.recorder.ui.dialogs;
 
 import android.app.Dialog;
-import android.content.Context;
 import android.view.View;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
