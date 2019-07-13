@@ -151,9 +151,8 @@ public class RecorderService extends AbstractBackgroundBindingService<IRecorderS
       }
     }
 
-    Log.w(TAG, "Service was stopped naturally. Scheduling a restart...");
-    EmergencyRecorderApp.scheduleServiceStart(this);
-    recordAuditableEvent(new Date(), getString(R.string.event_audit_service_stopped), getString(R.string.event_audit_alarm_set_1_min), true);
+    Log.w(TAG, "Service was stopped naturally.");
+    recordAuditableEvent(new Date(), getString(R.string.event_audit_service_stopped), null, true);
   }
 
   @Override
@@ -185,8 +184,7 @@ public class RecorderService extends AbstractBackgroundBindingService<IRecorderS
   @Override
   public void onTaskRemoved(Intent rootIntent) {
     Log.w(TAG, "Initial task is being removed. Scheduling a restart...");
-    EmergencyRecorderApp.scheduleServiceStart(this);
-    recordAuditableEvent(new Date(), getString(R.string.event_audit_task_stopped), getString(R.string.event_audit_alarm_set_1_min), true);
+    recordAuditableEvent(new Date(), getString(R.string.event_audit_task_stopped), null, true);
     super.onTaskRemoved(rootIntent);
   }
 

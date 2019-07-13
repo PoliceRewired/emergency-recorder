@@ -30,6 +30,7 @@ import org.policerewired.recorder.db.RecordingDb;
 import org.policerewired.recorder.db.entity.AuditRecord;
 import org.policerewired.recorder.receivers.RestartRequestReceiver;
 import org.policerewired.recorder.service.RecorderService;
+import org.policerewired.recorder.service.RestartJobService;
 
 import java.util.Arrays;
 import java.util.Date;
@@ -41,7 +42,6 @@ import java.util.concurrent.Executors;
 
 import static android.app.PendingIntent.FLAG_UPDATE_CURRENT;
 import static org.policerewired.recorder.receivers.RestartRequestReceiver.REQUEST_CODE_ONE_OFF_RESTART;
-import static org.policerewired.recorder.receivers.RestartRequestReceiver.REQUEST_CODE_REPEATING_CHECKUP;
 
 /**
  * Application class for the Emergency Recorder. This class initialises a single instance of
@@ -51,7 +51,7 @@ public class EmergencyRecorderApp extends Application {
   private static final String TAG = EmergencyRecorderApp.class.getSimpleName();
   private static String db_name = "recording_db";
 
-  public static boolean alarm_set; // alarm used to restart the service in case of OS termination
+  public static boolean job_set; // alarm used to restart the service in case of OS termination
   public static RecordingDb db;
 
   @Override
@@ -70,7 +70,7 @@ public class EmergencyRecorderApp extends Application {
     Log.d(TAG, "Starting service from Application.");
     startRecorderService(this);
 
-    Log.d(TAG, "Scheduling alarm from application class.");
+    Log.d(TAG, "Scheduling restart job from application class.");
     scheduleRepeatingCheckup(this);
 
     recordAuditableEvent(new Date(), getString(R.string.event_audit_application_created), null, false);
@@ -78,10 +78,9 @@ public class EmergencyRecorderApp extends Application {
 
   @Override
   public void onTerminate() {
-    super.onTerminate();
     Log.i(TAG, "Emergency Recorder: onTerminate");
-    scheduleServiceStart(this);
     recordAuditableEvent(new Date(), getString(R.string.event_audit_application_terminated), null, false);
+    super.onTerminate();
   }
 
   @Override
@@ -128,11 +127,17 @@ public class EmergencyRecorderApp extends Application {
    */
   public static void startRecorderService(Context context) {
     Intent intent = new Intent(context, RecorderService.class);
+    intent.setAction(RestartRequestReceiver.ACTION_RESTART_SERVICE);
+    intent.addFlags(Intent.FLAG_RECEIVER_FOREGROUND); // permits the receiver to run in foreground
+    intent.addFlags(Intent.FLAG_INCLUDE_STOPPED_PACKAGES); // also for fully stopped packages
+
     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
       Log.v(TAG, "Calling startForegroundService from Application class.");
+      recordAuditableEvent(new Date(), "App start intent initiated.", "Foreground service.", true);
       context.startForegroundService(intent);
     } else {
       Log.v(TAG, "Calling startService from Application class.");
+      recordAuditableEvent(new Date(), "App start intent initiated.", "Regular service.", true);
       context.startService(intent);
     }
   }
@@ -143,17 +148,27 @@ public class EmergencyRecorderApp extends Application {
    * @param requestCode request code for the alarm - important to distinguish pending intents
    * @return a PendingIntent containing an explicit Intent for the RestartRequestReceiver.
    */
+  @Deprecated
   public static PendingIntent createRestartIntent(Context context, int requestCode) {
     Intent restartIntent = new Intent(context, RestartRequestReceiver.class);
     restartIntent.setAction(RestartRequestReceiver.ACTION_RESTART_SERVICE);
-    restartIntent.setFlags(Intent.FLAG_RECEIVER_FOREGROUND); // permits the receiver to run in foreground
-    restartIntent.setFlags(Intent.FLAG_INCLUDE_STOPPED_PACKAGES); // also for fully stopped packages
-    return PendingIntent.getBroadcast(context, requestCode, restartIntent, FLAG_UPDATE_CURRENT);
+    restartIntent.addFlags(Intent.FLAG_RECEIVER_FOREGROUND); // permits the receiver to run in foreground
+    restartIntent.addFlags(Intent.FLAG_INCLUDE_STOPPED_PACKAGES); // also for fully stopped packages
+
+    PendingIntent pending;
+    if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
+      pending = PendingIntent.getForegroundService(context, requestCode, restartIntent, FLAG_UPDATE_CURRENT);
+    } else {
+      pending = PendingIntent.getService(context, requestCode, restartIntent, FLAG_UPDATE_CURRENT);
+    }
+
+    return pending;
   }
 
   /**
    * Schedules a service restart after 60 seconds.
    */
+  @Deprecated
   public static void scheduleServiceStart(Context context) {
     try {
       Log.d(TAG, "Scheduling restart alarm.");
@@ -175,23 +190,16 @@ public class EmergencyRecorderApp extends Application {
    * Schedules a repeating checkup for the RecorderService.
    */
   public static void scheduleRepeatingCheckup(Context context) {
-    if (!alarm_set) {
+    if (!job_set) {
       try {
-        Log.d(TAG, "Scheduling repeat alarm.");
-        PendingIntent alarmIntent = createRestartIntent(context, REQUEST_CODE_REPEATING_CHECKUP);
+        Log.d(TAG, "Scheduling repeat job.");
+        RestartJobService.initialise(context);
 
-        AlarmManager alarmManager = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
-        alarmManager.setInexactRepeating(
-          AlarmManager.ELAPSED_REALTIME_WAKEUP,
-          SystemClock.elapsedRealtime() + (60*1000),
-          AlarmManager.INTERVAL_FIFTEEN_MINUTES,
-          alarmIntent);
-
-        Log.i(TAG, "Scheduled repeating checkup for service.");
-        alarm_set = true;
+        Log.i(TAG, "Scheduled repeating restart job for service.");
+        job_set = true;
 
       } catch (Exception e) {
-        Log.e(TAG, "Unable to schedule repeating checkup.", e);
+        Log.e(TAG, "Unable to schedule repeating restart job.", e);
       }
     } else {
       Log.d(TAG, "Not setting alarm - already marked set.");

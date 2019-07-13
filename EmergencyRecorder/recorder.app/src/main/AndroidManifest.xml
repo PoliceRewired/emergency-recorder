@@ -5,7 +5,6 @@
     android:installLocation="internalOnly">
 
     <!-- regular permissions to do normal things -->
-    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
     <uses-permission android:name="android.permission.CAMERA" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.RECORD_AUDIO" />
@@ -13,6 +12,7 @@
     <uses-permission android:name="android.permission.INTERNET" />
 
     <!-- non-standard permissions -->
+    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
     <uses-permission android:name="android.permission.REQUEST_IGNORE_BATTERY_OPTIMIZATIONS" />
     <uses-permission android:name="android.permission.PROCESS_OUTGOING_CALLS" />
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
@@ -53,6 +53,11 @@
         <service
             android:name=".service.RecorderService"
             android:enabled="true" />
+
+        <service
+            android:name=".service.RestartJobService"
+            android:permission="android.permission.BIND_JOB_SERVICE"
+            android:exported="true"/>
 
         <activity
             android:name=".ui.MainActivity"
